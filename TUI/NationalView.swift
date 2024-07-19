@@ -1,0 +1,129 @@
+import SwiftUI
+
+struct NationalView: View {
+    @State private var countries: [CountryData] = []
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.locale) var locale
+    
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                // Headbar
+                HeadBarView(title: "National List", onBackButtonTap: {
+                    self.presentationMode.wrappedValue.dismiss()
+                })
+                .padding(.top, geometry.safeAreaInsets.top)
+                
+                // 主要內容
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 10) {
+                        ForEach(countries) { country in
+                            NavigationLink(destination: LocalityListView(countryName: country.englishName)) {
+                                HStack {
+                                    FlagView(country: country.code)
+                                        .frame(width: 30, height: 20)
+                                    Text(country.localizedName)
+                                        .font(.headline)
+                                    Spacer()
+                                    Text("\(country.totalPhotos)")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
+                            }
+                        }
+                    }
+                    .padding()
+                }
+
+                // 底部導航欄
+                BottomBarView()
+                    .padding(.bottom, geometry.safeAreaInsets.bottom)
+            }
+            .edgesIgnoringSafeArea(.all)
+        }
+        .navigationBarHidden(true)
+        .onAppear {
+            loadCountries()
+        }
+    }
+
+    private func loadCountries() {
+        print("DEBUG: Starting loadCountries()")
+        let rawData = SQLiteManager.shared.getAllPhotos()
+        print("DEBUG: Loaded \(rawData.count) photos from SQLiteManager")
+        
+        var countryDict = [String: Int]()
+        
+        for photo in rawData {
+            if !photo.country.isEmpty {
+                countryDict[photo.country, default: 0] += 1
+            }
+        }
+        
+        print("DEBUG: Processed \(countryDict.count) unique countries")
+        
+        let locale = Locale.current
+        let languageCode: String
+        let scriptCode: String
+        let regionCode: String
+
+        if #available(iOS 16, *) {
+            languageCode = locale.language.languageCode?.identifier ?? "en"
+            scriptCode = locale.language.script?.identifier ?? ""
+            regionCode = locale.region?.identifier ?? ""
+        } else {
+            languageCode = locale.languageCode ?? "en"
+            scriptCode = locale.scriptCode ?? ""
+            regionCode = locale.regionCode ?? ""
+        }
+
+        print("DEBUG: Current language code: \(languageCode)")
+        print("DEBUG: Current script code: \(scriptCode)")
+        print("DEBUG: Current region code: \(regionCode)")
+
+        // 更精确地判断简体和繁体中文
+        let finalLanguageCode: String
+        if languageCode == "zh" {
+            if scriptCode == "Hant" || regionCode == "TW" || regionCode == "HK" || regionCode == "MO" {
+                finalLanguageCode = "zh-Hant"
+            } else {
+                finalLanguageCode = "zh-Hans"
+            }
+        } else {
+            finalLanguageCode = languageCode
+        }
+        print("DEBUG: Final language code: \(finalLanguageCode)")
+        
+        countries = countryDict.compactMap { countryName, totalPhotos in
+            print("DEBUG: Processing country: \(countryName)")
+            if let code = CountryCodeManager.shared.getCountryCode(for: countryName) {
+                let localizedName = CountryCodeManager.shared.getCountryName(for: code, languageCode: finalLanguageCode) ?? countryName
+                print("DEBUG: Localized name for \(countryName) (\(code)): \(localizedName)")
+                return CountryData(englishName: countryName, localizedName: localizedName, code: code, totalPhotos: totalPhotos)
+            } else {
+                print("DEBUG: Failed to get country code for \(countryName)")
+                return nil
+            }
+        }.sorted { $0.totalPhotos > $1.totalPhotos }
+        
+        print("DEBUG: Final countries count: \(countries.count)")
+    }
+}
+
+struct CountryData: Identifiable {
+    let id = UUID()
+    let englishName: String
+    let localizedName: String
+    let code: String
+    let totalPhotos: Int
+}
+
+struct NationalView_Previews: PreviewProvider {
+    static var previews: some View {
+        NationalView()
+    }
+}
