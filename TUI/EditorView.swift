@@ -9,15 +9,16 @@ struct EditorView: View {
     @Binding var thumbnailPath100: String
     @Binding var thumbnailPath350: String
     @Binding var shouldNavigateToHome: Bool
-
+    
     @Environment(\.presentationMode) var presentationMode
     @State private var showDeleteConfirmation = false
     @State private var localObjectName: String
     @State private var localCaption: String
+    @State private var localRating: Int
     
-    var onDelete: (() -> Void)?  // 添加这个回调函数
-
-    init(image: Binding<UIImage?>, imageName: Binding<String>, objectName: Binding<String>, caption: Binding<String>, imagePath: Binding<String>, thumbnailPath100: Binding<String>, thumbnailPath350: Binding<String>, shouldNavigateToHome: Binding<Bool>) {
+    var onDelete: (() -> Void)?
+    
+    init(image: Binding<UIImage?>, imageName: Binding<String>, objectName: Binding<String>, caption: Binding<String>, imagePath: Binding<String>, thumbnailPath100: Binding<String>, thumbnailPath350: Binding<String>, shouldNavigateToHome: Binding<Bool>, initialRating: Int) {
         self._image = image
         self._imageName = imageName
         self._objectName = objectName
@@ -28,43 +29,57 @@ struct EditorView: View {
         self._shouldNavigateToHome = shouldNavigateToHome
         self._localObjectName = State(initialValue: objectName.wrappedValue)
         self._localCaption = State(initialValue: caption.wrappedValue)
+        self._localRating = State(initialValue: initialRating)
     }
-
+    
     var body: some View {
         NavigationView {
             Form {
-                Section() {
+                Section(header: Text("Image")) {
                     if let image = image {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(maxHeight: 200)
+                            .frame(height: 200)
+                            .frame(maxWidth: .infinity)
                     }
                 }
-
-                Section(header: Text("Title")) {
+                
+                Section(header: Text("Edit Details")) {
+                    HStack {
+                        Text("Rating")
+                        Spacer()
+                        EditableStarRating(rating: $localRating)
+                    }
                     TextField("Object Name", text: $localObjectName)
+                    TextEditor(text: $localCaption)
+                        .frame(height: 150)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
                 }
                 
-                Section(header: Text("Caption")) {
-                    TextField("Caption", text: $localCaption)
-                }
-
-                Section (header: Text("Delete Image")){
+                Section {
                     Button(action: {
                         showDeleteConfirmation = true
                     }) {
-                        Text("Delete Image")
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Delete Image")
+                        }
+                        .foregroundColor(.red)
                     }
                 }
             }
             .navigationBarTitle("Edit Image", displayMode: .inline)
-            .navigationBarItems(leading: Button("Cancel") {
-                presentationMode.wrappedValue.dismiss()
-            }, trailing: Button("Save") {
-                saveImage()
-                presentationMode.wrappedValue.dismiss()
-            })
+            .navigationBarItems(
+                leading: Button("Cancel") {
+                    presentationMode.wrappedValue.dismiss()
+                },
+                trailing: Button("Save") {
+                    saveImage()
+                    presentationMode.wrappedValue.dismiss()
+                }
+            )
             .alert(isPresented: $showDeleteConfirmation) {
                 Alert(
                     title: Text("Confirm Delete"),
@@ -78,89 +93,43 @@ struct EditorView: View {
         }
     }
     
-    
-
     private func saveImage() {
-        // 更新绑定的值
         objectName = localObjectName
         caption = localCaption
-        
-        // 实现保存操作，更新 objectName 和 caption
-        SQLiteManager.shared.updatePhotoRecord(imagePath: imagePath, objectName: localObjectName, caption: localCaption)
-        print("Image information updated")
+        SQLiteManager.shared.updatePhotoRecord(imagePath: imagePath, objectName: localObjectName, caption: localCaption, starRating: localRating)
     }
-
+    
     private func deleteImage() {
         let fileManager = FileManager.default
         let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-
-        let originalImageURL = documentsURL.appendingPathComponent(imagePath)
-        let thumbnail350URL = documentsURL.appendingPathComponent(thumbnailPath350)
-        let thumbnail100URL = documentsURL.appendingPathComponent(thumbnailPath100)
-
-        do {
-            // 删除原图
-            if fileManager.fileExists(atPath: originalImageURL.path) {
-                try fileManager.removeItem(at: originalImageURL)
-                print("Deleted original image at: \(originalImageURL.path)")
-            } else {
-                print("Original image not found at: \(originalImageURL.path)")
-            }
-
-            // 删除 350 缩略图
-            if fileManager.fileExists(atPath: thumbnail350URL.path) {
-                try fileManager.removeItem(at: thumbnail350URL)
-                print("Deleted 350 thumbnail at: \(thumbnail350URL.path)")
-            } else {
-                print("350 thumbnail not found at: \(thumbnail350URL.path)")
-            }
-
-            // 删除 100 缩略图
-            if fileManager.fileExists(atPath: thumbnail100URL.path) {
-                try fileManager.removeItem(at: thumbnail100URL)
-                print("Deleted 100 thumbnail at: \(thumbnail100URL.path)")
-            } else {
-                print("100 thumbnail not found at: \(thumbnail100URL.path)")
-            }
-            // 删除数据库中的记录
-            SQLiteManager.shared.deletePhotoRecord(imagePath: imagePath)
-            
-            print("Image deleted successfully")
-            
-            // 在成功删除后调用回调函数
-            onDelete?()
-            
-            // 设置标志以触发导航
-            shouldNavigateToHome = true
-            print("Set shouldNavigateToHome to true")
-            
-            // 关闭 EditorView
-            presentationMode.wrappedValue.dismiss()
-            
-            print("Dismissed EditorView")
-        } catch {
-            print("Failed to delete image: \(error.localizedDescription)")
+        
+        let imagePaths = [imagePath, thumbnailPath350, thumbnailPath100]
+        
+        for path in imagePaths {
+            let fileURL = documentsURL.appendingPathComponent(path)
+            try? fileManager.removeItem(at: fileURL)
         }
-
-
+        
+        SQLiteManager.shared.deletePhotoRecord(imagePath: imagePath)
+        
+        onDelete?()
+        shouldNavigateToHome = true
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
-struct MultilineCaptionInput: View {
-    @Binding var caption: String
+struct EditableStarRating: View {
+    @Binding var rating: Int
     
     var body: some View {
-        TextEditor(text: $caption)
-            .font(.body)
-            .foregroundColor(.primary)
-            .frame(minHeight: 100) // 设置最小高度
-            .padding(4)
-            .background(Color(UIColor.systemGray6))
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
-            )
-            .padding(.horizontal)
+        HStack {
+            ForEach(1...5, id: \.self) { index in
+                Image(systemName: index <= rating ? "star.fill" : "star")
+                    .foregroundColor(index <= rating ? .yellow : .gray)
+                    .onTapGesture {
+                        rating = index
+                    }
+            }
+        }
     }
 }

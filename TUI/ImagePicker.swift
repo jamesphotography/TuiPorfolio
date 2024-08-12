@@ -55,8 +55,6 @@ struct ImagePicker: UIViewControllerRepresentable {
                         return
                     }
                     
-                    print("Original file URL: \(url)")
-                    
                     let tempDirectory = FileManager.default.temporaryDirectory
                     let destinationURL = tempDirectory.appendingPathComponent(url.lastPathComponent)
                     
@@ -72,7 +70,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                         coordinator.coordinate(readingItemAt: url, options: .immediatelyAvailableMetadataOnly, error: &coordError) { (newURL) in
                             do {
                                 try FileManager.default.copyItem(at: newURL, to: destinationURL)
-                                print("File successfully copied to tmp directory: \(destinationURL)")
+//                                print("File successfully copied to tmp directory: \(destinationURL)")
                                 
                                 // 读取文件数据并提取EXIF信息
                                 let data = try Data(contentsOf: destinationURL)
@@ -98,7 +96,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         func extractExifInfo(from imageData: Data) {
             guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else { return }
             guard let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any] else { return }
-
+            
             
             if let tiffDict = properties[kCGImagePropertyTIFFDictionary] as? [CFString: Any] {
                 if let camera = tiffDict[kCGImagePropertyTIFFModel] as? String {
@@ -172,8 +170,8 @@ struct ImagePicker: UIViewControllerRepresentable {
                     self.parent.latitude = String(format: "%.6f", adjustedLatitude)
                     self.parent.longitude = String(format: "%.6f", adjustedLongitude)
                     
-                    print("Extracted Latitude: \(adjustedLatitude) with ref: \(latitudeRef)")
-                    print("Extracted Longitude: \(adjustedLongitude) with ref: \(longitudeRef)")
+//                    print("Extracted Latitude: \(adjustedLatitude) with ref: \(latitudeRef)")
+//                    print("Extracted Longitude: \(adjustedLongitude) with ref: \(longitudeRef)")
                     
                     // Altitude extraction
                     if let altitude = gpsDict[kCGImagePropertyGPSAltitude as String] as? Double {
@@ -198,64 +196,28 @@ struct ImagePicker: UIViewControllerRepresentable {
             let location = CLLocation(latitude: latitude, longitude: longitude)
             let geocoder = CLGeocoder()
             
-            func attemptGeocoding(for location: CLLocation, isRetry: Bool = false) {
-                let locale = Locale(identifier: "en_US")
-                geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
-                    if let error = error {
-                        print("Geocoding error: \(error.localizedDescription)")
-                        print("Error code: \((error as NSError).code)")
-                        return
-                    }
-                    
-                    if let placemark = placemarks?.first {
-                        print("\nDetailed geocoding result:")
-                        print("Country: \(placemark.country ?? "Unknown")")
-                        print("Administrative Area: \(placemark.administrativeArea ?? "Unknown")")
-                        print("Sub-administrative Area: \(placemark.subAdministrativeArea ?? "Unknown")")
-                        print("Locality: \(placemark.locality ?? "Unknown")")
-                        print("Sub-locality: \(placemark.subLocality ?? "Unknown")")
-                        print("Thoroughfare: \(placemark.thoroughfare ?? "Unknown")")
-                        print("Sub-thoroughfare: \(placemark.subThoroughfare ?? "Unknown")")
-                        print("Postal Code: \(placemark.postalCode ?? "Unknown")")
-                        print("ISO Country Code: \(placemark.isoCountryCode ?? "Unknown")")
-                        print("Time Zone: \(placemark.timeZone?.identifier ?? "Unknown")")
-                        print("Name: \(placemark.name ?? "Unknown")")
-                        print("Areas of Interest: \(placemark.areasOfInterest?.joined(separator: ", ") ?? "Unknown")")
-                        print("Ocean: \(placemark.ocean ?? "Unknown")")
-                        print("Inland Water: \(placemark.inlandWater ?? "Unknown")")
-                        
-                        if let location = placemark.location {
-                            print("Precise Coordinates: Latitude \(location.coordinate.latitude), Longitude \(location.coordinate.longitude)")
-                        }
-                        
-                        // Save country, administrative area, and locality information
-                        if let country = placemark.country, country != "Unknown" {
-                            self.parent.country = country
-                            self.parent.area = placemark.administrativeArea ?? "Unknown"
-                            self.parent.locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown"
-                            
-                            print("\nSaved location information:")
-                            print("Country: \(self.parent.country)")
-                            print("Administrative Area: \(self.parent.area)")
-                            print("Locality: \(self.parent.locality)")
-                        } else if !isRetry {
-                            print("Initial geocoding failed, trying reversed latitude")
-                            let reversedLocation = CLLocation(latitude: -latitude, longitude: longitude)
-                            attemptGeocoding(for: reversedLocation, isRetry: true)
-                        }
-                    } else {
-                        print("Geocoding failed, unable to determine location")
-                        self.parent.country = "Unknown country"
-                        self.parent.area = "Unknown area"
-                        self.parent.locality = "Unknown locality"
-                        print("Input coordinates: Latitude \(latitude), Longitude \(longitude)")
-                    }
+            let locale = Locale(identifier: "en_US")
+            geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
+                if let error = error {
+                    self.handleGeocodingFailure()
+                    return
+                }
+                
+                if let placemark = placemarks?.first {
+                    self.parent.country = placemark.country ?? "Unknown country"
+                    self.parent.area = placemark.administrativeArea ?? "Unknown area"
+                    self.parent.locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown locality"
+                } else {
+                    self.handleGeocodingFailure()
                 }
             }
-            
-            attemptGeocoding(for: location)
         }
         
+        private func handleGeocodingFailure() {
+            self.parent.country = "Unknown country"
+            self.parent.area = "Unknown area"
+            self.parent.locality = "Unknown locality"
+        }
     }
     
     func makeCoordinator() -> Coordinator {

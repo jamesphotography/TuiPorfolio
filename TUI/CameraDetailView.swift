@@ -6,6 +6,11 @@ struct CameraDetailView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var selectedPhotoIndex: Int?
+    @State private var sortOrder: SortOrder = .descending
+
+    enum SortOrder {
+        case ascending, descending
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -29,7 +34,11 @@ struct CameraDetailView: View {
     private func mainContentView(geometry: GeometryProxy) -> some View {
         ScrollView {
             VStack(spacing: 8) {
-                statusView
+                HStack{
+                    statusView
+                    Spacer()
+                    sortingButton
+                }
                 photoGridView(geometry: geometry)
             }
             .padding(.top, 8)
@@ -56,6 +65,21 @@ struct CameraDetailView: View {
                     .padding(.top, 8)
             }
         }
+    }
+
+    private var sortingButton: some View {
+        Button(action: {
+            sortOrder = sortOrder == .ascending ? .descending : .ascending
+            sortPhotos()
+        }) {
+            HStack {
+                Text("Sort by time")
+                Image(systemName: sortOrder == .ascending ? "arrow.up.square" : "arrow.down.square")
+            }
+            .foregroundColor(Color("TUIBLUE"))
+            .font(.caption)
+        }
+        .padding(.horizontal)
     }
 
     private func photoGridView(geometry: GeometryProxy) -> some View {
@@ -101,12 +125,27 @@ struct CameraDetailView: View {
             
             DispatchQueue.main.async {
                 self.photos = loadedPhotos
+                self.sortPhotos()
                 self.isLoading = false
                 if loadedPhotos.isEmpty {
                     self.errorMessage = "No photos found for this camera model"
                 }
             }
         }
+    }
+
+    private func sortPhotos() {
+        photos.sort { (photo1, photo2) in
+            let date1 = dateFromString(photo1.dateTimeOriginal)
+            let date2 = dateFromString(photo2.dateTimeOriginal)
+            return sortOrder == .ascending ? date1 < date2 : date1 > date2
+        }
+    }
+
+    private func dateFromString(_ dateString: String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.date(from: dateString) ?? Date.distantPast
     }
 
     private func loadImage(from path: String) -> UIImage? {

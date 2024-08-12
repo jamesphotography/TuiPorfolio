@@ -7,21 +7,21 @@ class EXIFManager {
     
     func copyEXIFInfo(for photo: Photo) -> String {
         var exifInfo = """
-        Date Taken: \(formatDate(photo.dateTimeOriginal))
-        Camera Info: \(formatCameraInfo(photo: photo))
-        Exposure Info: \(exposureInfo(photo: photo))
+        \(NSLocalizedString("Date Taken", comment: "EXIF info label")): \(formatDate(photo.dateTimeOriginal))
+        \(NSLocalizedString("Camera Info", comment: "EXIF info label")): \(formatCameraInfo(photo: photo))
+        \(NSLocalizedString("Exposure Info", comment: "EXIF info label")): \(exposureInfo(photo: photo))
         """
         
         if !photo.objectName.isEmpty {
-            exifInfo += "\nSpecies Name: \(photo.objectName)"
+            exifInfo += "\n\(NSLocalizedString("Species Name", comment: "EXIF info label")): \(photo.objectName)"
         }
         
         if !photo.caption.isEmpty {
-            exifInfo += "\nDescription: \(photo.caption)"
+            exifInfo += "\n\(NSLocalizedString("Description", comment: "EXIF info label")): \(photo.caption)"
         }
         
         if photo.latitude != 0 && photo.longitude != 0 {
-            exifInfo += "\nLocation Info: \(locationInfoWithAltitude(photo: photo))"
+            exifInfo += "\n\(NSLocalizedString("Location Info", comment: "EXIF info label")): \(locationInfoWithAltitude(photo: photo))"
         }
         
         return exifInfo
@@ -43,11 +43,12 @@ class EXIFManager {
     public func formatCameraInfo(photo: Photo) -> String {
         let cameraModel = UserDefaults.standard.bool(forKey: "omitCameraBrand") ? removeBrandName(from: photo.model) : photo.model
         let lensModel = UserDefaults.standard.bool(forKey: "omitCameraBrand") ? removeBrandName(from: photo.lensModel) : photo.lensModel
-        return "\(cameraModel) (\(lensModel))"
+        return String(format: NSLocalizedString("%@ (%@)", comment: "Camera and lens model format"), cameraModel, lensModel)
     }
     
     public func exposureInfo(photo: Photo) -> String {
-        return "\(String(format: "%.1f", photo.focalLength))mm · f/\(String(format: "%.1f", photo.fNumber)) · \(formatExposureTime(photo.exposureTime))s · ISO\(photo.ISOSPEEDRatings)"
+        return String(format: NSLocalizedString("%.1fmm · f/%.1f · %@s · ISO%d", comment: "Exposure info format"),
+                      photo.focalLength, photo.fNumber, formatExposureTime(photo.exposureTime), photo.ISOSPEEDRatings)
     }
     
     public func formatExposureTime(_ exposureTime: Double) -> String {
@@ -55,7 +56,7 @@ class EXIFManager {
             return String(format: "%.1f", exposureTime)
         } else if exposureTime > 0 {
             let denominator = Int(round(1 / exposureTime))
-            return "1/\(denominator)"
+            return String(format: NSLocalizedString("1/%d", comment: "Exposure time format for fractions of a second"), denominator)
         } else {
             return "0"
         }
@@ -74,7 +75,7 @@ class EXIFManager {
         }
         if photo.altitude > 0 {
             if !info.isEmpty { info += " • " }
-            info += "Altitude: \(Int(photo.altitude))m"
+            info += String(format: NSLocalizedString("Altitude: %dm", comment: "Altitude info format"), Int(photo.altitude))
         }
         return info
     }

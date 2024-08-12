@@ -22,7 +22,7 @@ struct CalendarView: View {
                     .padding(.top, geometry.safeAreaInsets.top)
                 
                 ScrollView {
-                    LazyVStack(spacing: 20) {
+                    LazyVStack(spacing: 5) {
                         CustomCalendarView(date: $selectedDate, specialDates: datesWithPhotos)
                             .frame(height: geometry.size.width * 0.8)
                             .onAppear {
@@ -38,17 +38,35 @@ struct CalendarView: View {
                         
                         if !photos.isEmpty {
                             SameDayPhotoGrid(photos: photos, currentDate: selectedDate ?? currentDate)
-                                .frame(minHeight: 200)
                         } else {
                             Text("No photos for this date")
                                 .foregroundColor(.gray)
-                                .frame(height: 200)
+                                .frame(height: 100)
                         }
+                        
+                        NavigationLink(destination: Project365View()) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white.opacity(0.5))
+                                    .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
+                                
+                                VStack(spacing: 10) {
+                                    Image(systemName: "calendar.badge.plus")
+                                        .font(.system(size: 40))
+                                        .foregroundColor(Color("TUIBLUE"))
+                                    
+                                    Text("PROJECT 365")
+                                        .font(.caption)
+                                        .foregroundColor(Color("TUIBLUE"))
+                                }
+                            }
+                            .frame(width: 150, height: 150)
+                        }
+                        .padding(.vertical, 20)
                     }
                     .padding()
                 }
                 .background(Color("BGColor"))
-                
                 BottomBarView()
                     .padding(.bottom, geometry.safeAreaInsets.bottom)
             }
@@ -67,7 +85,6 @@ struct CalendarView: View {
     private func loadPhotos(for date: Date) {
         let dateString = formattedDate(date)
         photos = SQLiteManager.shared.getPhotos(for: dateString)
-        print("Loaded \(photos.count) photos for date: \(dateString)")
     }
     
     private func loadDatesWithPhotos(for date: Date) {
@@ -83,8 +100,6 @@ struct CalendarView: View {
                 datesWithPhotos.insert(dateToCheck)
             }
         }
-        
-        print("Loaded \(datesWithPhotos.count) dates with photos for month: \(formattedDate(date))")
     }
     
     private func formattedDate(_ date: Date) -> String {
@@ -102,11 +117,15 @@ struct SameDayPhotoGrid: View {
     private let spacing: CGFloat = 15
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Photos taken on \(formattedDate(currentDate))")
-                .font(.headline)
-                .padding(.vertical, 5)
-            
+        VStack(alignment: .leading, spacing: 20) {
+            HStack{
+                Spacer()
+                Text(" \(formattedDate(currentDate))")
+                    .padding(.top,15)
+                    .font(.headline)
+                    .foregroundColor(Color("TUIBLUE"))
+                Spacer()
+            }
             GeometryReader { geometry in
                 let size = (geometry.size.width - spacing * 2) / 3
                 LazyVGrid(columns: columns, spacing: spacing) {
@@ -117,23 +136,30 @@ struct SameDayPhotoGrid: View {
                     }
                 }
             }
-            .frame(height: (UIScreen.main.bounds.width - spacing * 2) / 3 * 3 + spacing * 2)
+            .frame(height: calculateGridHeight())
             
-            if photos.count > 9 {
+            if photos.count > 30 {
                 NavigationLink(destination: MorePhotosView(date: formattedDate(currentDate))) {
                     Text("View All Photos")
                         .font(.caption)
                         .foregroundColor(.blue)
-                        .padding(.top, 5)
+                        .padding(.top, 10)
                 }
             }
         }
-        .padding(.horizontal)
+        .padding(10)
+    }
+    
+    private func calculateGridHeight() -> CGFloat {
+        let photoCount = min(photos.count, 9)
+        let rows = ceil(Double(photoCount) / 3.0)
+        return (UIScreen.main.bounds.width - spacing * 2) / 3 * CGFloat(rows) + spacing * (CGFloat(rows) - 1)
     }
     
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d, yyyy"
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
         return formatter.string(from: date)
     }
 }

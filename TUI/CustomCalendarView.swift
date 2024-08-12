@@ -4,11 +4,14 @@ struct CustomCalendarView: View {
     @Binding var selectedDate: Date?
     let specialDates: Set<Date>
     private let calendar = Calendar.current
+    @State private var showYearPicker = false
+    @State private var selectedYear: Int
     
     init(date: Binding<Date?>, specialDates: Set<Date>) {
         self._selectedDate = date
         self.specialDates = specialDates
-        print("CustomCalendarView initialized with \(specialDates.count) special dates")
+        let year = Calendar.current.component(.year, from: date.wrappedValue ?? Date())
+        self._selectedYear = State(initialValue: year)
     }
     
     var body: some View {
@@ -23,9 +26,13 @@ struct CustomCalendarView: View {
             .cornerRadius(10)
             .shadow(radius: 5)
             .frame(width: geometry.size.width, height: geometry.size.width)
-        }
-        .onAppear {
-            print("CustomCalendarView appeared with \(specialDates.count) special dates")
+            .overlay(
+                Group {
+                    if showYearPicker {
+                        yearPicker
+                    }
+                }
+            )
         }
         .foregroundColor(.white)
     }
@@ -36,9 +43,25 @@ struct CustomCalendarView: View {
                 Image(systemName: "chevron.left").padding()
             }
             
-            Text(monthYearString(from: selectedDate ?? Date()))
-                .font(.headline)
-                .padding()
+            Spacer()
+            
+            HStack {
+                Text(monthString(from: selectedDate ?? Date()))
+                    .font(.headline)
+                Button(action: {
+                    showYearPicker = true
+                }) {
+                    Text(String(selectedYear))
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .padding(.vertical, 5)
+                        .padding(.horizontal, 10)
+                        .background(Color.blue.opacity(0.3))
+                        .cornerRadius(15)
+                }
+            }
+            
+            Spacer()
             
             Button(action: nextMonth) {
                 Image(systemName: "chevron.right").padding()
@@ -88,25 +111,77 @@ struct CustomCalendarView: View {
             )
             .onTapGesture {
                 selectedDate = date
-                print("Selected date: \(date.toString())")
             }
+    }
+    
+    private var yearPicker: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                VStack {
+                    Text("Select Year")
+                        .font(.headline)
+                        .padding()
+                    
+                    Picker("Year", selection: $selectedYear) {
+                        ForEach((1977...2077), id: \.self) { year in
+                            Text(String(year)).tag(year)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                    .frame(width: 150, height: 150)
+                    .clipped()
+                    
+                    Button("Done") {
+                        if let currentDate = selectedDate {
+                            let components = calendar.dateComponents([.month, .day], from: currentDate)
+                            var newComponents = DateComponents()
+                            newComponents.year = selectedYear
+                            newComponents.month = components.month
+                            newComponents.day = components.day
+                            if let newDate = calendar.date(from: newComponents) {
+                                selectedDate = newDate
+                            }
+                        }
+                        showYearPicker = false
+                    }
+                    .padding()
+                }
+                .background(Color.white)
+                .cornerRadius(15)
+                .foregroundColor(.black)
+                Spacer()
+            }
+            Spacer()
+        }
+        .background(Color.black.opacity(0.5))
+        .edgesIgnoringSafeArea(.all)
     }
     
     private func previousMonth() {
         if let currentDate = selectedDate {
             selectedDate = calendar.date(byAdding: .month, value: -1, to: currentDate)
+            updateSelectedYear()
         }
     }
     
     private func nextMonth() {
         if let currentDate = selectedDate {
             selectedDate = calendar.date(byAdding: .month, value: 1, to: currentDate)
+            updateSelectedYear()
         }
     }
     
-    private func monthYearString(from date: Date) -> String {
+    private func updateSelectedYear() {
+        if let date = selectedDate {
+            selectedYear = calendar.component(.year, from: date)
+        }
+    }
+    
+    private func monthString(from date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
+        formatter.dateFormat = "MMMM"
         return formatter.string(from: date)
     }
     
@@ -153,29 +228,5 @@ extension Date {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter.string(from: self)
-    }
-}
-
-
-// 预览提供者
-struct CustomCalendarView_Previews: PreviewProvider {
-    static var previews: some View {
-        let currentDate = Date()
-        let calendar = Calendar.current
-        
-        // 创建一些特殊日期用于预览
-        let specialDates: Set<Date> = [
-            calendar.date(byAdding: .day, value: -1, to: currentDate)!,
-            calendar.date(byAdding: .day, value: 2, to: currentDate)!,
-            calendar.date(byAdding: .day, value: 5, to: currentDate)!
-        ]
-        
-        return CustomCalendarView(
-            date: .constant(currentDate),
-            specialDates: specialDates
-        )
-        .previewLayout(.sizeThatFits)
-        .padding()
-        .background(Color.gray) // 添加背景色以便于查看白色文本
     }
 }

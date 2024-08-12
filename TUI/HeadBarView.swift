@@ -9,6 +9,18 @@ struct HeadBarView: View {
 
     var body: some View {
         HStack {
+            
+            Button(action: {
+                navigateToView(ContentView())
+            }) {
+                Image("tuiapp")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .padding(.leading, 10)
+            }
+            .foregroundColor(Color("TUIBLUE"))
+
             Button(action: {
                 if let navController = getNavigationController() {
                     for (index, controller) in navController.viewControllers.enumerated() {
@@ -24,7 +36,6 @@ struct HeadBarView: View {
             }) {
                 Image(systemName: "chevron.left")
                     .font(.footnote)
-                    .padding()
             }
 
             Spacer()
@@ -46,12 +57,11 @@ struct HeadBarView: View {
                 NavigationLink(destination: SearchView()) {
                     Image(systemName: "magnifyingglass")
                         .font(.caption)
-                        .padding(.trailing, 10)
                 }
                 .foregroundColor(Color("TUIBLUE"))
 
                 NavigationLink(destination: SettingsView()) {
-                    Image(systemName: "ellipsis")
+                    Image(systemName: "gearshape")
                         .font(.caption)
                         .padding(.trailing, 10)
                 }
@@ -60,6 +70,15 @@ struct HeadBarView: View {
         }
         .frame(height: 44)
         .background(Color("BGColor"))
+    }
+    
+    private func navigateToView<T: View>(_ view: T) {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            let hostingController = UIHostingController(rootView: view)
+            window.rootViewController = hostingController
+            window.makeKeyAndVisible()
+        }
     }
 }
 

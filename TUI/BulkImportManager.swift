@@ -14,6 +14,41 @@ struct ImportResult: Identifiable {
     }
 }
 
+enum ImportError: Error {
+    case nonImageAsset
+    case failedToGetImageData
+    case failedToCreatePhotoObject
+    case photoAlreadyExists
+    case failedToSaveImage(String)
+    case failedToSaveThumbnail(String)
+    case failedToAddToDatabase
+    case invalidDate
+    case geocodingFailed
+    
+    var localizedDescription: String {
+        switch self {
+        case .nonImageAsset:
+            return "The asset is not an image"
+        case .failedToGetImageData:
+            return "Failed to get image data"
+        case .failedToCreatePhotoObject:
+            return "Failed to create photo object"
+        case .photoAlreadyExists:
+            return "Photo already exists in the database"
+        case .failedToSaveImage(let reason):
+            return "Failed to save image: \(reason)"
+        case .failedToSaveThumbnail(let reason):
+            return "Failed to save thumbnail: \(reason)"
+        case .failedToAddToDatabase:
+            return "Failed to add photo to database"
+        case .invalidDate:
+            return "Invalid date format"
+        case .geocodingFailed:
+            return "Failed to geocode location"
+        }
+    }
+}
+
 class BulkImportManager {
     static let shared = BulkImportManager()
     private init() {}
@@ -22,17 +57,36 @@ class BulkImportManager {
     private let batchSize = 3
     
     func importPhotos(from album: PHAssetCollection, progressHandler: @escaping (Float, Int, Int) -> Void, completionHandler: @escaping ([ImportResult]) -> Void) {
-        let assets = PHAsset.fetchAssets(in: album, options: nil)
-        let totalAssets = assets.count
-        
-        importBatch(assets: assets, totalAssets: totalAssets, currentIndex: 0, successCount: 0, failureCount: 0, progressHandler: progressHandler) { results in
-            completionHandler(results)
+            PHPhotoLibrary.requestAuthorization { status in
+                switch status {
+                case .authorized, .limited:
+                    let assets = PHAsset.fetchAssets(in: album, options: nil)
+                    let totalAssets = assets.count
+                    
+                    self.importBatch(assets: assets, totalAssets: totalAssets, currentIndex: 0, successCount: 0, failureCount: 0, progressHandler: progressHandler) { results in
+                        completionHandler(results)
+                    }
+                case .denied:
+                    self.handleImportError(TuiImporterError.photoLibraryAccessDenied)
+                    completionHandler([])
+                case .restricted:
+                    self.handleImportError(TuiImporterError.photoLibraryAccessRestricted)
+                    completionHandler([])
+                case .notDetermined:
+                    self.handleImportError(TuiImporterError.unknown)
+                    completionHandler([])
+                @unknown default:
+                    self.handleImportError(TuiImporterError.unknown)
+                    completionHandler([])
+                }
+            }
         }
-    }
     
     private func importBatch(assets: PHFetchResult<PHAsset>, totalAssets: Int, currentIndex: Int, successCount: Int, failureCount: Int, progressHandler: @escaping (Float, Int, Int) -> Void, completionHandler: @escaping ([ImportResult]) -> Void) {
         let endIndex = min(currentIndex + batchSize, totalAssets)
         let group = DispatchGroup()
+        
+        SQLiteManager.shared.beginTransaction()
         
         for i in currentIndex..<endIndex {
             group.enter()
@@ -52,6 +106,8 @@ class BulkImportManager {
         }
         
         group.notify(queue: .main) {
+            SQLiteManager.shared.commitTransaction()
+            
             let newSuccessCount = self.importResults.filter { $0.status == .success }.count
             let newFailureCount = self.importResults.filter { $0.status == .failure }.count
             
@@ -67,13 +123,16 @@ class BulkImportManager {
         }
     }
     
-    private func importAsset(_ asset: PHAsset, completion: @escaping (Bool, String?) -> Void) {
+    private func importAsset(_ asset: PHAsset, completion: @escaping (Bool, String?, UIImage?) -> Void) {
         let resources = PHAssetResource.assetResources(for: asset)
         let originalFileName = resources.first?.originalFilename ?? "Unknown"
         
         guard asset.mediaType == .image else {
-            self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: "Non-image asset"))
-            completion(false, "Non-image asset")
+            self.handleImportError(TuiImporterError.photoMetadataError)
+            getThumbnail(for: asset) { thumbnail in
+                self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: "Non-image asset", thumbnail: thumbnail))
+                completion(false, "Non-image asset", thumbnail)
+            }
             return
         }
         
@@ -84,25 +143,45 @@ class BulkImportManager {
         
         PHImageManager.default().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: options) { image, info in
             if let error = info?[PHImageErrorKey] as? Error {
-                self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: error.localizedDescription))
-                completion(false, error.localizedDescription)
+                self.handleImportError(TuiImporterError.photoDataError)
+                self.getThumbnail(for: asset) { thumbnail in
+                    self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: error.localizedDescription, thumbnail: thumbnail))
+                    completion(false, error.localizedDescription, thumbnail)
+                }
                 return
             }
             
             guard let image = image, let data = image.jpegData(compressionQuality: 1.0) else {
-                self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: "Failed to get image data"))
-                completion(false, "Failed to get image data")
+                self.handleImportError(TuiImporterError.photoDataError)
+                self.getThumbnail(for: asset) { thumbnail in
+                    self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: "Failed to get image data", thumbnail: thumbnail))
+                    completion(false, "Failed to get image data", thumbnail)
+                }
                 return
             }
             
             self.extractAndSaveBulkPhotoInfo(asset: asset, imageData: data) { success, reason in
                 if success {
-                    self.importResults.append(ImportResult(originalFileName: originalFileName, status: .success, reason: nil))
+                    self.importResults.append(ImportResult(originalFileName: originalFileName, status: .success, reason: nil, thumbnail: nil))
+                    completion(true, nil, nil)
                 } else {
-                    self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: reason))
+                    self.handleImportError(TuiImporterError.photoMetadataError)
+                    self.getThumbnail(for: asset) { thumbnail in
+                        self.importResults.append(ImportResult(originalFileName: originalFileName, status: .failure, reason: reason, thumbnail: thumbnail))
+                        completion(false, reason, thumbnail)
+                    }
                 }
-                completion(success, reason)
             }
+        }
+    }
+    
+    private func getThumbnail(for asset: PHAsset, completion: @escaping (UIImage?) -> Void) {
+        let options = PHImageRequestOptions()
+        options.deliveryMode = .fastFormat
+        options.isNetworkAccessAllowed = true
+        
+        PHImageManager.default().requestImage(for: asset, targetSize: CGSize(width: 100, height: 100), contentMode: .aspectFit, options: options) { image, _ in
+            completion(image)
         }
     }
     
@@ -197,10 +276,17 @@ class BulkImportManager {
                     altitude = gpsDict["Altitude"] as? Double ?? 0.0
                     
                     group.enter()
-                    self.geocodeLocation(latitude: latitude, longitude: longitude) { geocodedCountry, geocodedArea, geocodedLocality in
-                        country = geocodedCountry
-                        area = geocodedArea
-                        locality = geocodedLocality
+                    self.geocodeLocation(latitude: latitude, longitude: longitude) { result in
+                        switch result {
+                        case .success(let (geocodedCountry, geocodedArea, geocodedLocality)):
+                            country = geocodedCountry
+                            area = geocodedArea
+                            locality = geocodedLocality
+                        case .failure(_):
+                            country = "Unknown Country"
+                            area = "Unknown Area"
+                            locality = "Unknown Location"
+                        }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             group.leave()
                         }
@@ -215,7 +301,7 @@ class BulkImportManager {
             }
             
             if SQLiteManager.shared.isPhotoExists(captureDate: captureDate, fileNamePrefix: title) {
-                completion(false, "Photo already exists")
+                completion(false, ImportError.photoAlreadyExists.localizedDescription)
                 return
             }
             
@@ -231,57 +317,51 @@ class BulkImportManager {
                                   objectName: objectName, caption: caption)
                     
                     guard let photo = photo else {
-                        completion(false, "Failed to create photo object")
+                        completion(false, ImportError.failedToCreatePhotoObject.localizedDescription)
                         return
                     }
-                    self.saveBulkPhoto(photo, imageData: imageData) { success in
-                        completion(success, success ? nil : "Failed to save photo")
+                    self.saveBulkPhoto(photo, imageData: imageData) { success, error in
+                        if let error = error {
+                            completion(false, error.localizedDescription)
+                        } else {
+                            completion(success, nil)
+                        }
                     }
                 }
             }
         }
     }
     
-    private func geocodeLocation(latitude: Double, longitude: Double, completion: @escaping (String, String, String) -> Void) {
+    private func geocodeLocation(latitude: Double, longitude: Double, completion: @escaping (Result<(String, String, String), Error>) -> Void) {
         let location = CLLocation(latitude: latitude, longitude: longitude)
         let geocoder = CLGeocoder()
         
-        func attemptGeocoding(for location: CLLocation, isRetry: Bool = false) {
-            let locale = Locale(identifier: "en_US")
-            geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
-                if error != nil {
-                    completion("Unknown Country", "Unknown Area", "Unknown Location")
-                    return
-                }
-                
-                if let placemark = placemarks?.first {
-                    if let country = placemark.country, country != "Unknown" {
-                        let area = placemark.administrativeArea ?? "Unknown Area"
-                        let locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown Location"
-                        completion(country, area, locality)
-                    } else if !isRetry {
-                        let reversedLocation = CLLocation(latitude: -latitude, longitude: longitude)
-                        attemptGeocoding(for: reversedLocation, isRetry: true)
-                    } else {
-                        completion("Unknown Country", "Unknown Area", "Unknown Location")
-                    }
-                } else {
-                    completion("Unknown Country", "Unknown Area", "Unknown Location")
-                }
+        let locale = Locale(identifier: "en_US")
+        geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
+            if let error = error {
+                completion(.failure(ImportError.geocodingFailed))
+                return
+            }
+            
+            if let placemark = placemarks?.first {
+                let country = placemark.country ?? "Unknown Country"
+                let area = placemark.administrativeArea ?? "Unknown Area"
+                let locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown Location"
+                completion(.success((country, area, locality)))
+            } else {
+                completion(.failure(ImportError.geocodingFailed))
             }
         }
-        
-        attemptGeocoding(for: location)
     }
     
-    private func saveBulkPhoto(_ photo: Photo, imageData: Data, completion: @escaping (Bool) -> Void) {
+    private func saveBulkPhoto(_ photo: Photo, imageData: Data, completion: @escaping (Bool, Error?) -> Void) {
         let fileManager = FileManager.default
         let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         guard let date = dateFormatter.date(from: photo.dateTimeOriginal) else {
-            completion(false)
+            completion(false, ImportError.invalidDate)
             return
         }
         
@@ -300,7 +380,7 @@ class BulkImportManager {
         let directoryPath = documentsDirectory.appendingPathComponent("portfolio")
             .appendingPathComponent(year)
             .appendingPathComponent(month)
-            .appendingPathComponent(day)  // 添加日期到路径中
+            .appendingPathComponent(day)
         
         do {
             try fileManager.createDirectory(at: directoryPath, withIntermediateDirectories: true, attributes: nil)
@@ -315,8 +395,14 @@ class BulkImportManager {
             let thumbnail100Path = directoryPath.appendingPathComponent("\(photo.id)_thumb100.jpg")
             let thumbnail350Path = directoryPath.appendingPathComponent("\(photo.id)_thumb350.jpg")
             
-            try thumbnail100?.jpegData(compressionQuality: 0.8)?.write(to: thumbnail100Path)
-            try thumbnail350?.jpegData(compressionQuality: 0.8)?.write(to: thumbnail350Path)
+            guard let thumbnail100Data = thumbnail100?.jpegData(compressionQuality: 0.8),
+                  let thumbnail350Data = thumbnail350?.jpegData(compressionQuality: 0.8) else {
+                completion(false, ImportError.failedToSaveThumbnail("Failed to generate thumbnail data"))
+                return
+            }
+            
+            try thumbnail100Data.write(to: thumbnail100Path)
+            try thumbnail350Data.write(to: thumbnail350Path)
             
             let updatedPhoto = Photo(
                 id: photo.id,
@@ -369,9 +455,55 @@ class BulkImportManager {
                 objectName: updatedPhoto.objectName,
                 caption: updatedPhoto.caption
             )
-            completion(success)
+            
+            if success {
+                completion(true, nil)
+            } else {
+                completion(false, ImportError.failedToAddToDatabase)
+            }
         } catch {
-            completion(false)
+            completion(false, ImportError.failedToSaveImage(error.localizedDescription))
+        }
+    }
+    
+    enum TuiImporterError: Int, Error {
+        case unknown = 0
+        case photoLibraryAccessDenied = 1
+        case photoLibraryAccessRestricted = 2
+        case photoLibraryAccessLimited = 3
+        case photoLibraryAccessError = 4
+        case photoMetadataError = 5
+        case photoDataError = 6
+        case appleAccountError = 7
+        // Add more error cases as needed
+
+        var description: String {
+            switch self {
+            case .unknown:
+                return "Unknown error occurred"
+            case .photoLibraryAccessDenied:
+                return "Access to photo library was denied"
+            case .photoLibraryAccessRestricted:
+                return "Access to photo library is restricted"
+            case .photoLibraryAccessLimited:
+                return "Access to photo library is limited"
+            case .photoLibraryAccessError:
+                return "Error accessing photo library"
+            case .photoMetadataError:
+                return "Error reading photo metadata"
+            case .photoDataError:
+                return "Error reading photo data"
+            case .appleAccountError:
+                return "Error with Apple account"
+            }
+        }
+    }
+
+    func handleImportError(_ error: Error) {
+        if let tuiError = error as? TuiImporterError {
+            print("TuiImporterError: \(tuiError.rawValue) - \(tuiError.description)")
+        } else {
+            print("Unknown error: \(error.localizedDescription)")
         }
     }
     
@@ -394,6 +526,38 @@ class BulkImportManager {
                 y: (size.height - scaledHeight) / 2.0
             )
             image.draw(in: CGRect(origin: origin, size: scaledSize))
+        }
+    }
+}
+
+enum TuiImporterError: Int, Error {
+    case unknown = 0
+    case photoLibraryAccessDenied = 1
+    case photoLibraryAccessRestricted = 2
+    case photoLibraryAccessLimited = 3
+    case photoLibraryAccessError = 4
+    case photoMetadataError = 5
+    case photoDataError = 6
+    case appleAccountError = 7
+    
+    var description: String {
+        switch self {
+        case .unknown:
+            return "Unknown error occurred"
+        case .photoLibraryAccessDenied:
+            return "Access to photo library was denied"
+        case .photoLibraryAccessRestricted:
+            return "Access to photo library is restricted"
+        case .photoLibraryAccessLimited:
+            return "Access to photo library is limited"
+        case .photoLibraryAccessError:
+            return "Error accessing photo library"
+        case .photoMetadataError:
+            return "Error reading photo metadata"
+        case .photoDataError:
+            return "Error reading photo data"
+        case .appleAccountError:
+            return "Error with Apple account"
         }
     }
 }

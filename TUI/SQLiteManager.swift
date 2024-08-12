@@ -93,7 +93,7 @@ class SQLiteManager {
             sqlite3_bind_text(insertStatement, 22, (objectName as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 23, (caption as NSString).utf8String, -1, nil)
             if sqlite3_step(insertStatement) == SQLITE_DONE {
-                print("Successfully inserted row.")
+//                print("Successfully inserted row.")
                 sqlite3_finalize(insertStatement)
                 return true
             } else {
@@ -584,7 +584,7 @@ class SQLiteManager {
             sqlite3_bind_text(deleteStatement, 1, (imagePath as NSString).utf8String, -1, nil)
             
             if sqlite3_step(deleteStatement) == SQLITE_DONE {
-                print("Successfully deleted row.")
+                //print("Successfully deleted row.")
             } else {
                 print("Could not delete row.")
             }
@@ -594,27 +594,28 @@ class SQLiteManager {
         sqlite3_finalize(deleteStatement)
     }
     
-    func updatePhotoRecord(imagePath: String, objectName: String, caption: String) {
-        let updateStatementString = """
-        UPDATE Photos
-        SET ObjectName = ?, Caption = ?
-        WHERE Path = ?;
-        """
-        var updateStatement: OpaquePointer?
-        
-        if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
-            sqlite3_bind_text(updateStatement, 1, (objectName as NSString).utf8String, -1, nil)
-            sqlite3_bind_text(updateStatement, 2, (caption as NSString).utf8String, -1, nil)
-            sqlite3_bind_text(updateStatement, 3, (imagePath as NSString).utf8String, -1, nil)
-            
-            if sqlite3_step(updateStatement) == SQLITE_DONE {
-                print("Successfully updated photo record.")
-            } else {
-                print("Could not update photo record.")
-            }
-        } else {
-            print("UPDATE statement could not be prepared.")
-        }
-        sqlite3_finalize(updateStatement)
-    }
+    func updatePhotoRecord(imagePath: String, objectName: String, caption: String, starRating: Int) {
+         let updateStatementString = """
+         UPDATE Photos
+         SET ObjectName = ?, Caption = ?, StarRating = ?
+         WHERE Path = ?;
+         """
+         var updateStatement: OpaquePointer?
+         
+         if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
+             sqlite3_bind_text(updateStatement, 1, (objectName as NSString).utf8String, -1, nil)
+             sqlite3_bind_text(updateStatement, 2, (caption as NSString).utf8String, -1, nil)
+             sqlite3_bind_int(updateStatement, 3, Int32(starRating))
+             sqlite3_bind_text(updateStatement, 4, (imagePath as NSString).utf8String, -1, nil)
+             
+             if sqlite3_step(updateStatement) == SQLITE_DONE {
+                 //print("Successfully updated photo record.")
+             } else {
+                 print("Could not update photo record.")
+             }
+         } else {
+             print("UPDATE statement could not be prepared.")
+         }
+         sqlite3_finalize(updateStatement)
+     }
 }

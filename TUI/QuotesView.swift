@@ -22,15 +22,7 @@ struct QuotesView: View {
                             QuoteView(quote: todaysQuote.quote, author: todaysQuote.author, index: index + 1)
                                 .frame(height: geometry.size.height * 0.6) // 设置高度为屏幕高度的60%
                         }
-                        
-                        Spacer() // 下部 Spacer
 
-                        // 应用图标
-                        Image("tuiapp")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 80, height: 80)
-                            .padding()
                         
                         Spacer() // 下部 Spacer
                     }
@@ -104,10 +96,16 @@ struct QuoteView: View {
             VStack {
                 Spacer()
                 VStack {
+                    Spacer(minLength: 20)
+                    Image("tuiblueapp")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 64, height: 64)
+                    Spacer()
                     HStack {
                         Image(systemName: "quote.opening")
-                            .font(.system(size: 50))
-                            .foregroundColor(.white)
+                            .font(.system(size: 40))
+                            .foregroundColor(.white.opacity(0.7))
                             .padding(.leading, 20)
                         Spacer()
                     }
@@ -117,28 +115,32 @@ struct QuoteView: View {
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
+                            .multilineTextAlignment(.leading)
                             .padding(.horizontal, 30)
                             .fixedSize(horizontal: false, vertical: true)
                         
                         Spacer(minLength: 10)
-                        
-                        Text("- \(author)")
-                            .font(.headline)
-                            .foregroundColor(.gray)
+                        HStack{
+                            Spacer()
+                            Text("- \(author)")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                                .padding(.trailing, 20)
+                        }
+
                     }
                     .frame(maxWidth: .infinity)
                     Spacer()
                     HStack {
                         Spacer()
                         Image(systemName: "quote.closing")
-                            .font(.system(size: 50))
-                            .foregroundColor(.white)
+                            .font(.system(size: 40))
+                            .foregroundColor(.white.opacity(0.7))
                             .padding(.trailing, 20)
                     }
                 }
                 .padding(.vertical, 20)
-                .background(Color("TUIBLUE").opacity(0.8))
+                .background(Color("TUIBLUE"))
                 .cornerRadius(15)
                 .shadow(radius: 10)
                 Spacer()

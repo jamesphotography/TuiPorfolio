@@ -6,6 +6,7 @@ struct Project365View: View {
     @State private var longestStreakDays: Int = 0
     @State private var longestStreakEnd: Date?
     @State private var currentStreak: Int = 0
+    @State private var selectedDate: Date?
     
     let colors: [Color] = [.red, .blue, .green, .orange, .purple]
     
@@ -20,16 +21,11 @@ struct Project365View: View {
                         Project365CardView(longestStreakStart: longestStreakStart,
                                            longestStreakDays: longestStreakDays,
                                            longestStreakEnd: longestStreakEnd,
-                                           currentStreak: currentStreak)
+                                           currentStreak: currentStreak,
+                                           selectedDate: $selectedDate)
                             .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.5)
                         
                         Spacer()
-                        
-                        Image("tuiapp")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 48, height: 48)
-                            .padding()
                         
                         StreakChartView(currentStreak: currentStreak, longestStreak: longestStreakDays, colors: colors)
                             .frame(height: 200)
@@ -53,6 +49,14 @@ struct Project365View: View {
         .navigationTitle("")
         .navigationBarHidden(true)
         .onAppear(perform: calculateStreak)
+        .navigationDestination(isPresented: Binding(
+            get: { selectedDate != nil },
+            set: { if !$0 { selectedDate = nil } }
+        )) {
+            if let date = selectedDate {
+                CalendarView(date: date)
+            }
+        }
     }
     
     func calculateStreak() {
@@ -135,9 +139,15 @@ struct Project365CardView: View {
     var longestStreakDays: Int
     var longestStreakEnd: Date?
     var currentStreak: Int
+    @Binding var selectedDate: Date?
     
     var body: some View {
         VStack {
+            Spacer(minLength: 20)
+            Image("tuiblueapp")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 48, height: 48)
             Spacer()
             VStack(alignment: .leading, spacing: 10) {
                 Text("Project365 Statistics")
@@ -146,16 +156,32 @@ struct Project365CardView: View {
                     .foregroundColor(.white)
                 
                 if let start = longestStreakStart {
-                    Text("Best attempt started on \(formattedDate(start))")
-                        .foregroundColor(.white)
+                    HStack {
+                        Text("Best attempt started on ")
+                            .foregroundColor(.white)
+                        Text(formattedDate(start))
+                            .foregroundColor(.white)
+                            .underline()
+                            .onTapGesture {
+                                selectedDate = start
+                            }
+                    }
                 }
                 
                 Text("Longest streak: \(longestStreakDays) days")
                     .foregroundColor(.white)
                 
                 if let end = longestStreakEnd {
-                    Text("Ended on \(formattedDate(end))")
-                        .foregroundColor(.white.opacity(0.8))
+                    HStack {
+                        Text("Ended on ")
+                            .foregroundColor(.white.opacity(0.8))
+                        Text(formattedDate(end))
+                            .foregroundColor(.white.opacity(0.8))
+                            .underline()
+                            .onTapGesture {
+                                selectedDate = end
+                            }
+                    }
                 }
                 
                 Spacer()
@@ -176,7 +202,7 @@ struct Project365CardView: View {
             Spacer(minLength: 20)
         }
         .padding(.vertical, 20)
-        .background(Color("TUIBLUE").opacity(0.8))
+        .background(Color("TUIBLUE"))
         .cornerRadius(15)
         .shadow(radius: 10)
     }

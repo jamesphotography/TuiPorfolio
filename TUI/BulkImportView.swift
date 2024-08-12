@@ -17,6 +17,7 @@ struct BulkImportView: View {
     @State private var showResult = false
     @State private var albums: [AlbumInfo] = []
     @State private var importResults: [ImportResult] = []
+    @State private var errorMessage: String = ""
 
     var body: some View {
         NavigationStack {
@@ -108,6 +109,12 @@ struct BulkImportView: View {
             Text("Failed to import: \(failureCount)")
                 .foregroundColor(Color("TUIBLUE"))
             
+            if !errorMessage.isEmpty {
+                Text("Error: \(errorMessage)")
+                    .foregroundColor(.red)
+                    .padding()
+            }
+            
             List {
                 Section(header: Text("Successful Imports").foregroundColor(Color("TUIBLUE"))) {
                     ForEach(importResults.filter { $0.status == .success }) { result in
@@ -118,13 +125,27 @@ struct BulkImportView: View {
                 
                 Section(header: Text("Failed Imports").foregroundColor(Color("TUIBLUE"))) {
                     ForEach(importResults.filter { $0.status == .failure }) { result in
-                        VStack(alignment: .leading) {
-                            Text(result.originalFileName)
-                                .foregroundColor(Color("TUIBLUE"))
-                            if let reason = result.reason {
-                                Text(reason)
-                                    .font(.caption)
-                                    .foregroundColor(.red)
+                        HStack {
+                            if let thumbnail = result.thumbnail {
+                                Image(uiImage: thumbnail)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 50, height: 50)
+                            } else {
+                                Image(systemName: "photo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 50, height: 50)
+                            }
+                            
+                            VStack(alignment: .leading) {
+                                Text(result.originalFileName)
+                                    .foregroundColor(Color("TUIBLUE"))
+                                if let reason = result.reason {
+                                    Text(reason)
+                                        .font(.caption)
+                                        .foregroundColor(.red)
+                                }
                             }
                         }
                     }
@@ -201,6 +222,7 @@ struct BulkImportView: View {
     private func startImport() {
         guard let album = selectedAlbum else { return }
         isImporting = true
+        errorMessage = ""
         
         BulkImportManager.shared.importPhotos(from: album) { currentProgress, success, failure in
             DispatchQueue.main.async {
@@ -213,6 +235,11 @@ struct BulkImportView: View {
                 self.importResults = results
                 self.isImporting = false
                 self.showResult = true
+                
+                // Set the error message if there are any failures
+                if let firstFailure = results.first(where: { $0.status == .failure }) {
+                    self.errorMessage = firstFailure.reason ?? "Unknown error occurred"
+                }
             }
         }
     }
@@ -226,6 +253,7 @@ struct BulkImportView: View {
         failureCount = 0
         showResult = false
         importResults = []
+        errorMessage = ""
     }
 }
 

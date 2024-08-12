@@ -81,6 +81,15 @@ class QuoteManager {
         }
     }
     
+    func getTodaysFullQuote() -> Quote {
+            if let quote = todaysQuote {
+                return quote
+            } else {
+                return Quote(id: "0", quote: "Photography is the story I fail to put into words.", author: "Destin Sparks")
+            }
+        }
+
+    
     private func selectTodaysQuote() {
         let calendar = Calendar.current
         let dayOfYear = calendar.ordinality(of: .day, in: .year, for: Date()) ?? 0
@@ -90,7 +99,7 @@ class QuoteManager {
         }
     }
     
-    func getTodaysQuote() -> String {
+    public func getTodaysQuote() -> String {
         if let quote = todaysQuote {
             return "\(quote.quote)"
         } else {

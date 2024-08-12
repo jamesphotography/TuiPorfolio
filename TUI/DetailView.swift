@@ -21,9 +21,9 @@ struct DetailView: View {
     @State private var showingCopyAlert = false
     @Environment(\.presentationMode) var presentationMode
     @State private var position: MapCameraPosition
+    @State private var navigateToCamera = false
+    @State private var navigateToLens = false
     var onDismiss: (Int) -> Void
-    
-    @AppStorage("omitCameraBrand") private var omitCameraBrand = false
     
     private var currentPhoto: Photo { photos[currentIndex] }
     private var hasGPSData: Bool { currentPhoto.latitude != 0 && currentPhoto.longitude != 0 }
@@ -60,24 +60,8 @@ struct DetailView: View {
                         controlSection
                         infoSection
                             .gesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in copyEXIFInfo() })
-                        Text("Long press to copy exif")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .padding(.top, 8)
                     }
                 }
-                .gesture(DragGesture()
-                    .onChanged { self.dragOffset = $0.translation.width }
-                    .onEnded { value in
-                        let threshold = geometry.size.width * 0.2
-                        if value.translation.width > threshold {
-                            self.showPreviousImage()
-                        } else if value.translation.width < -threshold {
-                            self.showNextImage()
-                        }
-                        self.dragOffset = 0
-                    }
-                )
                 
                 BottomBarView()
                     .padding(.bottom, geometry.safeAreaInsets.bottom)
@@ -110,6 +94,12 @@ struct DetailView: View {
         .navigationDestination(isPresented: $navigateToSameday) {
             CalendarView(date: dateFromString(currentPhoto.dateTimeOriginal))
         }
+        .navigationDestination(isPresented: $navigateToCamera) {
+            CameraDetailView(cameraModel: currentPhoto.model)
+        }
+        .navigationDestination(isPresented: $navigateToLens) {
+            LensDetailView(lensModel: currentPhoto.lensModel)
+        }
         .sheet(isPresented: $showingEditor) {
             EditorView(
                 image: $image,
@@ -119,7 +109,8 @@ struct DetailView: View {
                 imagePath: .constant(currentPhoto.path),
                 thumbnailPath100: .constant(currentPhoto.thumbnailPath100),
                 thumbnailPath350: .constant(currentPhoto.thumbnailPath350),
-                shouldNavigateToHome: $shouldNavigateToHome
+                shouldNavigateToHome: $shouldNavigateToHome,
+                initialRating: currentPhoto.starRating
             )
         }
         .sheet(isPresented: $showingShareView) {
@@ -148,7 +139,7 @@ struct DetailView: View {
             return nil
         }
     }
-
+    
     private func updateCurrentPhotoInfo() {
         objectName = currentPhoto.objectName
         caption = currentPhoto.caption
@@ -180,6 +171,18 @@ struct DetailView: View {
             }
         }
         .onTapGesture { showingSinglePhotoView = true }
+        .gesture(DragGesture()
+            .onChanged { self.dragOffset = $0.translation.width }
+            .onEnded { value in
+                let threshold = geometry.size.width * 0.2
+                if value.translation.width > threshold {
+                    self.showPreviousImage()
+                } else if value.translation.width < -threshold {
+                    self.showNextImage()
+                }
+                self.dragOffset = 0
+            }
+        )
     }
     
     private var controlSection: some View {
@@ -204,6 +207,11 @@ struct DetailView: View {
                 Image(systemName: "pencil")
                     .foregroundColor(.blue)
             }
+            
+            Button(action: { copyEXIFInfo() }) {
+                Image(systemName: "doc.on.doc")
+                    .foregroundColor(.blue)
+            }
         }
         .padding(.horizontal)
     }
@@ -216,7 +224,14 @@ struct DetailView: View {
                     .padding(.bottom, 4)
             }
             
-            InfoRow(icon: "camera", value: EXIFManager.shared.formatCameraInfo(photo: currentPhoto))
+            Button(action: { navigateToCamera = true }) {
+                InfoRow(icon: "camera.viewfinder", value: currentPhoto.model)
+                    .underline()
+            }
+            Button(action: { navigateToLens = true }) {
+                InfoRow(icon: "button.programmable.square", value: currentPhoto.lensModel)
+                    .underline()
+            }
             InfoRow(icon: "camera.aperture", value: EXIFManager.shared.exposureInfo(photo: currentPhoto))
             
             if hasGPSData {

@@ -5,6 +5,29 @@ struct BirdInfo: Identifiable {
     let names: [String]
 }
 
+class BirdHotSearchManager {
+    static let shared = BirdHotSearchManager()
+    private let userDefaults = UserDefaults.standard
+    private let hotSearchesKey = "birdHotSearches"
+    private let maxHotSearches = 20
+
+    private init() {}
+
+    func addHotSearch(_ search: String) {
+        var searches = getHotSearches()
+        searches.removeAll { $0.lowercased() == search.lowercased() }
+        searches.insert(search, at: 0)
+        if searches.count > maxHotSearches {
+            searches = Array(searches.prefix(maxHotSearches))
+        }
+        userDefaults.set(searches, forKey: hotSearchesKey)
+    }
+
+    func getHotSearches() -> [String] {
+        return userDefaults.stringArray(forKey: hotSearchesKey) ?? []
+    }
+}
+
 struct BirdNameListView: View {
     @State private var searchText: String = ""
     @State private var allBirds: [BirdInfo] = []
@@ -13,6 +36,7 @@ struct BirdNameListView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var hotSearches: [String] = []
+    @State private var copiedText: String? = nil
     
     var body: some View {
         GeometryReader { geometry in
@@ -64,11 +88,18 @@ struct BirdNameListView: View {
                     } else if showSearchResults {
                         // Search results
                         List(searchResults) { bird in
-                            VStack(alignment: .leading) {
-                                ForEach(bird.names, id: \.self) { name in
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(bird.names.prefix(3), id: \.self) { name in
                                     Text(name)
                                         .font(name == bird.names.first ? .headline : .subheadline)
+                                        .onTapGesture {
+                                            copyToClipboard(name)
+                                        }
                                 }
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                copyToClipboard(bird.names.joined(separator: "\n"))
                             }
                         }
                     } else {
@@ -110,10 +141,32 @@ struct BirdNameListView: View {
             }
             .background(Color("BGColor").edgesIgnoringSafeArea(.all))
             .ignoresSafeArea()
+            .overlay(
+                Group {
+                    if let copiedText = copiedText {
+                        Text("Copied: \(copiedText)")
+                            .padding()
+                            .background(Color.black.opacity(0.7))
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                            .transition(.opacity)
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                    withAnimation {
+                                        self.copiedText = nil
+                                    }
+                                }
+                            }
+                    }
+                }
+            )
         }
         .navigationTitle("")
         .navigationBarHidden(true)
-        .onAppear(perform: loadBirdInfo)
+        .onAppear(perform: {
+            loadBirdInfo()
+            updateHotSearches()
+        })
     }
     
     private func loadBirdInfo() {
@@ -123,7 +176,7 @@ struct BirdNameListView: View {
         DispatchQueue.global(qos: .background).async {
             do {
                 let birdList = try loadBirdList()
-                let birdInfoList = birdList.map { BirdInfo(names: $0) }
+                let birdInfoList = birdList.map { BirdInfo(names: Array($0.prefix(3))) } // Only take the first 3 names
                 
                 DispatchQueue.main.async {
                     self.allBirds = birdInfoList
@@ -159,16 +212,23 @@ struct BirdNameListView: View {
         
         showSearchResults = true
         
-        // Update hot searches
-        if !hotSearches.contains(searchText) {
-            hotSearches.insert(searchText, at: 0)
-            if hotSearches.count > 10 {
-                hotSearches.removeLast()
-            }
-        }
+        // 更新热门搜索关键字
+        BirdHotSearchManager.shared.addHotSearch(searchText)
+        updateHotSearches()
         
-        // Hide keyboard
+        // 隐藏键盘
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+    private func copyToClipboard(_ text: String) {
+        UIPasteboard.general.string = text
+        withAnimation {
+            self.copiedText = text
+        }
+    }
+    
+    private func updateHotSearches() {
+        hotSearches = BirdHotSearchManager.shared.getHotSearches()
     }
 }
 

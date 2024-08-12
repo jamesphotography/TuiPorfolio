@@ -2,16 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Tui needs access to the local network to share backups via AirDrop.</string>
+    <key>UIFileSharingEnabled</key>
+    <true/>
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+    </array>
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>comgooglemaps</string>
     </array>
     <key>NSDocumentsLibraryUsageDescription</key>
-    <string>We need access to your documents to import images.</string>
+    <string>We need access to your documents to import images and manage backups.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>Do you want to save the photography quote card to your album?</string>
-    <key>UIFileSharingEnabled</key>
-    <true/>
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSExceptionDomains</key>
@@ -22,5 +30,34 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
+    <key>NSFileProviderDomainUsageDescription</key>
+    <string>Tui needs access to your files to share and save backups.</string>
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.yourcompany.tui.backup</string>
+            <key>UTTypeDescription</key>
+            <string>Tui Backup File</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+                <string>public.archive</string>
+            </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>tuibackup</string>
+                </array>
+                <key>public.mime-type</key>
+                <array>
+                    <string>application/x-tui-backup</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
+    <key>LSHandlerRank</key>
+    <string>Alternate</string>
 </dict>
 </plist>

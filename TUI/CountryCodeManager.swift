@@ -50,7 +50,6 @@ class CountryCodeManager {
         default:
             name = country.name
         }
-        print("DEBUG: Getting country name for '\(code)' with language '\(languageCode)': \(name)")
         return name
     }
     

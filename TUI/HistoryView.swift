@@ -2,6 +2,7 @@ import SwiftUI
 import Charts
 
 struct PhotoStats {
+    let userName: String
     let totalDays: Int
     let years: Int
     let months: Int
@@ -24,6 +25,9 @@ struct EquipmentUsage: Identifiable {
 struct HistoryView: View {
     @State private var photoStats: PhotoStats?
     @State private var selectedChart: ChartType = .camera
+    @State private var showCopyAlert = false
+    @State private var showCameraCountView = false
+    @State private var showLensCountView = false
 
     enum ChartType {
         case camera
@@ -35,34 +39,30 @@ struct HistoryView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                // 顶部导航栏
-                HeadBarView(title: "Photographer's Journey")
+                HeadBarView(title: NSLocalizedString("Photographer's Journey", comment: ""))
                     .padding(.top, geometry.safeAreaInsets.top)
                 
-                // 主体内容区域
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 5) {
                         if let stats = photoStats {
                             HistoryCardView(stats: stats)
                                 .frame(width: geometry.size.width * 0.9, height: geometry.size.height * 0.6)
+                                .onLongPressGesture {
+                                    UIPasteboard.general.string = generateCopyText(stats: stats)
+                                    showCopyAlert = true
+                                }
                         } else {
-                            Text("Loading statistics...")
+                            Text(NSLocalizedString("Loading statistics...", comment: ""))
                                 .font(.largeTitle)
                                 .padding()
                         }
                         Spacer()
-                        // 应用图标
-                        Image("tuiapp")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 48, height: 48)
-                            .padding()
-                        // 图表
+
                         if let stats = photoStats {
                             VStack {
                                 Picker("Chart Type", selection: $selectedChart) {
-                                    Text("Cameras").tag(ChartType.camera)
-                                    Text("Lenses").tag(ChartType.lens)
+                                    Text(NSLocalizedString("Cameras", comment: "")).tag(ChartType.camera)
+                                    Text(NSLocalizedString("Lenses", comment: "")).tag(ChartType.lens)
                                 }
                                 .pickerStyle(SegmentedPickerStyle())
                                 .padding()
@@ -82,11 +82,10 @@ struct HistoryView: View {
                                         }
                                     }
                                 }
-                                .frame(height: 300)
+                                .frame(height: 400)
                                 .padding()
                                 
-                                // 图例
-                                VStack(alignment: .leading, spacing: 5) {
+                                VStack(alignment: .leading, spacing: 10) {
                                     ForEach(Array(zip((selectedChart == .camera ? stats.cameraUsage : stats.lensUsage).prefix(10), colors)), id: \.0.id) { item, color in
                                         HStack {
                                             Circle()
@@ -98,6 +97,23 @@ struct HistoryView: View {
                                     }
                                 }
                                 .padding()
+                                
+                                Button(action: {
+                                    if selectedChart == .camera {
+                                        showCameraCountView = true
+                                    } else {
+                                        showLensCountView = true
+                                    }
+                                }) {
+                                    Image(systemName: "ellipsis.circle")
+                                        .foregroundColor(.blue)
+                                        .font(.system(size: 24))
+                                        .padding(5)
+                                        .background(Color.white)
+                                        .clipShape(Circle())
+                                        .shadow(radius: 2)
+                                }
+                                .padding(10)
                             }
                             .background(Color.white)
                             .cornerRadius(10)
@@ -106,11 +122,10 @@ struct HistoryView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding()
+                    .padding(.all, 20)
                     .background(Color("BGColor"))
                 }
 
-                // 底部导航栏
                 BottomBarView()
                     .padding(.bottom, geometry.safeAreaInsets.bottom)
             }
@@ -120,6 +135,17 @@ struct HistoryView: View {
         .navigationTitle("")
         .navigationBarHidden(true)
         .onAppear(perform: loadPhotoStats)
+        .alert(isPresented: $showCopyAlert) {
+            Alert(title: Text(NSLocalizedString("Copied", comment: "")),
+                  message: Text(NSLocalizedString("Statistics have been copied to clipboard.", comment: "")),
+                  dismissButton: .default(Text(NSLocalizedString("OK", comment: ""))))
+        }
+        .sheet(isPresented: $showCameraCountView) {
+            CameraCountView()
+        }
+        .sheet(isPresented: $showLensCountView) {
+            LensCountView()
+        }
     }
     
     func loadPhotoStats() {
@@ -152,7 +178,6 @@ struct HistoryView: View {
         let countries = Set(photos.map { $0.country }).count
         let regions = Set(photos.map { $0.locality }).count
         
-        // Calculate camera and lens usage
         var cameraUsage = [String: Int]()
         var lensUsage = [String: Int]()
         
@@ -170,7 +195,10 @@ struct HistoryView: View {
             .sorted { $0.count > $1.count }
             .prefix(10)
         
+        let userName = UserDefaults.standard.string(forKey: "userName") ?? NSLocalizedString("Photographer", comment: "")
+        
         photoStats = PhotoStats(
+            userName: userName,
             totalDays: totalDays,
             years: years,
             months: months,
@@ -197,6 +225,38 @@ struct HistoryView: View {
         
         return refinedName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
+    
+    func generateCopyText(stats: PhotoStats) -> String {
+        let timePeriod = formatTimePeriod(years: stats.years, months: stats.months, days: stats.days)
+        return String(format: NSLocalizedString("""
+        Photographer's Journey:
+        In %d days, %@, you've captured %@ of moments. Each press of the shutter is a testament to your passion and dedication to photography.
+        You've used %d cameras and %d lenses to capture %d stunning photos, each telling a unique story.
+        Your lens has spanned %d countries and %d regions, bringing the world closer.
+        .
+        """, comment: ""),
+        stats.totalDays,
+        stats.userName,
+        timePeriod,
+        stats.totalCameras,
+        stats.totalLenses,
+        stats.totalPhotos,
+        stats.totalCountries,
+        stats.totalRegions)
+    }
+    
+    func formatTimePeriod(years: Int, months: Int, days: Int) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.maximumUnitCount = 3
+        
+        var dateComponents = DateComponents()
+        dateComponents.year = years > 0 ? years : nil
+        dateComponents.month = months > 0 ? months : nil
+        dateComponents.day = days > 0 ? days : nil
+        
+        return formatter.string(from: dateComponents) ?? ""
+    }
 }
 
 struct HistoryCardView: View {
@@ -206,40 +266,41 @@ struct HistoryCardView: View {
         VStack {
             Spacer()
             VStack(alignment: .leading, spacing: 10) {
-                let timeText: String = {
-                    var text = ""
-                    if stats.years > 0 { text += "\(stats.years) years" }
-                    if stats.months > 0 {
-                        if !text.isEmpty { text += " " }
-                        text += "\(stats.months) months"
-                    }
-                    if stats.days > 0 {
-                        if !text.isEmpty { text += " " }
-                        text += "\(stats.days) days"
-                    }
-                    return text
-                }()
-                
-                Text("In these \(stats.totalDays) days, you've captured \(timeText) of moments. Each press of the shutter is a testament to your passion and dedication to photography.")
+                Text(String(format: NSLocalizedString("In %d days, %@, you've captured %@ of moments. Each press of the shutter is a testament to your passion and dedication to photography.", comment: ""),
+                            stats.totalDays,
+                            stats.userName,
+                            formatTimePeriod(years: stats.years, months: stats.months, days: stats.days)))
                     .foregroundColor(.white)
-                Spacer()
-                Text("You've taken \(stats.totalPhotos) stunning photos, each telling a unique story.")
+                Text(String(format: NSLocalizedString("You've used %d cameras and %d lenses to capture %d stunning photos, each telling a unique story.", comment: ""), stats.totalCameras, stats.totalLenses, stats.totalPhotos))
                     .foregroundColor(.white)
-                Spacer()
-                Text("Your lens has spanned \(stats.totalCountries) countries and \(stats.totalRegions) regions, bringing the world closer through your eyes.")
-                    .foregroundColor(.white)
-                Spacer()
-                Text("You've used \(stats.totalCameras) cameras and \(stats.totalLenses) lenses to capture these memories, each tool adding its unique touch to your art.")
+                Text(String(format: NSLocalizedString("Your lens has spanned %d countries and %d regions, bringing the world closer.", comment: ""), stats.totalCountries, stats.totalRegions))
                     .foregroundColor(.white)
             }
             .padding(.horizontal, 20)
             .fixedSize(horizontal: false, vertical: true)
-            
             Spacer(minLength: 20)
+            Image("tuiblueapp")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 48, height: 48)
+            Spacer()
         }
         .padding(.vertical, 20)
-        .background(Color("TUIBLUE").opacity(0.8))
+        .background(Color("TUIBLUE"))
         .cornerRadius(15)
         .shadow(radius: 10)
+    }
+    
+    func formatTimePeriod(years: Int, months: Int, days: Int) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.maximumUnitCount = 3
+        
+        var dateComponents = DateComponents()
+        dateComponents.year = years > 0 ? years : nil
+        dateComponents.month = months > 0 ? months : nil
+        dateComponents.day = days > 0 ? days : nil
+        
+        return formatter.string(from: dateComponents) ?? ""
     }
 }

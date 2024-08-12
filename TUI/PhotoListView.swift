@@ -4,41 +4,38 @@ struct PhotoListView: View {
     var photos: [Photo]
     var loadMoreAction: (() -> Void)?
     var canLoadMore: Bool = false
+    @AppStorage("omitCameraBrand") private var omitCameraBrand = false
 
     var body: some View {
         VStack(alignment: .leading) {
-            // 显示搜索结果数量
-            Text("Found \(photos.count) photos")
-                .font(.caption2)
-                .padding(.leading)
+
 
             List {
                 ForEach(Array(zip(photos.indices, photos)), id: \.1.id) { index, photo in
                     NavigationLink(destination: DetailView(photos: photos, initialIndex: photos.firstIndex(where: { $0.id == photo.id }) ?? 0, onDismiss: { _ in })) {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                // 第一行：时间 - ObjectName 或者 title
                                 Text("\(formatDate(dateTimeOriginal: photo.dateTimeOriginal)) - \(photo.objectName.isEmpty ? photo.title : photo.objectName)")
                                     .font(.caption2)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
 
-                                // 第二行：国家 地区 经纬度
-                                Text("\(photo.country), \(photo.locality) (\(formatCoordinates(latitude: photo.latitude, longitude: photo.longitude)))")
+                                Text("\(photo.locality), \(photo.area), \(photo.country)")
                                     .font(.caption2)
                                     .foregroundColor(.gray)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
+                                
+                                if !photo.caption.isEmpty {
+                                    Text(photo.caption)
+                                        .font(.caption2)
+                                        .foregroundColor(.gray)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                }
 
-                                // 第三行：拍摄器材 机身和镜头
-                                Text(photo.model)
+                                Text("\(formatCameraAndLens(camera: photo.model, lens: photo.lensModel))")
                                     .font(.caption2)
-                                    .foregroundColor(.gray)
-                                    .lineLimit(1)
-                                    .truncationMode(.tail)
-
-                                Text(photo.lensModel)
-                                    .font(.caption)
                                     .foregroundColor(.gray)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
@@ -62,17 +59,29 @@ struct PhotoListView: View {
                         }
                     }
                 }
-
-                // 加载更多按钮
                 if canLoadMore, let loadMoreAction = loadMoreAction {
-                    Button(action: loadMoreAction) {
-                        Text("Load More")
+                    HStack{
+                        
+                        Text("1 - \(photos.count) photos")
                             .font(.caption2)
-                            .padding()
+                            .padding(.leading)
+                        Spacer()
+                        
+                        Button(action: loadMoreAction) {
+                            Text("Load More")
+                                .font(.caption2)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color("TUIBLUE"))
+                                .cornerRadius(5)
+                        }
                     }
                 }
+
             }
             .listStyle(PlainListStyle()) // 移除多余的背景和间距
+
+
         }
         .padding(.top, 8) // 适当调整顶部间距
     }
@@ -87,6 +96,27 @@ struct PhotoListView: View {
         return dateTimeOriginal
     }
 
+    private func formatCameraAndLens(camera: String, lens: String) -> String {
+        let formattedCamera = omitCameraBrand ? removeBrandName(from: camera) : camera
+        let formattedLens = omitCameraBrand ? removeBrandName(from: lens) : lens
+        return "\(formattedCamera) - \(formattedLens)"
+    }
+
+    private func removeBrandName(from model: String) -> String {
+        let brandNames = ["Nikon", "Canon", "Sony", "Fujifilm", "Panasonic", "Olympus", "Leica", "Hasselblad", "Pentax", "Sigma", "Tamron", "Zeiss", "Nikkor"]
+        var result = model
+        
+        for brand in brandNames {
+            if result.lowercased().contains(brand.lowercased()) {
+                result = result.replacingOccurrences(of: brand, with: "", options: [.caseInsensitive, .anchored])
+                result = result.trimmingCharacters(in: .whitespacesAndNewlines)
+                break
+            }
+        }
+        
+        return result
+    }
+    
     private func formatCoordinates(latitude: Double, longitude: Double) -> String {
         let latString = String(format: "%.2f", abs(latitude))
         let longString = String(format: "%.2f", abs(longitude))

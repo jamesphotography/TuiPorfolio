@@ -108,12 +108,13 @@ struct BlockView: View {
                     Text(truncatedString(locality, limit: 16))
                         .font(.caption2)
                 }
-                Text(area)
-                    .font(.caption2)
-                Text("")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
+
                 Button(action: { onNavigate(.country(country)) }) {
+                    Text(area)
+                        .font(.caption2)
+                    Text("")
+                        .font(.caption2)
+                        .foregroundColor(.gray)
                     Text(country)
                         .font(.caption2)
                 }
@@ -123,7 +124,7 @@ struct BlockView: View {
         .onAppear {
             checkImageExistence()
         }
-        .frame(maxWidth: .infinity*0.95)
+        .frame(maxWidth: 350)
     }
     
     func checkImageExistence() {

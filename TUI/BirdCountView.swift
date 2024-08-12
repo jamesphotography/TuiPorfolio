@@ -5,9 +5,22 @@ struct BirdCountView: View {
     @State private var birdCounts: [(String, Int, String, String)] = [] // (鸟类名称, 照片数量, 最早时间, 最新照片缩略图路径)
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var sortOption: SortOption = .firstSeen
+    @State private var sortOrder: SortOrder = .ascending
+    @State private var showingSortOptions = false
     
     private var documentDirectory: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+
+    enum SortOption: String, CaseIterable {
+        case firstSeen = "First Seen"
+        case photoCount = "Photo Count"
+    }
+
+    enum SortOrder: String, CaseIterable {
+        case ascending = "Ascending"
+        case descending = "Descending"
     }
 
     var body: some View {
@@ -29,10 +42,40 @@ struct BirdCountView: View {
                             Text("No bird records found")
                                 .padding()
                         } else {
-                            Text("Found \(birdCounts.count) bird species")
-                                .font(.caption2)
-                                .padding(.leading, 16)
-                                .padding(.top, 8)
+                            HStack {
+                                Text("Found \(birdCounts.count) bird species")
+                                    .font(.caption2)
+                                Spacer()
+                                Button(action: {
+                                    showingSortOptions = true
+                                }) {
+                                    Image(systemName: "arrow.up.arrow.down")
+                                        .foregroundColor(Color("TUIBLUE"))
+                                        .font(.caption)
+                                }
+                                .actionSheet(isPresented: $showingSortOptions) {
+                                    ActionSheet(
+                                        title: Text("Sort Options"),
+                                        buttons: [
+                                            .default(Text("First Seen (\(sortOrder == .ascending ? "↑" : "↓"))")) {
+                                                sortOption = .firstSeen
+                                                sortBirdCounts()
+                                            },
+                                            .default(Text("Photo Count (\(sortOrder == .ascending ? "↑" : "↓"))")) {
+                                                sortOption = .photoCount
+                                                sortBirdCounts()
+                                            },
+                                            .default(Text(sortOrder == .ascending ? "Sort Descending" : "Sort Ascending")) {
+                                                sortOrder = sortOrder == .ascending ? .descending : .ascending
+                                                sortBirdCounts()
+                                            },
+                                            .cancel()
+                                        ]
+                                    )
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.top, 8)
 
                             ForEach(Array(birdCounts.enumerated()), id: \.element.0) { index, birdData in
                                 let (bird, count, earliestTime, thumbnailPath) = birdData
@@ -100,6 +143,7 @@ struct BirdCountView: View {
     private func loadBirdCounts() {
         if let cachedCounts = BirdCountCache.shared.birdCounts, !BirdCountCache.shared.shouldUpdate() {
             self.birdCounts = cachedCounts
+            sortBirdCounts()
             return
         }
         
@@ -130,6 +174,7 @@ struct BirdCountView: View {
                 DispatchQueue.main.async {
                     self.birdCounts = sortedBirdCounts
                     BirdCountCache.shared.update(with: sortedBirdCounts)
+                    sortBirdCounts()
                     self.isLoading = false
                 }
             } catch {
@@ -139,6 +184,22 @@ struct BirdCountView: View {
                 }
             }
         }
+    }
+
+    private func sortBirdCounts() {
+        switch sortOption {
+        case .firstSeen:
+            birdCounts.sort { lhs, rhs in
+                let lhsDate = dateFromString(lhs.2)
+                let rhsDate = dateFromString(rhs.2)
+                return sortOrder == .ascending ? lhsDate < rhsDate : lhsDate > rhsDate
+            }
+        case .photoCount:
+            birdCounts.sort { lhs, rhs in
+                sortOrder == .ascending ? lhs.1 < rhs.1 : lhs.1 > rhs.1
+            }
+        }
+        BirdCountCache.shared.update(with: birdCounts)
     }
 
     private func loadBirdList() throws -> [[String]] {
@@ -160,6 +221,12 @@ struct BirdCountView: View {
         }
         
         return dateString
+    }
+    
+    private func dateFromString(_ dateString: String) -> Date {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.date(from: dateString) ?? Date.distantPast
     }
     
     private func getFullImagePath(for relativePath: String) -> URL {

@@ -7,10 +7,8 @@ struct BottomBarView: View {
     var body: some View {
         HStack {
             Spacer()
-            Button(action: {
-                navigateToView(ContentView())
-            }) {
-                Image(systemName: "house.circle.fill")
+            NavigationLink(destination: NationalView()) {
+                Image(systemName: "globe.asia.australia.fill")
                     .font(.title)
                     .padding()
             }
@@ -31,12 +29,12 @@ struct BottomBarView: View {
             }
             
             Spacer()
-            NavigationLink(destination: NationalView()) {
-                Image(systemName: "globe.asia.australia.fill")
+
+            NavigationLink(destination: HistoryView()) {
+                Image(systemName: "trophy.circle.fill")
                     .font(.title)
                     .padding()
             }
-            
             Spacer()
             if enableBirdWatching {
                 NavigationLink(destination: BirdCountView()) {
@@ -46,7 +44,7 @@ struct BottomBarView: View {
                 }
             } else {
                 NavigationLink(destination: QuotesView()) {
-                    Image(systemName: "book.closed.circle.fill")
+                    Image(systemName: "newspaper.circle.fill")
                         .font(.title)
                         .padding()
                 }

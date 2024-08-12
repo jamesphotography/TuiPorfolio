@@ -27,9 +27,9 @@ class ImageSaver: NSObject, ObservableObject {
         DispatchQueue.main.async {
             self.isSaving = false
             if let error = error {
-                self.saveResult = "Save failed: \(error.localizedDescription)"
+                self.saveResult = String(format: NSLocalizedString("Save failed: %@", comment: "Error message when saving image fails"), error.localizedDescription)
             } else {
-                self.saveResult = "Image successfully saved to photo library"
+                self.saveResult = NSLocalizedString("Image successfully saved to photo library", comment: "Success message when image is saved")
             }
         }
     }

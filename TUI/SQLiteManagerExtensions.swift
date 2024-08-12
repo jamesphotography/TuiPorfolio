@@ -10,12 +10,10 @@ extension SQLiteManager {
         if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
             sqlite3_bind_text(queryStatement, 1, (captureDate as NSString).utf8String, -1, nil)
             sqlite3_bind_text(queryStatement, 2, (fileNamePrefix + "%" as NSString).utf8String, -1, nil)
-            print("Executing query: \(queryStatementString) with captureDate: \(captureDate) and fileNamePrefix: \(fileNamePrefix)")
             
             if sqlite3_step(queryStatement) == SQLITE_ROW {
                 let count = sqlite3_column_int(queryStatement, 0)
                 exists = (count > 0)
-                print("Query result count: \(count)")
             } else {
                 print("Failed to execute query to check photo existence.")
             }
@@ -125,8 +123,8 @@ extension SQLiteManager {
     func getPhotosByCountry(country: String, page: Int, itemsPerPage: Int) -> [Photo] {
         let offset = (page - 1) * itemsPerPage
         let queryStatementString = """
-        SELECT * FROM Photos WHERE Country = ? LIMIT ? OFFSET ?;
-        """
+            SELECT * FROM Photos WHERE Country = ? LIMIT ? OFFSET ?;
+            """
         var queryStatement: OpaquePointer?
         var photos: [Photo] = []
         
@@ -171,10 +169,10 @@ extension SQLiteManager {
     
     func getPhotosByCamera(_ cameraModel: String) -> [Photo] {
         let queryStatementString = """
-        SELECT * FROM Photos
-        WHERE Model = ?
-        ORDER BY DateTimeOriginal DESC;
-        """
+            SELECT * FROM Photos
+            WHERE Model = ?
+            ORDER BY DateTimeOriginal DESC;
+            """
         
         var queryStatement: OpaquePointer?
         var photos: [Photo] = []
@@ -218,12 +216,12 @@ extension SQLiteManager {
     
     func getLensInfo() -> [(String, Int, String)] {
         let queryStatementString = """
-        SELECT LensModel, COUNT(*) as Count, MAX(DateTimeOriginal) as LatestPhoto
-        FROM Photos
-        WHERE LensModel IS NOT NULL AND LensModel != ''
-        GROUP BY LensModel
-        ORDER BY LatestPhoto DESC;
-        """
+            SELECT LensModel, COUNT(*) as Count, MAX(DateTimeOriginal) as LatestPhoto
+            FROM Photos
+            WHERE LensModel IS NOT NULL AND LensModel != ''
+            GROUP BY LensModel
+            ORDER BY LatestPhoto DESC;
+            """
         
         var queryStatement: OpaquePointer?
         var results: [(String, Int, String)] = []
@@ -245,16 +243,16 @@ extension SQLiteManager {
     
     func getLatestPhotoInfoForBirds() -> [(String, String)] {
         let queryStatementString = """
-        SELECT ObjectName, ThumbnailPath100
-        FROM Photos
-        WHERE (ObjectName, DateTimeOriginal) IN (
-            SELECT ObjectName, MAX(DateTimeOriginal)
+            SELECT ObjectName, ThumbnailPath100
             FROM Photos
-            WHERE ObjectName IS NOT NULL AND ObjectName != ''
-            GROUP BY ObjectName
-        )
-        ORDER BY DateTimeOriginal DESC;
-        """
+            WHERE (ObjectName, DateTimeOriginal) IN (
+                SELECT ObjectName, MAX(DateTimeOriginal)
+                FROM Photos
+                WHERE ObjectName IS NOT NULL AND ObjectName != ''
+                GROUP BY ObjectName
+            )
+            ORDER BY DateTimeOriginal DESC;
+            """
         
         var queryStatement: OpaquePointer?
         var results: [(String, String)] = []
@@ -275,10 +273,10 @@ extension SQLiteManager {
     
     func getPhotosByLens(_ lensModel: String) -> [Photo] {
         let queryStatementString = """
-        SELECT * FROM Photos
-        WHERE LensModel = ?
-        ORDER BY DateTimeOriginal DESC;
-        """
+            SELECT * FROM Photos
+            WHERE LensModel = ?
+            ORDER BY DateTimeOriginal DESC;
+            """
         
         var queryStatement: OpaquePointer?
         var photos: [Photo] = []
@@ -351,17 +349,34 @@ extension SQLiteManager {
             sqlite3_bind_text(insertStatement, 22, (objectName as NSString).utf8String, -1, nil)
             sqlite3_bind_text(insertStatement, 23, (caption as NSString).utf8String, -1, nil)
             
-            if sqlite3_step(insertStatement) == SQLITE_DONE {
+            let result = sqlite3_step(insertStatement)
+            if result == SQLITE_DONE {
                 print("Successfully inserted bulk photo.")
                 sqlite3_finalize(insertStatement)
                 return true
             } else {
-                print("Could not insert bulk photo.")
+                let errorMessage = String(cString: sqlite3_errmsg(db))
+                print("Could not insert bulk photo. SQLite error: \(errorMessage)")
+                print("Failed SQL: \(insertStatementString)")
+                print("Values: id=\(id), title=\(title), path=\(path), thumbnailPath100=\(thumbnailPath100), thumbnailPath350=\(thumbnailPath350), starRating=\(starRating), country=\(country), area=\(area), locality=\(locality), dateTimeOriginal=\(dateTimeOriginal), addTimestamp=\(addTimestamp), lensModel=\(lensModel), model=\(model), exposureTime=\(exposureTime), fNumber=\(fNumber), focalLenIn35mmFilm=\(focalLenIn35mmFilm), focalLength=\(focalLength), ISOSPEEDRatings=\(ISOSPEEDRatings), altitude=\(altitude), latitude=\(latitude), longitude=\(longitude), objectName=\(objectName), caption=\(caption)")
             }
         } else {
             print("INSERT statement for bulk photo could not be prepared.")
         }
         sqlite3_finalize(insertStatement)
         return false
+    }
+    
+    // New transaction support methods
+    func beginTransaction() {
+        sqlite3_exec(db, "BEGIN TRANSACTION", nil, nil, nil)
+    }
+    
+    func commitTransaction() {
+        sqlite3_exec(db, "COMMIT", nil, nil, nil)
+    }
+    
+    func rollbackTransaction() {
+        sqlite3_exec(db, "ROLLBACK", nil, nil, nil)
     }
 }

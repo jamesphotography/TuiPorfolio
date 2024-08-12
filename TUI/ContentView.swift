@@ -6,13 +6,14 @@ struct ContentView: View {
     @AppStorage("userName") private var userName: String = "Tui"
     @AppStorage("sortByShootingTime") private var sortByShootingTime = true
     @AppStorage("useWaterfallLayout") private var useWaterfallLayout = false
+    @AppStorage("useSingleColumnLayout") private var useSingleColumnLayout = false //
     @State private var needsReload: Bool = true
     @State private var page: Int = 0
     @State private var isRefreshing: Bool = false
     @State private var lastRefreshTime: Date = Date.distantPast
     @State private var navigationPath = NavigationPath()
     @Environment(\.presentationMode) var presentationMode
-    private let itemsPerPage: Int = 30
+    private let itemsPerPage: Int = 100
     @State private var selectedPhotoIndex: Int?
     @State private var contentHeight: CGFloat = 0
     @State private var previousPathCount: Int = 0
@@ -77,7 +78,7 @@ struct ContentView: View {
 
     var mainContentView: some View {
         Group {
-            if useWaterfallLayout {
+            if !useSingleColumnLayout { // 修改這裡
                 WaterfallView(
                     photos: displayedImages.map { getPhoto(for: $0.path) },
                     onPhotoTapped: { photo in

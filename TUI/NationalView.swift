@@ -8,13 +8,11 @@ struct NationalView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                // Headbar
-                HeadBarView(title: "National List", onBackButtonTap: {
+                HeadBarView(title: NSLocalizedString("National List",comment: ""), onBackButtonTap: {
                     self.presentationMode.wrappedValue.dismiss()
                 })
                 .padding(.top, geometry.safeAreaInsets.top)
                 
-                // 主要內容
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 10) {
                         ForEach(countries) { country in
@@ -25,7 +23,7 @@ struct NationalView: View {
                                     Text(country.localizedName)
                                         .font(.headline)
                                     Spacer()
-                                    Text("\(country.totalPhotos)")
+                                    Text("\(country.totalPhotos) photos")
                                         .font(.caption)
                                         .foregroundColor(.gray)
                                 }
@@ -38,8 +36,8 @@ struct NationalView: View {
                     }
                     .padding()
                 }
-
-                // 底部導航欄
+                .background(Color("BGColor"))
+                
                 BottomBarView()
                     .padding(.bottom, geometry.safeAreaInsets.bottom)
             }
@@ -52,10 +50,7 @@ struct NationalView: View {
     }
 
     private func loadCountries() {
-        print("DEBUG: Starting loadCountries()")
         let rawData = SQLiteManager.shared.getAllPhotos()
-        print("DEBUG: Loaded \(rawData.count) photos from SQLiteManager")
-        
         var countryDict = [String: Int]()
         
         for photo in rawData {
@@ -63,8 +58,6 @@ struct NationalView: View {
                 countryDict[photo.country, default: 0] += 1
             }
         }
-        
-        print("DEBUG: Processed \(countryDict.count) unique countries")
         
         let locale = Locale.current
         let languageCode: String
@@ -81,11 +74,6 @@ struct NationalView: View {
             regionCode = locale.regionCode ?? ""
         }
 
-        print("DEBUG: Current language code: \(languageCode)")
-        print("DEBUG: Current script code: \(scriptCode)")
-        print("DEBUG: Current region code: \(regionCode)")
-
-        // 更精确地判断简体和繁体中文
         let finalLanguageCode: String
         if languageCode == "zh" {
             if scriptCode == "Hant" || regionCode == "TW" || regionCode == "HK" || regionCode == "MO" {
@@ -96,21 +84,15 @@ struct NationalView: View {
         } else {
             finalLanguageCode = languageCode
         }
-        print("DEBUG: Final language code: \(finalLanguageCode)")
         
         countries = countryDict.compactMap { countryName, totalPhotos in
-            print("DEBUG: Processing country: \(countryName)")
             if let code = CountryCodeManager.shared.getCountryCode(for: countryName) {
                 let localizedName = CountryCodeManager.shared.getCountryName(for: code, languageCode: finalLanguageCode) ?? countryName
-                print("DEBUG: Localized name for \(countryName) (\(code)): \(localizedName)")
                 return CountryData(englishName: countryName, localizedName: localizedName, code: code, totalPhotos: totalPhotos)
             } else {
-                print("DEBUG: Failed to get country code for \(countryName)")
                 return nil
             }
         }.sorted { $0.totalPhotos > $1.totalPhotos }
-        
-        print("DEBUG: Final countries count: \(countries.count)")
     }
 }
 
