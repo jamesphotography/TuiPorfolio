@@ -415,6 +415,15 @@
         }
       }
     },
+    "Access to photo library is limited" : {
+
+    },
+    "Access to photo library is restricted" : {
+
+    },
+    "Access to photo library was denied" : {
+
+    },
     "Add one image" : {
       "comment" : "Button to add a single image",
       "localizations" : {
@@ -1346,6 +1355,18 @@
         }
       }
     },
+    "Error accessing photo library" : {
+
+    },
+    "Error reading photo data" : {
+
+    },
+    "Error reading photo metadata" : {
+
+    },
+    "Error with Apple account" : {
+
+    },
     "Error: %@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1721,6 +1742,9 @@
           }
         }
       }
+    },
+    "GPS Information" : {
+
     },
     "Great job! You've uploaded today's photo." : {
       "extractionState" : "stale",
@@ -2100,8 +2124,10 @@
         }
       }
     },
+    "Lat:" : {
+
+    },
     "Latitude" : {
-      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2314,6 +2340,9 @@
         }
       }
     },
+    "Location Lookup" : {
+
+    },
     "Location Services Disabled" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2346,6 +2375,9 @@
           }
         }
       }
+    },
+    "Lon:" : {
+
     },
     "Long press to copy exif" : {
       "extractionState" : "stale",
@@ -2381,7 +2413,6 @@
       }
     },
     "Longitude" : {
-      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2702,6 +2733,9 @@
           }
         }
       }
+    },
+    "Note: Apple GPS lookup requires an active internet. The process may be delayed due to a limit of one queries per 2 seconds. Please patient during bulk imports." : {
+      "comment" : "Expanded explanation for GPS reverse lookup limitations and requirements"
     },
     "Object Name" : {
       "localizations" : {
@@ -4016,6 +4050,9 @@
           }
         }
       }
+    },
+    "Unknown error occurred" : {
+
     },
     "Usage" : {
       "localizations" : {

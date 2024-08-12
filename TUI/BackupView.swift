@@ -273,7 +273,6 @@ struct BackupView: View {
                         self.backupProgress = progress
                     }
                 }
-                print("Backup created at: \(backupURL.path)")
                 backupStatus = "Backup created at: \(backupURL.lastPathComponent)"
                 loadExistingBackups()
             } catch {
@@ -295,6 +294,12 @@ struct BackupView: View {
                     }
                 }
                 backupStatus = "Restore completed successfully"
+                
+                // Update the userName in the view
+                DispatchQueue.main.async {
+                    self.userName = UserDefaults.standard.string(forKey: "userName") ?? "Unknown"
+                }
+                
                 showingRestartAlert = true  // Show restart reminder
             } catch {
                 print("Restore failed: \(error)")

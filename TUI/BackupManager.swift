@@ -53,34 +53,49 @@ class BackupManager {
     }
     
     func restoreBackup(from backupURL: URL, progressUpdate: @escaping (Double) -> Void) async throws {
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let tempRestoreDirURL = documentsURL.appendingPathComponent("TempRestore")
-        
-        defer {
-            try? fileManager.removeItem(at: tempRestoreDirURL)
-        }
-        
-        do {
-            try fileManager.createDirectory(at: tempRestoreDirURL, withIntermediateDirectories: true, attributes: nil)
-            progressUpdate(0.1)
+            let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let tempRestoreDirURL = documentsURL.appendingPathComponent("TempRestore")
             
-            guard SSZipArchive.unzipFile(atPath: backupURL.path, toDestination: tempRestoreDirURL.path) else {
-                throw BackupError.failedToUnzip
+            defer {
+                try? fileManager.removeItem(at: tempRestoreDirURL)
             }
-            progressUpdate(0.4)
             
-            try await restoreDatabase(from: tempRestoreDirURL)
-            progressUpdate(0.7)
-            
-            try await restoreImages(from: tempRestoreDirURL)
-            progressUpdate(1.0)
-            
-            print("Backup successfully restored")
-        } catch {
-            print("Restore failed: \(error.localizedDescription)")
-            throw error
+            do {
+                try fileManager.createDirectory(at: tempRestoreDirURL, withIntermediateDirectories: true, attributes: nil)
+                progressUpdate(0.1)
+                
+                guard SSZipArchive.unzipFile(atPath: backupURL.path, toDestination: tempRestoreDirURL.path) else {
+                    throw BackupError.failedToUnzip
+                }
+                progressUpdate(0.4)
+                
+                // Extract username from backup file name
+                let backupFileName = backupURL.lastPathComponent
+                let username = extractUsername(from: backupFileName)
+                
+                // Update username in UserDefaults
+                UserDefaults.standard.set(username, forKey: "userName")
+                
+                try await restoreDatabase(from: tempRestoreDirURL)
+                progressUpdate(0.7)
+                
+                try await restoreImages(from: tempRestoreDirURL)
+                progressUpdate(1.0)
+                
+                print("Backup successfully restored")
+            } catch {
+                print("Restore failed: \(error.localizedDescription)")
+                throw error
+            }
         }
-    }
+        
+        private func extractUsername(from fileName: String) -> String {
+            let components = fileName.split(separator: "_")
+            if components.count >= 3 {
+                return String(components[2].dropLast(4)) // Remove ".zip" extension
+            }
+            return "Unknown"
+        }
     
     private func getBackupsDirectory() throws -> URL {
         guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {

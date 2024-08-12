@@ -594,28 +594,33 @@ class SQLiteManager {
         sqlite3_finalize(deleteStatement)
     }
     
-    func updatePhotoRecord(imagePath: String, objectName: String, caption: String, starRating: Int) {
-         let updateStatementString = """
-         UPDATE Photos
-         SET ObjectName = ?, Caption = ?, StarRating = ?
-         WHERE Path = ?;
-         """
-         var updateStatement: OpaquePointer?
-         
-         if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
-             sqlite3_bind_text(updateStatement, 1, (objectName as NSString).utf8String, -1, nil)
-             sqlite3_bind_text(updateStatement, 2, (caption as NSString).utf8String, -1, nil)
-             sqlite3_bind_int(updateStatement, 3, Int32(starRating))
-             sqlite3_bind_text(updateStatement, 4, (imagePath as NSString).utf8String, -1, nil)
-             
-             if sqlite3_step(updateStatement) == SQLITE_DONE {
-                 //print("Successfully updated photo record.")
-             } else {
-                 print("Could not update photo record.")
-             }
-         } else {
-             print("UPDATE statement could not be prepared.")
-         }
-         sqlite3_finalize(updateStatement)
-     }
+    func updatePhotoRecord(imagePath: String, objectName: String, caption: String, starRating: Int, latitude: Double, longitude: Double, country: String, area: String, locality: String) {
+           let updateStatementString = """
+           UPDATE Photos
+           SET ObjectName = ?, Caption = ?, StarRating = ?, Latitude = ?, Longitude = ?, Country = ?, Area = ?, Locality = ?
+           WHERE Path = ?;
+           """
+           var updateStatement: OpaquePointer?
+           
+           if sqlite3_prepare_v2(db, updateStatementString, -1, &updateStatement, nil) == SQLITE_OK {
+               sqlite3_bind_text(updateStatement, 1, (objectName as NSString).utf8String, -1, nil)
+               sqlite3_bind_text(updateStatement, 2, (caption as NSString).utf8String, -1, nil)
+               sqlite3_bind_int(updateStatement, 3, Int32(starRating))
+               sqlite3_bind_double(updateStatement, 4, latitude)
+               sqlite3_bind_double(updateStatement, 5, longitude)
+               sqlite3_bind_text(updateStatement, 6, (country as NSString).utf8String, -1, nil)
+               sqlite3_bind_text(updateStatement, 7, (area as NSString).utf8String, -1, nil)
+               sqlite3_bind_text(updateStatement, 8, (locality as NSString).utf8String, -1, nil)
+               sqlite3_bind_text(updateStatement, 9, (imagePath as NSString).utf8String, -1, nil)
+               
+               if sqlite3_step(updateStatement) == SQLITE_DONE {
+                   print("Successfully updated photo record.")
+               } else {
+                   print("Could not update photo record.")
+               }
+           } else {
+               print("UPDATE statement could not be prepared.")
+           }
+           sqlite3_finalize(updateStatement)
+       }
 }

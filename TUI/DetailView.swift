@@ -110,7 +110,9 @@ struct DetailView: View {
                 thumbnailPath100: .constant(currentPhoto.thumbnailPath100),
                 thumbnailPath350: .constant(currentPhoto.thumbnailPath350),
                 shouldNavigateToHome: $shouldNavigateToHome,
-                initialRating: currentPhoto.starRating
+                initialRating: currentPhoto.starRating,
+                initialLatitude: currentPhoto.latitude,
+                initialLongitude: currentPhoto.longitude
             )
         }
         .sheet(isPresented: $showingShareView) {

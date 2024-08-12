@@ -7,6 +7,7 @@ struct ImportResult: Identifiable {
     let originalFileName: String
     let status: ImportStatus
     let reason: String?
+    let thumbnail: UIImage?  // 添加这一行
     
     enum ImportStatus {
         case success
@@ -86,12 +87,10 @@ class BulkImportManager {
         let endIndex = min(currentIndex + batchSize, totalAssets)
         let group = DispatchGroup()
         
-        SQLiteManager.shared.beginTransaction()
-        
         for i in currentIndex..<endIndex {
             group.enter()
             let asset = assets[i]
-            importAsset(asset) { success, reason in
+            importAsset(asset) { success, reason, thumbnail in  // Changed here to accept 3 arguments
                 DispatchQueue.main.async {
                     if success {
                         let newSuccessCount = successCount + 1
@@ -475,33 +474,32 @@ class BulkImportManager {
         case photoMetadataError = 5
         case photoDataError = 6
         case appleAccountError = 7
-        // Add more error cases as needed
-
-        var description: String {
+        
+        var localizedDescription: String {
             switch self {
             case .unknown:
-                return "Unknown error occurred"
+                return NSLocalizedString("Unknown error occurred", comment: "")
             case .photoLibraryAccessDenied:
-                return "Access to photo library was denied"
+                return NSLocalizedString("Access to photo library was denied", comment: "")
             case .photoLibraryAccessRestricted:
-                return "Access to photo library is restricted"
+                return NSLocalizedString("Access to photo library is restricted", comment: "")
             case .photoLibraryAccessLimited:
-                return "Access to photo library is limited"
+                return NSLocalizedString("Access to photo library is limited", comment: "")
             case .photoLibraryAccessError:
-                return "Error accessing photo library"
+                return NSLocalizedString("Error accessing photo library", comment: "")
             case .photoMetadataError:
-                return "Error reading photo metadata"
+                return NSLocalizedString("Error reading photo metadata", comment: "")
             case .photoDataError:
-                return "Error reading photo data"
+                return NSLocalizedString("Error reading photo data", comment: "")
             case .appleAccountError:
-                return "Error with Apple account"
+                return NSLocalizedString("Error with Apple account", comment: "")
             }
         }
     }
 
     func handleImportError(_ error: Error) {
         if let tuiError = error as? TuiImporterError {
-            print("TuiImporterError: \(tuiError.rawValue) - \(tuiError.description)")
+            print("TuiImporterError: \(tuiError.rawValue) - \(tuiError.localizedDescription)")
         } else {
             print("Unknown error: \(error.localizedDescription)")
         }
@@ -530,34 +528,4 @@ class BulkImportManager {
     }
 }
 
-enum TuiImporterError: Int, Error {
-    case unknown = 0
-    case photoLibraryAccessDenied = 1
-    case photoLibraryAccessRestricted = 2
-    case photoLibraryAccessLimited = 3
-    case photoLibraryAccessError = 4
-    case photoMetadataError = 5
-    case photoDataError = 6
-    case appleAccountError = 7
-    
-    var description: String {
-        switch self {
-        case .unknown:
-            return "Unknown error occurred"
-        case .photoLibraryAccessDenied:
-            return "Access to photo library was denied"
-        case .photoLibraryAccessRestricted:
-            return "Access to photo library is restricted"
-        case .photoLibraryAccessLimited:
-            return "Access to photo library is limited"
-        case .photoLibraryAccessError:
-            return "Error accessing photo library"
-        case .photoMetadataError:
-            return "Error reading photo metadata"
-        case .photoDataError:
-            return "Error reading photo data"
-        case .appleAccountError:
-            return "Error with Apple account"
-        }
-    }
-}
+ 

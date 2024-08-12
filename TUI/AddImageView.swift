@@ -81,7 +81,7 @@ struct AddImageView: View {
                                             color: Color("TUIBLUE")
                                         )
                                     }
-                                    .padding(50)
+                                    .padding(30)
                                     Spacer()
                                     Button(action: {
                                         self.navigateToBulkImport = true
@@ -92,7 +92,13 @@ struct AddImageView: View {
                                             color: Color("Flare")
                                         )
                                     }
-                                    .padding(50)
+                                    .padding(30)
+                                    Spacer()
+                                    Text(NSLocalizedString("Note: Apple GPS lookup requires an active internet. The process may be delayed due to a limit of one queries per 2 seconds. Please patient during bulk imports.", comment: "Expanded explanation for GPS reverse lookup limitations and requirements"))
+                                                                            .font(.caption)
+                                                                            .foregroundColor(.secondary)
+                                                                            .multilineTextAlignment(.leading)
+                                                                            .padding(.horizontal)
                                     Spacer()
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

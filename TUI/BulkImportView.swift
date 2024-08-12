@@ -109,12 +109,6 @@ struct BulkImportView: View {
             Text("Failed to import: \(failureCount)")
                 .foregroundColor(Color("TUIBLUE"))
             
-            if !errorMessage.isEmpty {
-                Text("Error: \(errorMessage)")
-                    .foregroundColor(.red)
-                    .padding()
-            }
-            
             List {
                 Section(header: Text("Successful Imports").foregroundColor(Color("TUIBLUE"))) {
                     ForEach(importResults.filter { $0.status == .success }) { result in
@@ -142,7 +136,7 @@ struct BulkImportView: View {
                                 Text(result.originalFileName)
                                     .foregroundColor(Color("TUIBLUE"))
                                 if let reason = result.reason {
-                                    Text(reason)
+                                    Text(NSLocalizedString(reason, comment: ""))
                                         .font(.caption)
                                         .foregroundColor(.red)
                                 }
