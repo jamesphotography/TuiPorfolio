@@ -2,7 +2,25 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIFileSharingEnabled</key>
-	<true/>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>comgooglemaps</string>
+    </array>
+    <key>NSDocumentsLibraryUsageDescription</key>
+    <string>We need access to your documents to import images.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Do you want to save the photography quote card to your album?</string>
+    <key>UIFileSharingEnabled</key>
+    <true/>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>tui.jamesphotography.com.au</key>
+            <dict/>
+        </dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
 </dict>
 </plist>

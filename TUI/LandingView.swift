@@ -57,14 +57,15 @@ struct LandingView: View {
                                     .font(.caption)
                                     .fontWeight(.thin)
                                     .foregroundColor(Color("TUIBLUE"))
-                                    .multilineTextAlignment(.center)
-                                
+                                    .multilineTextAlignment(.leading)
+                                    .padding(10)
                                 Text("- \(todaysQuote.author)")
                                     .font(.caption)
                                     .fontWeight(.thin)
                                     .foregroundColor(Color("TUIBLUE"))
                             }
-                            .padding()
+                            .padding(.horizontal, UIScreen.main.bounds.width * 0.15)
+                            .padding(.vertical)
                         }
                         
                         HStack(spacing: 10) {

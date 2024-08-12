@@ -53,7 +53,10 @@ struct AddImageView: View {
                                     .frame(width: geometry.size.width * 0.7)
                                     .padding()
                                 
-                                ReviewView(cameraInfo: $cameraInfo, lensInfo: $lensInfo, captureDate: $captureDate, country: $country, area: $area,locality: $locality, starRating: $starRating, objectName: $objectName, caption: $caption)
+                                ReviewView(cameraInfo: $cameraInfo, lensInfo: $lensInfo, captureDate: $captureDate,
+                                           country: $country, area: $area, locality: $locality, starRating: $starRating,
+                                           objectName: $objectName, caption: $caption, focalLength: $focalLength,
+                                           fNumber: $fNumber, exposureTime: $exposureTime, isoSpeedRatings: $ISOSPEEDRatings)
                                 
                                 Button(action: {
                                     saveImage()
@@ -72,41 +75,24 @@ struct AddImageView: View {
                                     Button(action: {
                                         self.showingImagePicker = true
                                     }) {
-                                        VStack {
-                                            Image(systemName: "photo.badge.plus.fill")
-                                                .font(.system(size: 120))
-                                                .foregroundColor(.white)
-                                            Text("Add one image")
-                                        }
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color("TUIBLUE"))
-                                        .cornerRadius(10)
+                                        ButtonContent(
+                                            icon: "photo.badge.plus.fill",
+                                            text: NSLocalizedString("Add one image", comment: "Button to add a single image"),
+                                            color: Color("TUIBLUE")
+                                        )
                                     }
-                                    .padding(.top, 50)
-                                    Spacer()
-                                    Spacer()
-                                    Spacer()
-                                    Spacer()
-                                    Spacer()
+                                    .padding(50)
                                     Spacer()
                                     Button(action: {
                                         self.navigateToBulkImport = true
                                     }) {
-                                        VStack {
-                                            Image(systemName: "photo.fill.on.rectangle.fill")
-                                                .font(.system(size: 120))
-                                                .foregroundColor(.white)
-                                            Text("Bulk Import")
-                                        }
-                                        .font(.headline)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background(Color("TUIBLUE"))
-                                        .cornerRadius(10)
+                                        ButtonContent(
+                                            icon: "rectangle.stack.badge.plus",
+                                            text: NSLocalizedString("Bulk Import", comment: "Button to import multiple images"),
+                                            color: Color("Flare")
+                                        )
                                     }
-                                    .padding(.top, 50)
-                                    
+                                    .padding(50)
                                     Spacer()
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -172,7 +158,7 @@ struct AddImageView: View {
         let inputDateFormatter = DateFormatter()
         inputDateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         guard let date = inputDateFormatter.date(from: captureDate) else {
-            saveMessage = "Failed to save image: Failed to parse capture date"
+            saveMessage = NSLocalizedString("Failed to save image: Failed to parse capture date", comment: "Error message when trying to save a no capture date photo")
             showingSaveMessage = true
             return
         }
@@ -181,7 +167,7 @@ struct AddImageView: View {
         let fileNamePrefix = URL(fileURLWithPath: imageName).deletingPathExtension().lastPathComponent
         
         if SQLiteManager.shared.isPhotoExists(captureDate: formattedCaptureDate, fileNamePrefix: fileNamePrefix) {
-            saveMessage = "Photo already exists"
+            saveMessage = NSLocalizedString("Photo already exists", comment: "Error message when trying to save a duplicate photo")
             showingSaveMessage = true
             return
         }
@@ -329,6 +315,25 @@ struct AddImageView: View {
         } catch {
             print("Failed to delete temporary file: \(error.localizedDescription)")
         }
+    }
+}
+
+struct ButtonContent: View {
+    let icon: String
+    let text: String
+    let color: Color
+    
+    var body: some View {
+        VStack {
+            Image(systemName: icon)
+                .font(.system(size: 60))
+            Text(text)
+                .font(.headline)
+        }
+        .foregroundColor(.white)
+        .frame(width: 200, height: 200)
+        .background(color)
+        .cornerRadius(10)
     }
 }
 

@@ -276,6 +276,7 @@
       }
     },
     "Add one image" : {
+      "comment" : "Button to add a single image",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -356,6 +357,9 @@
         }
       }
     },
+    "Apple Maps" : {
+
+    },
     "Are you sure you want to delete this image?" : {
       "localizations" : {
         "zh-Hans" : {
@@ -373,6 +377,7 @@
       }
     },
     "Area: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -387,6 +392,9 @@
           }
         }
       }
+    },
+    "Beginner‘s help" : {
+
     },
     "Best attempt started on %@" : {
       "localizations" : {
@@ -469,6 +477,7 @@
       }
     },
     "Bulk Import" : {
+      "comment" : "Button to import multiple images",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -711,6 +720,15 @@
         }
       }
     },
+    "Copy Exif" : {
+
+    },
+    "Copy GPS Data" : {
+
+    },
+    "Copy Successful" : {
+
+    },
     "Country" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -729,6 +747,7 @@
       }
     },
     "Country: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -825,6 +844,7 @@
       }
     },
     "Editable Information" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -921,6 +941,12 @@
         }
       }
     },
+    "EXIF has been copied to the clipboard" : {
+
+    },
+    "EXIF information has been copied to the clipboard" : {
+
+    },
     "Expected import: %lld photos" : {
       "localizations" : {
         "zh-Hans" : {
@@ -950,6 +976,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "曝光時間"
+          }
+        }
+      }
+    },
+    "Exposure: %@ mm f/%@ 1/%@ s ISO: %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Exposure: %1$@ mm f/%2$@ 1/%3$@ s ISO: %4$lld"
           }
         }
       }
@@ -1002,6 +1038,9 @@
           }
         }
       }
+    },
+    "Failed to save image: Failed to parse capture date" : {
+      "comment" : "Error message when trying to save a no capture date photo"
     },
     "First seen: %@" : {
       "localizations" : {
@@ -1134,6 +1173,9 @@
         }
       }
     },
+    "Google Maps" : {
+
+    },
     "Image could not be loaded" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1167,6 +1209,7 @@
       }
     },
     "Image Information" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1200,6 +1243,7 @@
       }
     },
     "Image Name: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1575,6 +1619,7 @@
       }
     },
     "Locality: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1606,6 +1651,19 @@
           }
         }
       }
+    },
+    "Location: %@, %@, %@ " : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Location: %1$@, %2$@, %3$@ "
+          }
+        }
+      }
+    },
+    "Long press to copy exif" : {
+
     },
     "Longest streak: %lld days" : {
       "localizations" : {
@@ -1688,6 +1746,9 @@
           }
         }
       }
+    },
+    "Navigation Options" : {
+
     },
     "No active streak. Start shooting today!" : {
       "localizations" : {
@@ -1994,6 +2055,9 @@
           }
         }
       }
+    },
+    "Photo already exists" : {
+      "comment" : "Error message when trying to save a duplicate photo"
     },
     "Photo Library Access Required" : {
       "localizations" : {
@@ -2599,6 +2663,9 @@
         }
       }
     },
+    "Tap for navigation options" : {
+
+    },
     "There are %lld photos at this location." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2615,6 +2682,9 @@
           }
         }
       }
+    },
+    "Title" : {
+
     },
     "Tui" : {
       "localizations" : {
@@ -2778,6 +2848,9 @@
           }
         }
       }
+    },
+    "Video Tutorials" : {
+
     },
     "View All Photos" : {
       "localizations" : {

@@ -48,6 +48,7 @@ struct ShareView: View {
     @State private var birdNumber: Int?
     @State private var birdList: [[String]] = []
     @State private var shouldRegeneratePoster: Bool = false
+    @State private var showingCopyAlert = false
     @AppStorage("shareWithExif") private var shareWithExif = false
     @AppStorage("shareWithGPS") private var shareWithGPS = false
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
@@ -89,21 +90,23 @@ struct ShareView: View {
             
             HStack(spacing: 20) {
                 Button(action: savePosterToPhotoLibrary) {
-                    HStack {
-                        Image(systemName: "square.and.arrow.down")
+                    VStack {
+                        Image(systemName: "text.and.command.macwindow")
                         Text("Save Poster")
+                            .font(.caption2)
                     }
                     .padding()
-                    .background(Color.blue)
+                    .background(Color("TUIBLUE"))
                     .foregroundColor(.white)
                     .cornerRadius(10)
                 }
                 .disabled(imageSaver.isSaving)
                 
                 Button(action: saveOriginalToPhotoLibrary) {
-                    HStack {
-                        Image(systemName: "photo")
+                    VStack {
+                        Image(systemName: "photo.artframe")
                         Text("Save Original")
+                            .font(.caption2)
                     }
                     .padding()
                     .background(Color.green)
@@ -111,8 +114,24 @@ struct ShareView: View {
                     .cornerRadius(10)
                 }
                 .disabled(imageSaver.isSaving)
+                
+                Button(action: saveExifInfo) {
+                    VStack {
+                        Image(systemName: "character.textbox")
+                        Text("Copy Exif")
+                            .font(.caption2)
+                    }
+                    .padding()
+                    .background(Color("Flare"))
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                }
+                .disabled(imageSaver.isSaving)
             }
             .padding(.bottom, 20)
+        }
+        .alert(isPresented: $showingCopyAlert) {
+            Alert(title: Text("Copy Successful"), message: Text("EXIF has been copied to the clipboard"), dismissButton: .default(Text("OK")))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
@@ -126,6 +145,14 @@ struct ShareView: View {
         .onChange(of: birdNumber) { oldValue, newValue in
             shouldRegeneratePoster = true
         }
+    }
+    private func saveExifInfo() {
+        var exifInfo = EXIFManager.shared.copyEXIFInfo(for: photo)
+        if isBirdSpecies, let number = birdNumber {
+            exifInfo += "\nBird ID:No.\(number)"
+        }
+        UIPasteboard.general.string = exifInfo
+        showingCopyAlert = true
     }
     
     private func savePosterToPhotoLibrary() {
@@ -331,9 +358,9 @@ struct PosterView: View {
         let scaleFactor = additionalHeight / 128
         
         let titleFontSize: CGFloat = 24 * scaleFactor
-        let infoFontSize: CGFloat = 16 * scaleFactor
-        let lineHeight: CGFloat = 22 * scaleFactor
-        let leftMargin: CGFloat = 12 * scaleFactor
+        let infoFontSize: CGFloat = 20 * scaleFactor
+        let lineHeight: CGFloat = 26 * scaleFactor
+        let leftMargin: CGFloat = 14 * scaleFactor
         
         let titleFont = UIFont.systemFont(ofSize: titleFontSize, weight: .regular)
         let infoFont = UIFont.systemFont(ofSize: infoFontSize, weight: .thin)
@@ -379,155 +406,155 @@ struct PosterView: View {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         var dateAndLocation = "\(userName) • "
         if let date = dateFormatter.date(from: photo.dateTimeOriginal) {
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-                        let formattedDate = dateFormatter.string(from: date)
-                        dateAndLocation += "\(formattedDate)"
-                    }
-                    if shareWithGPS && !photo.locality.isEmpty {
-                        dateAndLocation += " • \(photo.locality), \(photo.area), \(photo.country)"
-                    }
-                    
-                    dateAndLocation.draw(with: CGRect(x: leftMargin, y: infoOriginY, width: canvasWidth - leftMargin * 2, height: lineHeight),
-                                         options: .usesLineFragmentOrigin,
-                                         attributes: infoAttributes,
-                                         context: nil)
-                    
-                    let cameraInfo = formatCameraInfo()
-                    
-                    cameraInfo.draw(with: CGRect(x: leftMargin, y: infoOriginY + lineHeight, width: canvasWidth - leftMargin * 2, height: lineHeight),
+            dateFormatter.dateFormat = "yy-MM-dd"
+            let formattedDate = dateFormatter.string(from: date)
+            dateAndLocation += "\(formattedDate)"
+        }
+        if shareWithGPS && !photo.locality.isEmpty {
+            dateAndLocation += " • \(photo.locality), \(photo.area), \(photo.country)"
+        }
+        
+        dateAndLocation.draw(with: CGRect(x: leftMargin, y: infoOriginY, width: canvasWidth - leftMargin * 2, height: lineHeight),
+                             options: .usesLineFragmentOrigin,
+                             attributes: infoAttributes,
+                             context: nil)
+        
+        let cameraInfo = formatCameraInfo()
+        
+        cameraInfo.draw(with: CGRect(x: leftMargin, y: infoOriginY + lineHeight, width: canvasWidth - leftMargin * 2, height: lineHeight),
+                        options: .usesLineFragmentOrigin,
+                        attributes: infoAttributes,context: nil)
+        
+        let captionOrExif: String
+        if shareWithExif {
+            captionOrExif = formatExifInfo()
+        } else if !photo.caption.isEmpty {
+            captionOrExif = photo.caption.components(separatedBy: .newlines).first ?? ""
+        } else {
+            captionOrExif = QuoteManager.shared.getTodaysQuote()
+        }
+        
+        let truncatedCaptionOrExif = truncateString(captionOrExif, width: canvasWidth - leftMargin * 2, font: infoFont)
+        
+        truncatedCaptionOrExif.draw(with: CGRect(x: leftMargin, y: infoOriginY + lineHeight * 2, width: canvasWidth - leftMargin * 2, height: lineHeight),
                                     options: .usesLineFragmentOrigin,
-                                    attributes: infoAttributes,context: nil)
-                    
-                    let captionOrExif: String
-                    if shareWithExif {
-                        captionOrExif = formatExifInfo()
-                    } else if !photo.caption.isEmpty {
-                        captionOrExif = photo.caption.components(separatedBy: .newlines).first ?? ""
-                    } else {
-                        captionOrExif = QuoteManager.shared.getTodaysQuote()
-                    }
-                    
-                    let truncatedCaptionOrExif = truncateString(captionOrExif, width: canvasWidth - leftMargin * 2, font: infoFont)
-                    
-                    truncatedCaptionOrExif.draw(with: CGRect(x: leftMargin, y: infoOriginY + lineHeight * 2, width: canvasWidth - leftMargin * 2, height: lineHeight),
-                                                options: .usesLineFragmentOrigin,
-                                                attributes: infoAttributes,
-                                                context: nil)
-                }
+                                    attributes: infoAttributes,
+                                    context: nil)
+    }
+    
+    private func formatCameraInfo() -> String {
+        let cameraModel = omitCameraBrand ? removeBrandName(from: photo.model) : photo.model
+        let lensModel = omitCameraBrand ? removeBrandName(from: photo.lensModel) : photo.lensModel
+        return "\(cameraModel) - \(lensModel)"
+    }
+    
+    private func removeBrandName(from model: String) -> String {
+        let brandNames = ["Nikon", "Canon", "Sony", "Fujifilm", "Panasonic", "Olympus", "Leica", "Hasselblad", "Pentax", "Sigma", "Tamron", "Zeiss", "Nikkor"]
+        var result = model
+        
+        for brand in brandNames {
+            if result.lowercased().contains(brand.lowercased()) {
+                result = result.replacingOccurrences(of: brand, with: "", options: [.caseInsensitive, .anchored])
+                result = result.trimmingCharacters(in: .whitespacesAndNewlines)
+                break  // 只移除第一个匹配的品牌名
+            }
+        }
+        
+        return result
+    }
+    
+    private func formatExifInfo() -> String {
+        var exifInfo = [String]()
+        
+        if photo.fNumber != 0 {
+            exifInfo.append(String(format: "f/%.1f", photo.fNumber))
+        }
+        if photo.exposureTime != 0 {
+            let exposureTimeString: String
+            if photo.exposureTime < 1 {
+                exposureTimeString = "1/\(Int(round(1/photo.exposureTime)))"
+            } else {
+                exposureTimeString = String(format: "%.1f", photo.exposureTime)
+            }
+            exifInfo.append("\(exposureTimeString)s")
+        }
+        if photo.ISOSPEEDRatings != 0 {
+            exifInfo.append("ISO \(photo.ISOSPEEDRatings)")
+        }
+        if photo.focalLenIn35mmFilm != 0 {
+            exifInfo.append(String(format: "%.0fmm", photo.focalLenIn35mmFilm))
+        }
+        
+        return exifInfo.joined(separator: " • ")
+    }
+    
+    private func truncateString(_ string: String, width: CGFloat, font: UIFont) -> String {
+        let attributedString = NSAttributedString(string: string, attributes: [.font: font])
+        let boundingRect = attributedString.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
+                                                         options: .usesLineFragmentOrigin,
+                                                         context: nil)
+        
+        if boundingRect.width > width {
+            var truncatedString = string
+            var range = NSRange(location: 0, length: string.count)
+            
+            while range.length > 0 {
+                range = (string as NSString).rangeOfComposedCharacterSequence(at: range.length - 1)
+                truncatedString = (string as NSString).substring(to: range.location)
                 
-                private func formatCameraInfo() -> String {
-                    let cameraModel = omitCameraBrand ? removeBrandName(from: photo.model) : photo.model
-                    let lensModel = omitCameraBrand ? removeBrandName(from: photo.lensModel) : photo.lensModel
-                    return "\(cameraModel) + \(lensModel)"
-                }
+                let attributedTruncatedString = NSAttributedString(string: truncatedString + "...", attributes: [.font: font])
+                let truncatedRect = attributedTruncatedString.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
+                                                                           options: .usesLineFragmentOrigin,
+                                                                           context: nil)
                 
-                private func removeBrandName(from model: String) -> String {
-                    let brandNames = ["Nikon", "Canon", "Sony", "Fujifilm", "Panasonic", "Olympus", "Leica", "Hasselblad", "Pentax", "Sigma", "Tamron", "Zeiss", "Nikkor"]
-                    var result = model
-                    
-                    for brand in brandNames {
-                        if result.lowercased().contains(brand.lowercased()) {
-                            result = result.replacingOccurrences(of: brand, with: "", options: [.caseInsensitive, .anchored])
-                            result = result.trimmingCharacters(in: .whitespacesAndNewlines)
-                            break  // 只移除第一个匹配的品牌名
-                        }
-                    }
-                    
-                    return result
-                }
-                
-                private func formatExifInfo() -> String {
-                    var exifInfo = [String]()
-                    
-                    if photo.fNumber != 0 {
-                        exifInfo.append(String(format: "f/%.1f", photo.fNumber))
-                    }
-                    if photo.exposureTime != 0 {
-                        let exposureTimeString: String
-                        if photo.exposureTime < 1 {
-                            exposureTimeString = "1/\(Int(round(1/photo.exposureTime)))"
-                        } else {
-                            exposureTimeString = String(format: "%.1f", photo.exposureTime)
-                        }
-                        exifInfo.append("\(exposureTimeString)s")
-                    }
-                    if photo.ISOSPEEDRatings != 0 {
-                        exifInfo.append("ISO \(photo.ISOSPEEDRatings)")
-                    }
-                    if photo.focalLenIn35mmFilm != 0 {
-                        exifInfo.append(String(format: "%.0fmm", photo.focalLenIn35mmFilm))
-                    }
-                    
-                    return exifInfo.joined(separator: " • ")
-                }
-                
-                private func truncateString(_ string: String, width: CGFloat, font: UIFont) -> String {
-                    let attributedString = NSAttributedString(string: string, attributes: [.font: font])
-                    let boundingRect = attributedString.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
-                                                                     options: .usesLineFragmentOrigin,
-                                                                     context: nil)
-                    
-                    if boundingRect.width > width {
-                        var truncatedString = string
-                        var range = NSRange(location: 0, length: string.count)
-                        
-                        while range.length > 0 {
-                            range = (string as NSString).rangeOfComposedCharacterSequence(at: range.length - 1)
-                            truncatedString = (string as NSString).substring(to: range.location)
-                            
-                            let attributedTruncatedString = NSAttributedString(string: truncatedString + "...", attributes: [.font: font])
-                            let truncatedRect = attributedTruncatedString.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
-                                                                                       options: .usesLineFragmentOrigin,
-                                                                                       context: nil)
-                            
-                            if truncatedRect.width <= width {
-                                return truncatedString + "..."
-                            }
-                        }
-                    }
-                    
-                    return string
+                if truncatedRect.width <= width {
+                    return truncatedString + "..."
                 }
             }
+        }
+        
+        return string
+    }
+}
 
-            // MARK: - ShareButton
+// MARK: - ShareButton
 
-            struct ShareButton: View {
-                let icon: String
-                let text: String
-                let color: Color
-                let action: () -> Void
-                
-                var body: some View {
-                    Button(action: action) {
-                        VStack {
-                            Image(systemName: icon)
-                                .foregroundColor(color)
-                                .font(.system(size: 24, weight: .semibold))
-                            Text(text)
-                                .foregroundColor(color)
-                                .font(.caption)
-                                .padding(.top, 5)
-                        }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                    }
-                    .background(Color.white.opacity(0.9))
-                    .cornerRadius(15)
-                    .shadow(color: color.opacity(0.3), radius: 5, x: 0, y: 2)
-                }
+struct ShareButton: View {
+    let icon: String
+    let text: String
+    let color: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                    .font(.system(size: 24, weight: .semibold))
+                Text(text)
+                    .foregroundColor(color)
+                    .font(.caption)
+                    .padding(.top, 5)
             }
+            .padding()
+            .frame(maxWidth: .infinity)
+        }
+        .background(Color.white.opacity(0.9))
+        .cornerRadius(15)
+        .shadow(color: color.opacity(0.3), radius: 5, x: 0, y: 2)
+    }
+}
 
-            // MARK: - VisualEffectView
+// MARK: - VisualEffectView
 
-            struct VisualEffectView: UIViewRepresentable {
-                let effect: UIVisualEffect
-                
-                func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView {
-                    UIVisualEffectView()
-                }
-                
-                func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) {
-                    uiView.effect = effect
-                }
-            }
+struct VisualEffectView: UIViewRepresentable {
+    let effect: UIVisualEffect
+    
+    func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView {
+        UIVisualEffectView()
+    }
+    
+    func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) {
+        uiView.effect = effect
+    }
+}

@@ -41,10 +41,10 @@ struct ContentView: View {
                     screenSize = geometry.size
                     safeAreaInsets = geometry.safeAreaInsets
                 }
-                .onChange(of: navigationPath) { newPath in
+                .onChange(of: navigationPath) { _, newPath in
                     previousPathCount = newPath.count
                 }
-                .onChange(of: geometry.size) { newSize in
+                .onChange(of: geometry.size) { _, newSize in
                     screenSize = newSize
                 }
             }

@@ -192,7 +192,7 @@ class BulkImportManager {
                    let longitudeValue = gpsDict["Longitude"] as? Double {
                     
                     latitude = latitudeRef == "S" ? -latitudeValue : latitudeValue
-                    longitude = longitudeValue
+                    longitude = longitudeRef == "W" ? -longitudeValue : longitudeValue
                     
                     altitude = gpsDict["Altitude"] as? Double ?? 0.0
                     
@@ -293,9 +293,14 @@ class BulkImportManager {
         monthFormatter.dateFormat = "yyyy-MM"
         let month = monthFormatter.string(from: date)
         
+        let dayFormatter = DateFormatter()
+        dayFormatter.dateFormat = "yyyy-MM-dd"
+        let day = dayFormatter.string(from: date)
+        
         let directoryPath = documentsDirectory.appendingPathComponent("portfolio")
             .appendingPathComponent(year)
             .appendingPathComponent(month)
+            .appendingPathComponent(day)  // 添加日期到路径中
         
         do {
             try fileManager.createDirectory(at: directoryPath, withIntermediateDirectories: true, attributes: nil)

@@ -26,12 +26,13 @@ struct BottomBarView: View {
             NavigationLink(destination: AddImageView()) {
                 Image(systemName: "plus.circle.fill")
                     .font(.title)
+                    .foregroundColor(Color("Flare"))
                     .padding()
             }
             
             Spacer()
             NavigationLink(destination: NationalView()) {
-                Image(systemName: "map.circle.fill")
+                Image(systemName: "globe.asia.australia.fill")
                     .font(.title)
                     .padding()
             }

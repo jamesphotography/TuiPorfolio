@@ -75,6 +75,10 @@ struct SettingsView: View {
                         NavigationLink(destination: BirdNameListView()) {
                             Text("Bird Name Match")
                         }
+                        
+                        NavigationLink(destination: BeginnerView()) {
+                            Text("Beginner‘s help")
+                        }
                     }
                 }
                 .padding()

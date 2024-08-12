@@ -33,27 +33,28 @@ struct EditorView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Image Information")) {
+                Section() {
                     if let image = image {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxHeight: 200)
                     }
-                    Text("Image Name: \(imageName)")
                 }
 
-                Section(header: Text("Editable Information")) {
+                Section(header: Text("Title")) {
                     TextField("Object Name", text: $localObjectName)
+                }
+                
+                Section(header: Text("Caption")) {
                     TextField("Caption", text: $localCaption)
                 }
 
-                Section {
+                Section (header: Text("Delete Image")){
                     Button(action: {
                         showDeleteConfirmation = true
                     }) {
                         Text("Delete Image")
-                            .foregroundColor(.red)
                     }
                 }
             }
@@ -76,6 +77,8 @@ struct EditorView: View {
             }
         }
     }
+    
+    
 
     private func saveImage() {
         // 更新绑定的值
@@ -143,4 +146,21 @@ struct EditorView: View {
     }
 }
 
-
+struct MultilineCaptionInput: View {
+    @Binding var caption: String
+    
+    var body: some View {
+        TextEditor(text: $caption)
+            .font(.body)
+            .foregroundColor(.primary)
+            .frame(minHeight: 100) // 设置最小高度
+            .padding(4)
+            .background(Color(UIColor.systemGray6))
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.gray.opacity(0.5), lineWidth: 1)
+            )
+            .padding(.horizontal)
+    }
+}

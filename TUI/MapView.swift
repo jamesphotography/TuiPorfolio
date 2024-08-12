@@ -11,6 +11,7 @@ struct MapView: View {
    
     @State private var position: MapCameraPosition
     @State private var showCopiedAlert = false
+    @State private var showingActionSheet = false
 
     init(latitude: Double, longitude: Double, country: String, locality: String, thumbnailPath: String, showMap: Binding<Bool>) {
         self.latitude = latitude
@@ -36,7 +37,7 @@ struct MapView: View {
                 // Main
                 VStack {
                     Map(position: $position) {
-                        Annotation("Photo Location", coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)) {
+                        Annotation(NSLocalizedString("Tap for navigation options", comment: ""), coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)) {
                             VStack {
                                 let fullPath = getFullPath(for: thumbnailPath)
                                 if let uiImage = UIImage(contentsOfFile: fullPath) {
@@ -55,20 +56,16 @@ struct MapView: View {
                                         .foregroundColor(.gray)
                                 }
                                 
-                                Text(formatCoordinates(CLLocationCoordinate2D(latitude: latitude, longitude: longitude)))
-                                    .font(.caption)
-                                    .padding(5)
-                                    .background(Color.white)
-                                    .cornerRadius(5)
-                                    .shadow(radius: 5)
-                                    .onTapGesture {
-                                        let coordinates = "\(latitude), \(longitude)"
-                                        copyToClipboard(text: coordinates)
-                                        showCopiedAlert = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                            showCopiedAlert = false
-                                        }
-                                    }
+                                Button(action: {
+                                    showingActionSheet = true
+                                }) {
+                                    Text(formatCoordinates(CLLocationCoordinate2D(latitude: latitude, longitude: longitude)))
+                                        .font(.caption)
+                                        .padding(5)
+                                        .background(Color.white)
+                                        .cornerRadius(5)
+                                        .shadow(radius: 5)
+                                }
                                 
                                 Image(systemName: "mappin")
                                     .font(.title)
@@ -89,6 +86,18 @@ struct MapView: View {
             .background(Color("BGColor").edgesIgnoringSafeArea(.all))
             .ignoresSafeArea()
             .maptoast(isPresenting: $showCopiedAlert, text: Text("Coordinates copied"))
+            .confirmationDialog("Navigation Options", isPresented: $showingActionSheet) {
+                Button("Apple Maps") {
+                    openMapsNavigation(using: .apple)
+                }
+                Button("Google Maps") {
+                    openMapsNavigation(using: .google)
+                }
+                Button("Copy GPS Data") {
+                    copyGPSData()
+                }
+                Button("Cancel", role: .cancel) {}
+            }
         }
         .navigationTitle("")
         .navigationBarHidden(true)
@@ -102,8 +111,13 @@ struct MapView: View {
         return "\(latitudeString)° \(latitudeDirection), \(longitudeString)° \(longitudeDirection)"
     }
     
-    private func copyToClipboard(text: String) {
-        UIPasteboard.general.string = text
+    private func copyGPSData() {
+        let coordinates = "\(latitude), \(longitude)"
+        UIPasteboard.general.string = coordinates
+        showCopiedAlert = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            showCopiedAlert = false
+        }
     }
     
     private func getFullPath(for relativePath: String) -> String {
@@ -114,6 +128,33 @@ struct MapView: View {
             let fullPath = documentsDirectory.appendingPathComponent(relativePath).path
             return fullPath
         }
+    }
+    
+    private func openMapsNavigation(using mapType: MapType) {
+        var urlString: String
+        
+        switch mapType {
+        case .apple:
+            urlString = "maps://?daddr=\(latitude),\(longitude)"
+        case .google:
+            urlString = "comgooglemaps://?daddr=\(latitude),\(longitude)&directionsmode=driving"
+        }
+        
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+        
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            print("Cannot open URL")
+            // 如果无法打开URL，您可以在这里添加fallback选项，比如打开App Store下载相应的应用
+        }
+    }
+    
+    enum MapType {
+        case apple, google
     }
 }
 
@@ -135,18 +176,5 @@ extension View {
                 .animation(.easeInOut, value: isPresenting.wrappedValue)
             }
         }
-    }
-}
-
-struct MapView_Previews: PreviewProvider {
-    static var previews: some View {
-        MapView(
-            latitude: -34.9285,
-            longitude: 138.6007,
-            country: "Australia",
-            locality: "Adelaide",
-            thumbnailPath: "",
-            showMap: .constant(true)
-        )
     }
 }

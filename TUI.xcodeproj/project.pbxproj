@@ -14,6 +14,8 @@
 		97497D432C5103D000FAE305 /* CustomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D422C5103D000FAE305 /* CustomCalendarView.swift */; };
 		97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D442C5118C000FAE305 /* WaterfallView.swift */; };
 		97A70AE22C512E3D00A97007 /* SamedayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A70AE12C512E3D00A97007 /* SamedayView.swift */; };
+		97AD6D032C66539D004F0380 /* BlogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD6D022C66539D004F0380 /* BlogView.swift */; };
+		97AF203E2C60FA110033F379 /* EXIFManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF203D2C60FA110033F379 /* EXIFManager.swift */; };
 		97B8A7BC2C528C4D00B039A4 /* BirdCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8A7BB2C528C4D00B039A4 /* BirdCountView.swift */; };
 		97B8A7BE2C528D0000B039A4 /* birdInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 97B8A7BD2C528D0000B039A4 /* birdInfo.json */; };
 		97B8A7C02C53316A00B039A4 /* CameraCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97B8A7BF2C53316A00B039A4 /* CameraCountView.swift */; };
@@ -60,6 +62,8 @@
 		97CE66382C4A540E0002B6B2 /* ZoomInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE66372C4A540E0002B6B2 /* ZoomInView.swift */; };
 		97CE663A2C4A54620002B6B2 /* LocalityPhotoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE66392C4A54620002B6B2 /* LocalityPhotoListView.swift */; };
 		97CE66402C4A58CF0002B6B2 /* EN_photography_quotes.json in Resources */ = {isa = PBXBuildFile; fileRef = 97CE66222C4A526E0002B6B2 /* EN_photography_quotes.json */; };
+		97D5F9E12C6650A900C7F543 /* BeginnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D5F9DF2C6650A900C7F543 /* BeginnerView.swift */; };
+		97D5F9E22C6650A900C7F543 /* TutorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D5F9E02C6650A900C7F543 /* TutorView.swift */; };
 		97F4A1BC2C57B4D100633ABC /* countriesCode.json in Resources */ = {isa = PBXBuildFile; fileRef = 97F4A1BB2C57B4D100633ABC /* countriesCode.json */; };
 		97F4A1BE2C57B5F600633ABC /* CountryCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F4A1BD2C57B5F600633ABC /* CountryCodeManager.swift */; };
 		97F4A1C22C589E3200633ABC /* BirdCountCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F4A1C12C589E3200633ABC /* BirdCountCache.swift */; };
@@ -78,6 +82,8 @@
 		97497D422C5103D000FAE305 /* CustomCalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCalendarView.swift; sourceTree = "<group>"; };
 		97497D442C5118C000FAE305 /* WaterfallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterfallView.swift; sourceTree = "<group>"; };
 		97A70AE12C512E3D00A97007 /* SamedayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamedayView.swift; sourceTree = "<group>"; };
+		97AD6D022C66539D004F0380 /* BlogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlogView.swift; sourceTree = "<group>"; };
+		97AF203D2C60FA110033F379 /* EXIFManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXIFManager.swift; sourceTree = "<group>"; };
 		97B8A7BB2C528C4D00B039A4 /* BirdCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdCountView.swift; sourceTree = "<group>"; };
 		97B8A7BD2C528D0000B039A4 /* birdInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = birdInfo.json; sourceTree = "<group>"; };
 		97B8A7BF2C53316A00B039A4 /* CameraCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCountView.swift; sourceTree = "<group>"; };
@@ -126,6 +132,11 @@
 		97CE66362C4A53EE0002B6B2 /* TUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TUI.entitlements; sourceTree = "<group>"; };
 		97CE66372C4A540E0002B6B2 /* ZoomInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomInView.swift; sourceTree = "<group>"; };
 		97CE66392C4A54620002B6B2 /* LocalityPhotoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityPhotoListView.swift; sourceTree = "<group>"; };
+		97D5F9DF2C6650A900C7F543 /* BeginnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeginnerView.swift; sourceTree = "<group>"; };
+		97D5F9E02C6650A900C7F543 /* TutorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorView.swift; sourceTree = "<group>"; };
+		97D5F9E32C6650AF00C7F543 /* TutorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TutorView.swift; path = ../../../Documents/TUI/TUI/TutorView.swift; sourceTree = "<group>"; };
+		97D5F9E42C6650AF00C7F543 /* BeginnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BeginnerView.swift; path = ../../../Documents/TUI/TUI/BeginnerView.swift; sourceTree = "<group>"; };
+		97D5F9E72C6650E700C7F543 /* BeginnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BeginnerView.swift; path = ../../../Documents/TUI/TUI/BeginnerView.swift; sourceTree = "<group>"; };
 		97F4A1BB2C57B4D100633ABC /* countriesCode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countriesCode.json; sourceTree = "<group>"; };
 		97F4A1BD2C57B5F600633ABC /* CountryCodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodeManager.swift; sourceTree = "<group>"; };
 		97F4A1C12C589E3200633ABC /* BirdCountCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdCountCache.swift; sourceTree = "<group>"; };
@@ -168,6 +179,7 @@
 				97CE65FF2C4A4DC20002B6B2 /* AddImageView.swift */,
 				97CE65F32C4A4C900002B6B2 /* AppDelegate.swift */,
 				97CE65E32C4A4A620002B6B2 /* Assets.xcassets */,
+				97AD6D022C66539D004F0380 /* BlogView.swift */,
 				97F4A1C12C589E3200633ABC /* BirdCountCache.swift */,
 				97F4A1C52C5B48E600633ABC /* BulkImportView.swift */,
 				97F4A1C72C5B491600633ABC /* BulkImportManager.swift */,
@@ -194,6 +206,10 @@
 				970E53BD2C576DB400B031D6 /* LocalityListView.swift */,
 				97CE66392C4A54620002B6B2 /* LocalityPhotoListView.swift */,
 				97CE660F2C4A50F80002B6B2 /* Localizable.xcstrings */,
+				97D5F9DF2C6650A900C7F543 /* BeginnerView.swift */,
+				97D5F9E42C6650AF00C7F543 /* BeginnerView.swift */,
+				97D5F9E02C6650A900C7F543 /* TutorView.swift */,
+				97D5F9E72C6650E700C7F543 /* BeginnerView.swift */,
 				97CE66132C4A51750002B6B2 /* MapView.swift */,
 				97CE66152C4A518D0002B6B2 /* NationalPhotoListView.swift */,
 				97CE66172C4A51B10002B6B2 /* NationalView.swift */,
@@ -211,7 +227,9 @@
 				97A70AE12C512E3D00A97007 /* SamedayView.swift */,
 				97CE65FD2C4A4D9C0002B6B2 /* SearchView.swift */,
 				97CE65F52C4A4CCD0002B6B2 /* SettingsView.swift */,
+				97D5F9E32C6650AF00C7F543 /* TutorView.swift */,
 				97CE662D2C4A534A0002B6B2 /* ShareView.swift */,
+				97AF203D2C60FA110033F379 /* EXIFManager.swift */,
 				97F4A1C32C5A05C100633ABC /* SinglePhotoView.swift */,
 				97CE662F2C4A535C0002B6B2 /* SQLiteManager.swift */,
 				97CE66312C4A53820002B6B2 /* SQLiteManagerExtensions.swift */,
@@ -331,6 +349,7 @@
 				97CE661A2C4A51D20002B6B2 /* ObjectNameView.swift in Sources */,
 				97F4A1C62C5B48E600633ABC /* BulkImportView.swift in Sources */,
 				97023A662C5670B2004E62D2 /* Project365View.swift in Sources */,
+				97D5F9E12C6650A900C7F543 /* BeginnerView.swift in Sources */,
 				97CE66202C4A52190002B6B2 /* PhotoListView.swift in Sources */,
 				97CE660C2C4A505F0002B6B2 /* ImagePicker.swift in Sources */,
 				97F65B302C55342A002F79B5 /* functionshareview.swift in Sources */,
@@ -355,6 +374,7 @@
 				97CE66322C4A53820002B6B2 /* SQLiteManagerExtensions.swift in Sources */,
 				97B8A7C02C53316A00B039A4 /* CameraCountView.swift in Sources */,
 				97CE66342C4A539A0002B6B2 /* StarRatingView.swift in Sources */,
+				97AF203E2C60FA110033F379 /* EXIFManager.swift in Sources */,
 				97497D432C5103D000FAE305 /* CustomCalendarView.swift in Sources */,
 				97B8A7BC2C528C4D00B039A4 /* BirdCountView.swift in Sources */,
 				97CE660A2C4A50460002B6B2 /* HotSearchManager.swift in Sources */,
@@ -363,6 +383,7 @@
 				97CE65E02C4A4A610002B6B2 /* TUIApp.swift in Sources */,
 				97CE65F82C4A4D0F0002B6B2 /* HeadBarView.swift in Sources */,
 				97CE66282C4A52DE0002B6B2 /* ReviewView.swift in Sources */,
+				97D5F9E22C6650A900C7F543 /* TutorView.swift in Sources */,
 				97CE65FA2C4A4D610002B6B2 /* HistoryView.swift in Sources */,
 				97B8A7C22C535A3D00B039A4 /* CameraDetailView.swift in Sources */,
 				97CE65F02C4A4C4B0002B6B2 /* QuotesView.swift in Sources */,
@@ -374,6 +395,7 @@
 				97B8A7C62C535BB400B039A4 /* LensDetailView.swift in Sources */,
 				97CE65FE2C4A4D9C0002B6B2 /* SearchView.swift in Sources */,
 				97CE66162C4A518D0002B6B2 /* NationalPhotoListView.swift in Sources */,
+				97AD6D032C66539D004F0380 /* BlogView.swift in Sources */,
 				97F4A1BE2C57B5F600633ABC /* CountryCodeManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

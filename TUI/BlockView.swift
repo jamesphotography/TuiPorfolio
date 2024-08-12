@@ -123,7 +123,7 @@ struct BlockView: View {
         .onAppear {
             checkImageExistence()
         }
-        .frame(width: 350)
+        .frame(maxWidth: .infinity*0.95)
     }
     
     func checkImageExistence() {
