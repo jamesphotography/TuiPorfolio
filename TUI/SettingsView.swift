@@ -10,6 +10,7 @@ struct SettingsView: View {
     @AppStorage("shareWithGPS") private var shareWithGPS = false
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
     @State private var showingSaveMessage = false
+    @Environment(\.requestReview) private var requestReview
 
     var body: some View {
         GeometryReader { geometry in
@@ -66,6 +67,17 @@ struct SettingsView: View {
                             Text("Beginner's Guide")
                         }
                     }
+                    
+                    Section(header: Text("App Feedback")) {
+                        Button(action: rateApp) {
+                            HStack {
+                                Text("Rate App")
+                                Spacer()
+                                Image(systemName: "star.fill")
+                                    .foregroundColor(.yellow)
+                            }
+                        }
+                    }
                 }
                 .padding(8)
                 .background(Color("BGColor"))
@@ -91,6 +103,11 @@ struct SettingsView: View {
     private func saveSettings() {
         showingSaveMessage = true
         NotificationCenter.default.post(name: .settingsChanged, object: nil)
+    }
+
+    @MainActor
+    private func rateApp() {
+        requestReview()
     }
 }
 

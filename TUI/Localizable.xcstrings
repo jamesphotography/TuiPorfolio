@@ -663,6 +663,9 @@
         }
       }
     },
+    "App Feedback" : {
+
+    },
     "Apple Maps" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3799,7 +3802,6 @@
       }
     },
     "Rate App" : {
-      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
