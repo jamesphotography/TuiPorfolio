@@ -17,7 +17,12 @@ struct PosterView: View {
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
     @AppStorage("enableBirdWatching") private var enableBirdWatching = false
     
-    // 新增保存圖像的閉包
+    // 使用 Assets 中定义的 BGColor
+    @Environment(\.colorScheme) var colorScheme
+    var BGColor: Color {
+        Color("BGColor")
+    }
+    
     let saveImage: (UIImage) -> Void
     
     var body: some View {
@@ -32,7 +37,7 @@ struct PosterView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: displayWidth, height: canvasHeight)
-                        .background(Color.white)
+                        .background(BGColor)
                         .cornerRadius(10)
                         .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
                 } else {
@@ -68,7 +73,7 @@ struct PosterView: View {
                 let additionalInfoHeight = highResWidth * (128.0 / 380.0)
                 let newCanvasHeight = scaledImageHeight + additionalInfoHeight
                 
-                if let processedUIImage = addWhiteCanvas(to: uiImage, canvasHeight: newCanvasHeight, canvasWidth: highResWidth) {
+                if let processedUIImage = addCustomCanvas(to: uiImage, canvasHeight: newCanvasHeight, canvasWidth: highResWidth) {
                     DispatchQueue.main.async {
                         self.canvasHeight = (newCanvasHeight / highResWidth) * displayWidth
                         self.processedImage = processedUIImage
@@ -90,8 +95,11 @@ struct PosterView: View {
         }
     }
     
-    private func addWhiteCanvas(to image: UIImage, canvasHeight: CGFloat, canvasWidth: CGFloat) -> UIImage? {
+    private func addCustomCanvas(to image: UIImage, canvasHeight: CGFloat, canvasWidth: CGFloat) -> UIImage? {
         let canvasSize = CGSize(width: canvasWidth, height: canvasHeight)
+        let canvasPadding: CGFloat = 30
+        let cornerRadius: CGFloat = 20 // 图片的圆角半径
+        let borderWidth: CGFloat = 3 // 增加边框宽度
         
         UIGraphicsBeginImageContextWithOptions(canvasSize, false, image.scale)
         defer { UIGraphicsEndImageContext() }
@@ -100,21 +108,42 @@ struct PosterView: View {
             return nil
         }
         
-        if let bgColor = UIColor(named: "BGColor") {
-            context.setFillColor(bgColor.cgColor)
-        } else {
-            context.setFillColor(UIColor.white.cgColor)
-        }
+        // 使用 Assets 中定义的 BGColor
+        let uiColor = UIColor(BGColor)
+        context.setFillColor(uiColor.cgColor)
         context.fill(CGRect(origin: .zero, size: canvasSize))
         
         let aspectRatio = image.size.width / image.size.height
-        let drawSize = CGSize(width: canvasSize.width, height: canvasSize.width / aspectRatio)
-        let drawOrigin = CGPoint(x: 0, y: 0)
+        let drawSize = CGSize(width: canvasSize.width - (2 * canvasPadding), height: (canvasSize.width - (2 * canvasPadding)) / aspectRatio)
+        let drawOrigin = CGPoint(x: canvasPadding, y: canvasPadding)
         
         let drawRect = CGRect(origin: drawOrigin, size: drawSize)
+        
+        // 创建圆角路径
+        let path = UIBezierPath(roundedRect: drawRect.insetBy(dx: -borderWidth/2, dy: -borderWidth/2), cornerRadius: cornerRadius)
+        
+        // 绘制阴影
+        context.saveGState()
+        context.setShadow(offset: CGSize(width: 0, height: 5), blur: 15, color: UIColor.black.withAlphaComponent(0.3).cgColor)
+        UIColor.white.setFill()
+        path.fill()
+        context.restoreGState()
+        
+        // 裁剪路径
+        context.saveGState()
+        path.addClip()
+        
+        // 绘制图片
         image.draw(in: drawRect)
         
-        let infoOriginY = drawSize.height + 10
+        context.restoreGState()
+        
+        // 绘制边框
+        UIColor.white.setStroke()
+        path.lineWidth = borderWidth
+        path.stroke()
+        
+        let infoOriginY = drawSize.height + (2 * canvasPadding)
         addImageInfo(context: context, originY: infoOriginY, canvasWidth: canvasWidth, canvasHeight: canvasHeight)
         
         if let tuiAppImage = UIImage(named: "tuiapp") {

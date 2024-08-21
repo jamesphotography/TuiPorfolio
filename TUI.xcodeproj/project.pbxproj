@@ -197,7 +197,6 @@
 		97CE65DE2C4A4A610002B6B2 /* TUI */ = {
 			isa = PBXGroup;
 			children = (
-				97D9D0302C74B646008CD70F /* ImportErrors.swift */,
 				97CE65FF2C4A4DC20002B6B2 /* AddImageView.swift */,
 				97CE65F32C4A4C900002B6B2 /* AppDelegate.swift */,
 				97CE65E32C4A4A620002B6B2 /* Assets.xcassets */,
@@ -210,8 +209,8 @@
 				97CE66012C4A4EC90002B6B2 /* BlockView.swift */,
 				97AD6D022C66539D004F0380 /* BlogView.swift */,
 				97CE65FB2C4A4D780002B6B2 /* BottomBarView.swift */,
+				97D9D02E2C74AEC8008CD70F /* BulkImportHelper.swift */,
 				97F4A1C72C5B491600633ABC /* BulkImportManager.swift */,
-				97D9D0322C74B7C2008CD70F /* ImportUtilities.swift */,
 				97F4A1C52C5B48E600633ABC /* BulkImportView.swift */,
 				97CE66032C4A4EE60002B6B2 /* CalendarView.swift */,
 				97B8A7BF2C53316A00B039A4 /* CameraCountView.swift */,
@@ -228,6 +227,8 @@
 				97CE65F92C4A4D610002B6B2 /* HistoryView.swift */,
 				97CE66092C4A50460002B6B2 /* HotSearchManager.swift */,
 				97CE660B2C4A505F0002B6B2 /* ImagePicker.swift */,
+				97D9D0302C74B646008CD70F /* ImportErrors.swift */,
+				97D9D0322C74B7C2008CD70F /* ImportUtilities.swift */,
 				970E53B92C571C2800B031D6 /* LandingView.swift */,
 				97B8A7C32C535B9900B039A4 /* LensCountView.swift */,
 				97B8A7C52C535BB400B039A4 /* LensDetailView.swift */,
@@ -240,8 +241,11 @@
 				97CE66192C4A51D20002B6B2 /* ObjectNameView.swift */,
 				97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */,
 				97CE661B2C4A51E90002B6B2 /* Photo.swift */,
+				97D9D0342C74BBC6008CD70F /* PhotoExtractor.swift */,
 				97CE661D2C4A51FD0002B6B2 /* PhotoImageView.swift */,
 				97CE661F2C4A52190002B6B2 /* PhotoListView.swift */,
+				97D9D0362C74BBDC008CD70F /* PhotoSaver.swift */,
+				973FC4502C75D0C700604B81 /* PosterView.swift */,
 				97CE65E52C4A4A620002B6B2 /* Preview Content */,
 				97023A652C5670B2004E62D2 /* Project365View.swift */,
 				97CE65F12C4A4C6B0002B6B2 /* QuoteModels.swift */,
@@ -262,10 +266,6 @@
 				97497D442C5118C000FAE305 /* WaterfallView.swift */,
 				97A6F3DD2C6C473E00A515A7 /* Webview.swift */,
 				97CE66372C4A540E0002B6B2 /* ZoomInView.swift */,
-				97D9D02E2C74AEC8008CD70F /* BulkImportHelper.swift */,
-				97D9D0342C74BBC6008CD70F /* PhotoExtractor.swift */,
-				97D9D0362C74BBDC008CD70F /* PhotoSaver.swift */,
-				973FC4502C75D0C700604B81 /* PosterView.swift */,
 			);
 			path = TUI;
 			sourceTree = "<group>";
