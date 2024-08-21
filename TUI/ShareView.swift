@@ -52,6 +52,7 @@ struct ShareView: View {
     @AppStorage("shareWithExif") private var shareWithExif = false
     @AppStorage("shareWithGPS") private var shareWithGPS = false
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
+    @AppStorage("enableBirdWatching") private var enableBirdWatching = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -138,8 +139,11 @@ struct ShareView: View {
         .onAppear {
             loadBirdList()
             checkIfBird()
-            if isBirdSpecies {
-                getBirdNumber()
+            if enableBirdWatching {
+                checkIfBird()
+                if isBirdSpecies {
+                    getBirdNumber()
+                }
             }
         }
         .onChange(of: birdNumber) { oldValue, newValue in
@@ -176,12 +180,20 @@ struct ShareView: View {
     }
     
     private func checkIfBird() {
+        guard enableBirdWatching else {
+            isBirdSpecies = false
+            return
+        }
         isBirdSpecies = birdList.contains { birdNames in
             birdNames.contains(photo.objectName)
         }
     }
     
     private func getBirdNumber() {
+        guard enableBirdWatching else {
+            birdNumber = nil
+            return
+        }
         DispatchQueue.global(qos: .background).async {
             do {
                 let allObjectNames = SQLiteManager.shared.getAllObjectNames()
@@ -227,6 +239,7 @@ struct PosterView: View {
     @AppStorage("shareWithExif") private var shareWithExif = false
     @AppStorage("shareWithGPS") private var shareWithGPS = false
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
+    @AppStorage("enableBirdWatching") private var enableBirdWatching = false
     
     var body: some View {
         VStack(spacing: 10) {
@@ -379,7 +392,7 @@ struct PosterView: View {
         !photo.title.isEmpty ? photo.title :
         "Untitled Photo"
         
-        if isBirdSpecies, let number = birdNumber {
+        if enableBirdWatching && isBirdSpecies, let number = birdNumber {
             photoTitle = "No.\(number) \(photoTitle)"
         }
         
@@ -457,7 +470,9 @@ struct PosterView: View {
     
     private func formatExifInfo() -> String {
         var exifInfo = [String]()
-        
+        if enableBirdWatching && isBirdSpecies, let number = birdNumber {
+            exifInfo.append("Bird ID: No.\(number)")
+        }
         if photo.fNumber != 0 {
             exifInfo.append(String(format: "f/%.1f", photo.fNumber))
         }
