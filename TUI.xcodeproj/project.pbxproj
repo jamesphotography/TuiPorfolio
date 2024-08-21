@@ -12,6 +12,7 @@
 		970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53B92C571C2800B031D6 /* LandingView.swift */; };
 		970E53BE2C576DB400B031D6 /* LocalityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53BD2C576DB400B031D6 /* LocalityListView.swift */; };
 		971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */ = {isa = PBXBuildFile; fileRef = 971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */; };
+		973FC4512C75D0C700604B81 /* PosterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC4502C75D0C700604B81 /* PosterView.swift */; };
 		97497D432C5103D000FAE305 /* CustomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D422C5103D000FAE305 /* CustomCalendarView.swift */; };
 		97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D442C5118C000FAE305 /* WaterfallView.swift */; };
 		974BDCD32C6C54FA00378033 /* TutorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974BDCD22C6C54FA00378033 /* TutorView.swift */; };
@@ -90,6 +91,7 @@
 		970E53B92C571C2800B031D6 /* LandingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		970E53BD2C576DB400B031D6 /* LocalityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityListView.swift; sourceTree = "<group>"; };
 		971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JamesTuiPortfolio.zip; sourceTree = "<group>"; };
+		973FC4502C75D0C700604B81 /* PosterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterView.swift; sourceTree = "<group>"; };
 		97497D422C5103D000FAE305 /* CustomCalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCalendarView.swift; sourceTree = "<group>"; };
 		97497D442C5118C000FAE305 /* WaterfallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterfallView.swift; sourceTree = "<group>"; };
 		974BDCD22C6C54FA00378033 /* TutorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorView.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 				97D9D02E2C74AEC8008CD70F /* BulkImportHelper.swift */,
 				97D9D0342C74BBC6008CD70F /* PhotoExtractor.swift */,
 				97D9D0362C74BBDC008CD70F /* PhotoSaver.swift */,
+				973FC4502C75D0C700604B81 /* PosterView.swift */,
 			);
 			path = TUI;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */,
 				97CE65FC2C4A4D780002B6B2 /* BottomBarView.swift in Sources */,
 				97CE65E22C4A4A610002B6B2 /* ContentView.swift in Sources */,
+				973FC4512C75D0C700604B81 /* PosterView.swift in Sources */,
 				97CE663A2C4A54620002B6B2 /* LocalityPhotoListView.swift in Sources */,
 				97B8A7C42C535B9900B039A4 /* LensCountView.swift in Sources */,
 				97F4A1C22C589E3200633ABC /* BirdCountCache.swift in Sources */,

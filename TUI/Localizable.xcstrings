@@ -226,6 +226,18 @@
             "state" : "new",
             "value" : "%1$@ - %2$@, %3$@, %4$@"
           }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ - %2$@, %3$@, %4$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ - %2$@, %3$@, %4$@"
+          }
         }
       }
     },
@@ -664,7 +676,20 @@
       }
     },
     "App Feedback" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用反馈"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "應用回饋"
+          }
+        }
+      }
     },
     "Apple Maps" : {
       "localizations" : {
@@ -1986,7 +2011,20 @@
       }
     },
     "Failure" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失败"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "失敗"
+          }
+        }
+      }
     },
     "First Seen (%@)" : {
       "localizations" : {
@@ -4028,6 +4066,7 @@
       }
     },
     "Save Poster" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -4322,6 +4361,22 @@
         }
       }
     },
+    "Share Poster" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享海报"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "分享海報"
+          }
+        }
+      }
+    },
     "Share with EXIF" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4549,7 +4604,20 @@
       }
     },
     "Success" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "成功"
+          }
+        }
+      }
     },
     "Success: %lld, Failure: %lld" : {
       "localizations" : {
