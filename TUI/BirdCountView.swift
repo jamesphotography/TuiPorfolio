@@ -8,6 +8,7 @@ struct BirdCountView: View {
     @State private var sortOption: SortOption = .firstSeen
     @State private var sortOrder: SortOrder = .ascending
     @State private var showingSortOptions = false
+    @State private var needsRefresh: Bool = false
     
     private var documentDirectory: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -26,7 +27,7 @@ struct BirdCountView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                HeadBarView(title: "Bird Count")
+                HeadBarView(title: NSLocalizedString("Bird Count", comment: ""))
                     .padding(.top, geometry.safeAreaInsets.top)
 
                 ScrollView {
@@ -138,9 +139,19 @@ struct BirdCountView: View {
         }
         .navigationBarHidden(true)
         .onAppear(perform: loadBirdCounts)
+        .onReceive(NotificationCenter.default.publisher(for: .photoDataUpdated)) { _ in
+            self.needsRefresh = true
+        }
+        .onChange(of: needsRefresh) { oldValue, newValue in
+            if newValue {
+                loadBirdCounts()
+                needsRefresh = false
+            }
+        }
     }
 
     private func loadBirdCounts() {
+        BirdCountCache.shared.clear() // Always clear the cache before loading
         if let cachedCounts = BirdCountCache.shared.birdCounts, !BirdCountCache.shared.shouldUpdate() {
             self.birdCounts = cachedCounts
             sortBirdCounts()
@@ -225,17 +236,17 @@ struct BirdCountView: View {
     
     private func dateFromString(_ dateString: String) -> Date {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"        
         return dateFormatter.date(from: dateString) ?? Date.distantPast
-    }
-    
-    private func getFullImagePath(for relativePath: String) -> URL {
-        return documentDirectory.appendingPathComponent(relativePath)
-    }
-}
+            }
+            
+            private func getFullImagePath(for relativePath: String) -> URL {
+                return documentDirectory.appendingPathComponent(relativePath)
+            }
+        }
 
-struct BirdCountView_Previews: PreviewProvider {
-    static var previews: some View {
-        BirdCountView()
-    }
-}
+        struct BirdCountView_Previews: PreviewProvider {
+            static var previews: some View {
+                BirdCountView()
+            }
+        }

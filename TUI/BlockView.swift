@@ -81,11 +81,11 @@ struct BlockView: View {
                 if !objectName.isEmpty {
                     Button(action: { onNavigate(.objectName(objectName)) }) {
                         Text(truncatedString(description, limit: 24))
-                            .font(.caption2)
+                            .font(.subheadline)
                     }
                 } else {
                     Text(truncatedString(description, limit: 24))
-                        .font(.caption2)
+                        .font(.subheadline)
                 }
                 Spacer()
 
@@ -96,27 +96,27 @@ struct BlockView: View {
                     if let date = date {
                         Button(action: { onNavigate(.date(date)) }) {
                             Text(formattedDate(date))
-                                .font(.caption2)
+                                .font(.caption)
                         }
                     } else {
                         Text("Unknown Date")
-                            .font(.caption2)
+                            .font(.caption)
                     }
                 }
                 Spacer()
                 Button(action: { onNavigate(.locality(locality)) }) {
                     Text(truncatedString(locality, limit: 16))
-                        .font(.caption2)
+                        .font(.caption)
                 }
 
                 Button(action: { onNavigate(.country(country)) }) {
                     Text(area)
-                        .font(.caption2)
-                    Text("")
-                        .font(.caption2)
+                        .font(.caption)
+                    Text(", ")
+                        .font(.caption)
                         .foregroundColor(.gray)
                     Text(country)
-                        .font(.caption2)
+                        .font(.caption)
                 }
             }
             .foregroundColor(.blue)

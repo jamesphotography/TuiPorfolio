@@ -7,6 +7,37 @@ struct AlbumInfo: Identifiable {
     let photoCount: Int
 }
 
+struct ImportResultView: View {
+    let result: ImportResult
+    
+    var body: some View {
+        HStack {
+            if let thumbnail = result.thumbnail {
+                Image(uiImage: thumbnail)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+            } else {
+                Image(systemName: "photo")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+            }
+            VStack(alignment: .leading) {
+                Text(result.originalFileName)
+                    .foregroundColor(Color("TUIBLUE"))
+                Text(result.status == .success ? "Success" : "Failure")
+                    .foregroundColor(result.status == .success ? .green : .red)
+                if let reason = result.reason {
+                    Text(NSLocalizedString(reason, comment: ""))
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+            }
+        }
+    }
+}
+
 struct BulkImportView: View {
     @State private var selectedAlbum: PHAssetCollection?
     @State private var selectedAlbumPhotoCount: Int = 0
@@ -18,7 +49,7 @@ struct BulkImportView: View {
     @State private var albums: [AlbumInfo] = []
     @State private var importResults: [ImportResult] = []
     @State private var errorMessage: String = ""
-
+    
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
@@ -62,7 +93,7 @@ struct BulkImportView: View {
         .navigationBarHidden(true)
         .onAppear(perform: loadAlbums)
     }
-
+    
     private var albumSelectionList: some View {
         List {
             ForEach(albums) { albumInfo in
@@ -85,7 +116,7 @@ struct BulkImportView: View {
         .listStyle(PlainListStyle())
         .background(Color("BGColor"))
     }
-
+    
     private var importProgressView: some View {
         VStack {
             ProgressView("Importing...", value: progress, total: 1.0)
@@ -98,54 +129,37 @@ struct BulkImportView: View {
         .padding()
         .background(Color("BGColor"))
     }
-
+    
     private var importResultView: some View {
         VStack {
-            Text("Import Completed")
-                .font(.title)
-                .foregroundColor(Color("TUIBLUE"))
-            Text("Successfully imported: \(successCount)")
-                .foregroundColor(Color("TUIBLUE"))
-            Text("Failed to import: \(failureCount)")
-                .foregroundColor(Color("TUIBLUE"))
+            HStack {
+                Text("Import Completed")
+                    .foregroundColor(Color("TUIBLUE"))
+                Spacer()
+                Text("Successfully imported: \(successCount)")
+                    .foregroundColor(Color(.blue))
+                Spacer()
+                Text("Failed to import: \(failureCount)")
+                    .foregroundColor(Color("Flare"))
+            }
+            .padding(.horizontal)
+            .font(.headline)
             
             List {
                 Section(header: Text("Successful Imports").foregroundColor(Color("TUIBLUE"))) {
                     ForEach(importResults.filter { $0.status == .success }) { result in
-                        Text(result.originalFileName)
-                            .foregroundColor(Color("TUIBLUE"))
+                        ImportResultView(result: result)
                     }
                 }
                 
                 Section(header: Text("Failed Imports").foregroundColor(Color("TUIBLUE"))) {
                     ForEach(importResults.filter { $0.status == .failure }) { result in
-                        HStack {
-                            if let thumbnail = result.thumbnail {
-                                Image(uiImage: thumbnail)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 50, height: 50)
-                            } else {
-                                Image(systemName: "photo")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 50, height: 50)
-                            }
-                            
-                            VStack(alignment: .leading) {
-                                Text(result.originalFileName)
-                                    .foregroundColor(Color("TUIBLUE"))
-                                if let reason = result.reason {
-                                    Text(NSLocalizedString(reason, comment: ""))
-                                        .font(.caption)
-                                        .foregroundColor(.red)
-                                }
-                            }
-                        }
+                        ImportResultView(result: result)
                     }
                 }
             }
             .listStyle(PlainListStyle())
+            .background(Color("BGColor"))
             
             Button("Import More") {
                 resetImportState()
@@ -157,7 +171,7 @@ struct BulkImportView: View {
         }
         .background(Color("BGColor"))
     }
-
+    
     private var startImportButton: some View {
         Button("Start Import") {
             startImport()
@@ -167,7 +181,7 @@ struct BulkImportView: View {
         .background(Color("TUIBLUE"))
         .cornerRadius(10)
     }
-
+    
     private var requestAccessView: some View {
         VStack(spacing: 20) {
             Text(NSLocalizedString("Photo Library Access Required", comment: "Photo library access required title"))
@@ -197,7 +211,7 @@ struct BulkImportView: View {
         .padding()
         .background(Color("BGColor"))
     }
-
+    
     private func loadAlbums() {
         PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
             DispatchQueue.main.async {
@@ -220,7 +234,7 @@ struct BulkImportView: View {
             }
         }
     }
-
+    
     private func startImport() {
         guard let album = selectedAlbum else { return }
         isImporting = true
@@ -244,11 +258,14 @@ struct BulkImportView: View {
                 }
                 if self.successCount > 0 {
                     UserDefaults.standard.set(false, forKey: "isFirstLaunch")
+                    
+                    // Post a notification that data has been updated
+                    NotificationCenter.default.post(name: .photoDataUpdated, object: nil)
                 }
             }
         }
     }
-
+    
     private func resetImportState() {
         selectedAlbum = nil
         selectedAlbumPhotoCount = 0
@@ -266,4 +283,9 @@ struct BulkImportView_Previews: PreviewProvider {
     static var previews: some View {
         BulkImportView()
     }
+}
+
+// Add this extension at the end of the file
+extension Notification.Name {
+    static let photoDataUpdated = Notification.Name("photoDataUpdated")
 }

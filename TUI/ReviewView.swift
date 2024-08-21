@@ -16,19 +16,20 @@ struct ReviewView: View {
     @Binding var isoSpeedRatings: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 0) {
+            //VStack(alignment: .leading, spacing: 4) {
             // 显示星等
             HStack {
                 Spacer()
                 ForEach(0..<5) { index in
                     Image(systemName: index < starRating ? "star.fill" : "star")
                         .foregroundColor(.orange)
-                        .font(.system(size: 12))
+                        .font(.subheadline)
                 }
                 Spacer()
             }
-            
-            Group {
+            Spacer()
+            VStack(alignment: .leading,spacing: 10) {
                 Text("Object Name: \(objectName)")
                 Text("Capture Date: \(captureDate)")
                 Text("Camera: \(cameraInfo)")
@@ -37,7 +38,8 @@ struct ReviewView: View {
                 Text("Location: \(locality), \(area), \(country) ")
                 Text("Caption: \(caption)")
             }
-            .font(.caption2)
+            .font(.subheadline)
+
         }
         .padding(10)
         .background(Color("Pulse"))

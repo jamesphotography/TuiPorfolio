@@ -44,14 +44,13 @@ struct LandingView: View {
                     VStack(spacing: 10) {
                         Spacer(minLength: 44)
                         Text("Tui")
-                            .font(.system(size: 48))
+                            .font(.system(size: 64))
                             .fontWeight(.thin)
                             .foregroundColor(Color("TUIBLUE"))
                             .padding(.bottom, 5)
                         
                         Text("\(userName)'s Portfolio")
                             .font(.title)
-                            .fontWeight(.thin)
                             .foregroundColor(Color("TUIBLUE"))
                             .padding(5)
                         Spacer(minLength: 44)
@@ -65,17 +64,16 @@ struct LandingView: View {
                             VStack {
                                 HStack{
                                     Text(todaysQuote.quote)
-                                        .font(.caption)
+                                        .font(.title2)
                                         .fontWeight(.thin)
                                         .foregroundColor(Color("TUIBLUE"))
                                         .multilineTextAlignment(.leading)
-                                        .padding(20)
+                                        .padding(6)
                                 }
                                 HStack {
                                     Spacer()
-                                    Text("- \(todaysQuote.author)")
-                                        .font(.caption)
-                                        .fontWeight(.thin)
+                                    Text("-- \(todaysQuote.author)")
+                                        .font(.subheadline)
                                         .foregroundColor(Color("TUIBLUE"))
                                 }
                                 .padding(.horizontal,20)

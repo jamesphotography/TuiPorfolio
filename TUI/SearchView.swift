@@ -32,7 +32,7 @@ struct SearchView: View {
                         HStack {
                             // 搜索结果数量
                             Text("Found \(totalResults) photos")
-                                .font(.caption2)
+                                .font(.headline)
                                 .padding(.leading, 8)
                             
                             Spacer()
@@ -77,7 +77,7 @@ struct SearchView: View {
                     .foregroundColor(Color("TUIBLUE"))
                     .padding(.leading, 8)
                 TextField("Search", text: $searchText, onCommit: performSearch)
-                    .font(.caption2)
+                    .font(.caption)
             }
             .padding(8)
             .background(Color.white)
@@ -109,7 +109,7 @@ struct SearchView: View {
                 Image(systemName: sortOrder == .ascending ? "arrow.up.square" : "arrow.down.square")
             }
             .foregroundColor(Color("TUIBLUE"))
-            .font(.caption)
+            .font(.subheadline)
         }
         .padding(.horizontal)
     }
@@ -117,7 +117,7 @@ struct SearchView: View {
     private var hotSearchesView: some View {
         VStack(alignment: .leading) {
             Text("Popular Searches")
-                .font(.caption2)
+                .font(.body)
                 .padding(.leading)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
                 ForEach(hotSearches, id: \.self) { item in
@@ -129,7 +129,7 @@ struct SearchView: View {
                             .padding(8)
                             .background(Color(.systemGray5))
                             .cornerRadius(3)
-                            .font(.caption2)
+                            .font(.caption)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 3)
                                     .stroke(Color("TUIBLUE"), lineWidth: 1)

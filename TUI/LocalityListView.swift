@@ -25,12 +25,13 @@ struct LocalityListView: View {
                             VStack(alignment: .leading, spacing: 5) {
                                 HStack {
                                     Text(areaData.area)
-                                        .font(.headline)
+                                        .font(.title2)
                                         .foregroundColor(.white)
                                     Spacer()
                                     Text("\(areaData.totalPhotos) photos")
-                                        .font(.subheadline)
+                                        .font(.title3)
                                         .foregroundColor(.white)
+                                    
                                 }
                                 .padding(.horizontal, 10)
                                 .padding(.vertical, 5)
@@ -41,12 +42,15 @@ struct LocalityListView: View {
                                     NavigationLink(destination: LocalityPhotoListView(locality: locality.name)) {
                                         HStack {
                                             Text(locality.name)
-                                                .font(.subheadline)
+                                                .font(.title3)
                                                 .foregroundColor(.primary)
                                             Spacer()
                                             Text("\(locality.totalPhotos)")
-                                                .font(.caption)
+                                                .font(.subheadline)
                                                 .foregroundColor(Color("TUIBLUE"))
+                                            Image(systemName: "chevron.right")
+                                                .font(.subheadline)
+                                                .foregroundColor(.blue)
                                         }
                                         .padding(.horizontal, 15)
                                         .padding(.vertical, 5)

@@ -48,7 +48,7 @@ struct EditorView: View {
                         Image(uiImage: image)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 200)
+                            .frame(height: 150)
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -76,16 +76,20 @@ struct EditorView: View {
                                 ProgressView()
                             } else {
                                 Image(systemName: "location.fill.viewfinder")
-                                    .foregroundColor(Color("TUIBLUE"))
+                                    .foregroundColor(.red)
+                                    .shadow(radius: 2)
                                     .font(.title)
                             }
                         }
                         .frame(width: 44, height: 80)
                         .disabled(isPerformingLookup)
                     }
-                    
-                    Text(locationInfo)
-                        .font(.caption)
+                    HStack{
+                        Spacer()
+                        Text(locationInfo)
+                            .font(.subheadline)
+                        Spacer()
+                    }
                 }
             }
             .navigationBarTitle("Edit Image", displayMode: .inline)
@@ -182,6 +186,7 @@ struct EditableStarRating: View {
             ForEach(1...5, id: \.self) { index in
                 Image(systemName: index <= rating ? "star.fill" : "star")
                     .foregroundColor(index <= rating ? .yellow : .gray)
+                    .font(.headline)
                     .onTapGesture {
                         rating = index
                     }
@@ -198,14 +203,18 @@ struct EditableField: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(.caption)
+                .font(.headline)
                 .frame(width: 80, alignment: .leading)
                 .lineLimit(1)
             TextField("", text: $text)
                 .keyboardType(keyboardType)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .background(Color(.systemGray6))
-                .cornerRadius(8)
+                .cornerRadius(2)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 2)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
         }
     }
 }
@@ -217,13 +226,13 @@ struct EditableTextEditor: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)
-                .font(.caption)
+                .font(.headline)
             TextEditor(text: $text)
                 .frame(height: 100)
                 .background(Color(.systemGray6))
-                .cornerRadius(8)
+                .cornerRadius(2)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: 2)
                         .stroke(Color.gray, lineWidth: 1)
                 )
         }

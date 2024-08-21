@@ -9,16 +9,7 @@ struct OnboardingView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                Text("Welcome to Tui!")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                Text("Your personal photo portfolio")
-                    .font(.title2)
-                    .foregroundColor(.gray)
-                
                 Spacer()
-                
                 TabView(selection: $currentStep) {
                     welcomeView
                         .tag(0)
@@ -55,12 +46,14 @@ struct OnboardingView: View {
                     showBackupRestore = true
                 }) {
                     Text("Restore from Backup")
-                        .font(.headline)
-                        .foregroundColor(Color("TUIBLUE"))
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.flare)
                 }
                 .padding()
+                Spacer()
             }
-            .padding()
+            .background(Color("BGColor"))
             .sheet(isPresented: $showBackupRestore) {
                 BackupView()
             }
@@ -76,10 +69,10 @@ struct OnboardingView: View {
             Image("tuiapp")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 100, height: 100)
+                .frame(width: 148, height: 148)
             
             Text("Welcome to Tui")
-                .font(.title)
+                .font(.largeTitle)
                 .fontWeight(.bold)
             
             Text("Your personal photo portfolio app")
@@ -111,8 +104,8 @@ struct OnboardingView: View {
                 .fontWeight(.bold)
             
             Text("To get started, let's add your first photo to your portfolio.")
-                .font(.subheadline)
-                .foregroundColor(.gray)
+                .font(.body)
+                .foregroundColor(.blue)
                 .multilineTextAlignment(.center)
             
             Button(action: {
@@ -126,6 +119,7 @@ struct OnboardingView: View {
                     .cornerRadius(10)
             }
         }
+        
     }
     
     func completeOnboarding() {
@@ -147,6 +141,7 @@ struct FeatureRow: View {
                 .font(.body)
         }
     }
+    
 }
 
 struct OnboardingView_Previews: PreviewProvider {

@@ -15,7 +15,7 @@ struct SettingsView: View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 // Headbar
-                HeadBarView(title: "Settings")
+                HeadBarView(title: NSLocalizedString("Settings", comment: ""))
                     .padding(.top, geometry.safeAreaInsets.top)
                 
                 // Main
@@ -28,13 +28,12 @@ struct SettingsView: View {
                             Spacer()
                             Button(action: saveSettings) {
                                 Text("Save")
-                                    .font(.caption)
+                                    .font(.headline)
                                     .foregroundColor(.white)
-                                    .padding(5)
+                                    .padding(7)
                                     .background(Color("TUIBLUE"))
-                                    .cornerRadius(10)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.horizontal)
+                                    .cornerRadius(3)
+                                    .frame(width: 60)
                             }
                         }
                     }
@@ -42,9 +41,6 @@ struct SettingsView: View {
                         Toggle("Sort by Shooting Time", isOn: $sortByShootingTime)
                         Toggle("Use Single Column Layout", isOn: $useSingleColumnLayout)
                         Toggle("Enable Bird Watching", isOn: $enableBirdWatching)
-                    }
-                    
-                    Section(header: Text("Share Options")) {
                         Toggle("Share with EXIF", isOn: $shareWithExif)
                         Toggle("Share with GPS", isOn: $shareWithGPS)
                         Toggle("Omit Camera Brand", isOn: $omitCameraBrand)
@@ -63,9 +59,6 @@ struct SettingsView: View {
                         NavigationLink(destination: LensCountView()) {
                             Text("Lens Count")
                         }
-                    }
-                    
-                    Section(header: Text("Help & More")) {
                         NavigationLink(destination: BirdNameListView()) {
                             Text("Bird Name Match")
                         }
@@ -74,7 +67,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                .padding()
+                .padding(8)
                 .background(Color("BGColor"))
                 
                 // Bottombar

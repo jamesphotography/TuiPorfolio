@@ -8,7 +8,7 @@ struct BlogView: View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 // HeadBar
-                HeadBarView(title: "Tui's Blog")
+                HeadBarView(title: NSLocalizedString("Tui's Blog", comment: ""))
                     .padding(.top, geometry.safeAreaInsets.top)
                 
                 // Main Content
@@ -24,6 +24,7 @@ struct BlogView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
+                .background(Color("BGColor"))
                 .overlay(Group {
                     if viewModel.isLoading {
                         ProgressView()

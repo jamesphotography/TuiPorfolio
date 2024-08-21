@@ -22,7 +22,7 @@ struct ObjectNameView: View {
                                 .padding()
                         } else {
                             Text("Found \(photos.count) photos")
-                                .font(.caption2)
+                                .font(.headline)
                                 .padding(.leading, 16)
                                 .padding(.top, 8)
                             
@@ -32,16 +32,16 @@ struct ObjectNameView: View {
                                         photoThumbnail(for: photo)
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(photo.title)
-                                                .font(.subheadline)
+                                                .font(.body)
                                                 .foregroundColor(.primary)
                                             Text(photo.dateTimeOriginal)
-                                                .font(.caption)
+                                                .font(.subheadline)
                                                 .foregroundColor(.secondary)
                                         }
                                         Spacer()
                                         Image(systemName: "chevron.right")
                                             .foregroundColor(.blue)
-                                            .font(.caption2)
+                                            .font(.caption)
                                     }
                                     .padding()
                                     .background(Color.white)

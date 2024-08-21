@@ -33,30 +33,30 @@ struct WaterfallView: View {
                             .id(index)
                     }
                 }
-                .padding(.horizontal, 10)
+                .padding(.horizontal, 5)
                 
                 if !photos.isEmpty {
                     if hasMoreImages {
                         Button(action: loadMore) {
                             Text("Load more ...")
                                 .foregroundColor(.white)
-                                .font(.caption)
-                                .padding(8)
+                                .font(.headline)
+                                .padding(10)
                                 .frame(maxWidth: .infinity)
-                                .background(Color.black)
+                                .background(Color("TUIBLUE"))
                                 .cornerRadius(15)
                         }
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 10)
                         .padding(.vertical, 10)
                     } else {
                         Text("No More Images")
-                            .foregroundColor(.gray)
-                            .font(.system(size: 14))
-                            .padding(8)
+                            .foregroundColor(.white)
+                            .padding(10)
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
-                            .background(Color.gray.opacity(0.2))
+                            .background(Color("TUIBLUE"))
                             .cornerRadius(15)
-                            .padding(.horizontal, 20)
+                            .padding(.horizontal, 10)
                             .padding(.vertical, 10)
                     }
                 }
@@ -125,56 +125,58 @@ struct WaterfallItemView: View {
     @State private var imageExists: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 5)
-                    .fill(Color.gray.opacity(0.2))
-                    .aspectRatio(1, contentMode: .fit)
-                
-                if imageExists, let uiImage = loadImage(named: photo.thumbnailPath100) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: (UIScreen.main.bounds.width - 30) / 2, height: (UIScreen.main.bounds.width - 30) / 2)
-                        .clipped()
-                        .cornerRadius(5)
-                } else {
-                    Image(systemName: "photo")
-                        .font(.system(size: 30))
-                        .foregroundColor(.gray)
+        GeometryReader { geometry in
+            VStack(alignment: .leading, spacing: 4) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.gray.opacity(0.2))
+                        .aspectRatio(1, contentMode: .fit)
+                    
+                    if imageExists, let uiImage = loadImage(named: photo.thumbnailPath100) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: geometry.size.width, height: geometry.size.width)
+                            .clipped()
+                            .cornerRadius(6)
+                    } else {
+                        Image(systemName: "photo")
+                            .font(.system(size: 30))
+                            .foregroundColor(.gray)
+                    }
                 }
-            }
-            .shadow(radius: 3)
-            .onTapGesture {
-                onPhotoTapped(photo)
-            }
-            
-            Button(action: { onNavigate(.objectName(photo.objectName)) }) {
-                Text(birdTitleText)
-                    .font(.system(size: 16))
-                    .foregroundColor(.primary)
-                    .lineLimit(1)
-            }
+                .shadow(radius: 3)
+                .onTapGesture {
+                    onPhotoTapped(photo)
+                }
+                
+                Button(action: { onNavigate(.objectName(photo.objectName)) }) {
+                    Text(birdTitleText)
+                        .font(.subheadline)
+                        .foregroundColor(.primary)
+                        .lineLimit(1)
+                }
 
-            HStack {
-                Text(formattedDate(photo.dateTimeOriginal))
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
-                    .lineLimit(1)
+                HStack {
+                    Text(formattedDate(photo.dateTimeOriginal))
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                        .lineLimit(1)
 
-                Spacer()
+                    Spacer()
 
-                if !photo.locality.isEmpty {
-                    Button(action: { onNavigate(.locality(photo.locality)) }) {
-                        Text(truncatedString(photo.country + ", " + photo.locality, limit: 20))
-                            .font(.system(size: 12))
-                            .foregroundColor(.blue)
-                            .lineLimit(1)
+                    if !photo.locality.isEmpty {
+                        Button(action: { onNavigate(.locality(photo.locality)) }) {
+                            Text(truncatedString(photo.area + ", " + photo.locality, limit: 20))
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                                .lineLimit(1)
+                        }
                     }
                 }
             }
         }
-        .frame(width: (UIScreen.main.bounds.width - 30) / 2)
+        .frame(height: UIScreen.main.bounds.width / 2 + 36)
         .onAppear {
             checkImageExistence()
         }

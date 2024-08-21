@@ -19,18 +19,21 @@ struct NationalView: View {
                             NavigationLink(destination: LocalityListView(countryName: country.englishName)) {
                                 HStack {
                                     FlagView(country: country.code)
-                                        .frame(width: 30, height: 20)
+                                        .frame(width: 30, height: 30)
                                     Text(country.localizedName)
-                                        .font(.headline)
+                                        .font(.title2)
                                     Spacer()
                                     Text("\(country.totalPhotos) photos")
-                                        .font(.caption)
+                                        .font(.subheadline)
                                         .foregroundColor(.gray)
+                                    Image(systemName: "chevron.right")
+                                        .font(.subheadline)
+                                        .foregroundColor(.blue)
                                 }
                                 .padding(.horizontal, 10)
-                                .padding(.vertical, 5)
+                                .padding(.vertical, 10)
                                 .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
+                                .cornerRadius(5)
                             }
                         }
                     }
@@ -102,10 +105,4 @@ struct CountryData: Identifiable {
     let localizedName: String
     let code: String
     let totalPhotos: Int
-}
-
-struct NationalView_Previews: PreviewProvider {
-    static var previews: some View {
-        NationalView()
-    }
 }

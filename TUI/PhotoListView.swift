@@ -15,27 +15,27 @@ struct PhotoListView: View {
                     NavigationLink(destination: DetailView(photos: photos, initialIndex: photos.firstIndex(where: { $0.id == photo.id }) ?? 0, onDismiss: { _ in })) {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("\(formatDate(dateTimeOriginal: photo.dateTimeOriginal)) - \(photo.objectName.isEmpty ? photo.title : photo.objectName)")
-                                    .font(.caption2)
+                                Text("\(photo.objectName.isEmpty ? photo.title : photo.objectName)")
+                                    .font(.headline)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
 
-                                Text("\(photo.locality), \(photo.area), \(photo.country)")
-                                    .font(.caption2)
+                                Text("\(formatDate(dateTimeOriginal: photo.dateTimeOriginal)) - \(photo.locality), \(photo.area), \(photo.country)")
+                                    .font(.caption)
                                     .foregroundColor(.gray)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
                                 
                                 if !photo.caption.isEmpty {
                                     Text(photo.caption)
-                                        .font(.caption2)
+                                        .font(.caption)
                                         .foregroundColor(.gray)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                 }
 
                                 Text("\(formatCameraAndLens(camera: photo.model, lens: photo.lensModel))")
-                                    .font(.caption2)
+                                    .font(.caption)
                                     .foregroundColor(.gray)
                                     .lineLimit(1)
                                     .truncationMode(.tail)
@@ -99,7 +99,7 @@ struct PhotoListView: View {
     private func formatCameraAndLens(camera: String, lens: String) -> String {
         let formattedCamera = omitCameraBrand ? removeBrandName(from: camera) : camera
         let formattedLens = omitCameraBrand ? removeBrandName(from: lens) : lens
-        return "\(formattedCamera) - \(formattedLens)"
+        return "\(formattedCamera), \(formattedLens)"
     }
 
     private func removeBrandName(from model: String) -> String {

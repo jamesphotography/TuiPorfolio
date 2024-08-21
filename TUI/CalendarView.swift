@@ -24,7 +24,7 @@ struct CalendarView: View {
                 ScrollView {
                     LazyVStack(spacing: 5) {
                         CustomCalendarView(date: $selectedDate, specialDates: datesWithPhotos)
-                            .frame(height: geometry.size.width * 0.8)
+                            .frame(height: geometry.size.width * 0.85)
                             .onAppear {
                                 loadDatesWithPhotos(for: currentMonth)
                                 loadPhotos(for: selectedDate ?? currentDate)
@@ -52,11 +52,11 @@ struct CalendarView: View {
                                 
                                 VStack(spacing: 10) {
                                     Image(systemName: "calendar.badge.plus")
-                                        .font(.system(size: 40))
+                                        .font(.system(size: 50))
                                         .foregroundColor(Color("TUIBLUE"))
                                     
                                     Text("PROJECT 365")
-                                        .font(.caption)
+                                        .font(.subheadline)
                                         .foregroundColor(Color("TUIBLUE"))
                                 }
                             }

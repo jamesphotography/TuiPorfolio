@@ -13,11 +13,11 @@ struct Project365View: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                HeadBarView(title: "Project365")
+                HeadBarView(title: NSLocalizedString("Project365", comment: ""))
                     .padding(.top, geometry.safeAreaInsets.top)
                 
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack() {
                         Project365CardView(longestStreakStart: longestStreakStart,
                                            longestStreakDays: longestStreakDays,
                                            longestStreakEnd: longestStreakEnd,
@@ -28,7 +28,7 @@ struct Project365View: View {
                         Spacer()
                         
                         StreakChartView(currentStreak: currentStreak, longestStreak: longestStreakDays, colors: colors)
-                            .frame(height: 200)
+                            .frame(height:  geometry.size.height * 0.3)
                             .padding()
                             .background(Color.white)
                             .cornerRadius(10)
@@ -143,11 +143,11 @@ struct Project365CardView: View {
     
     var body: some View {
         VStack {
-            Spacer(minLength: 20)
+            Spacer(minLength: 5)
             Image("tuiblueapp")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 48, height: 48)
+                .frame(width: 128, height: 128)
             Spacer()
             VStack(alignment: .leading, spacing: 10) {
                 Text("Project365 Statistics")
@@ -203,7 +203,7 @@ struct Project365CardView: View {
         }
         .padding(.vertical, 20)
         .background(Color("TUIBLUE"))
-        .cornerRadius(15)
+        .cornerRadius(10)
         .shadow(radius: 10)
     }
     
@@ -227,13 +227,13 @@ struct StreakChartView: View {
             
             Chart {
                 BarMark(
-                    x: .value("Type", "Current"),
+                    x: .value("Type", NSLocalizedString("Current", comment: "")),
                     y: .value("Days", currentStreak)
                 )
                 .foregroundStyle(colors[0])
                 
                 BarMark(
-                    x: .value("Type", "Longest"),
+                    x: .value("Type", NSLocalizedString("Longest", comment: "")),
                     y: .value("Days", longestStreak)
                 )
                 .foregroundStyle(colors[1])

@@ -42,14 +42,15 @@ struct LensCountView: View {
                         } else {
                             HStack {
                                 Text("Found \(lensCounts.count) lens models")
-                                    .font(.caption2)
+                                    .font(.headline)
+                                    .padding(5)
                                 Spacer()
                                 Button(action: {
                                     showingSortOptions = true
                                 }) {
                                     Image(systemName: "arrow.up.arrow.down")
                                         .foregroundColor(Color("TUIBLUE"))
-                                        .font(.caption)
+                                        .font(.subheadline)
                                 }
                                 .actionSheet(isPresented: $showingSortOptions) {
                                     ActionSheet(
@@ -81,7 +82,7 @@ struct LensCountView: View {
                                     HStack(spacing: 10) {
                                         Text("No. \(index + 1)")
                                             .foregroundColor(.secondary)
-                                            .frame(width: 50, alignment: .leading)
+                                            .frame(width: 60, alignment: .leading)
                                             .lineLimit(1)
                                             .minimumScaleFactor(0.5)
                                         
@@ -102,7 +103,7 @@ struct LensCountView: View {
                                             .frame(minWidth: 30, alignment: .trailing)
                                         
                                         Image(systemName: "chevron.right")
-                                            .font(.caption2)
+                                            .font(.subheadline)
                                             .foregroundColor(.blue)
                                     }
                                     .padding(.vertical, 8)

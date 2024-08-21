@@ -213,7 +213,8 @@ struct DetailView: View {
             VStack {
                 Button(action: { navigateToSameday = true }) {
                     Text(EXIFManager.shared.formatDate(currentPhoto.dateTimeOriginal))
-                        .font(.caption2)
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity)
                 }
                 Spacer()
                 StarRating(rating: currentPhoto.starRating)
@@ -236,6 +237,7 @@ struct DetailView: View {
             }
         }
         .padding(.horizontal)
+        .font(.title)
     }
     
     private func deletePhoto() {
@@ -259,11 +261,13 @@ struct DetailView: View {
     }
     
     private var infoSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             if !caption.isEmpty {
                 Text(caption)
-                    .font(.caption)
-                    .padding(.bottom, 4)
+                    .font(.body)
+                    .padding(.bottom, 10)
+                    .tracking(0.4)
+                    .lineSpacing(6)
             }
             
             Button(action: { navigateToCamera = true }) {
@@ -288,10 +292,10 @@ struct DetailView: View {
                         HStack {
                             if let countryCode = CountryCodeManager.shared.getCountryCode(for: currentPhoto.country) {
                                 FlagView(country: countryCode)
-                                    .frame(width: 20, height: 15)
+                                    .frame(width: 20, height: 30)
                             }
                             Text(EXIFManager.shared.locationInfoWithAltitude(photo: currentPhoto))
-                                .font(.caption2)
+                                .font(.caption)
                         }
                     }
                     .disabled(currentPhoto.country.isEmpty && currentPhoto.locality.isEmpty)
@@ -423,11 +427,11 @@ struct InfoRow: View {
     var body: some View {
         HStack {
             Image(systemName: icon)
-                .font(.caption2)
-                .foregroundColor(.blue)
+                .font(.caption)
+                .foregroundColor(Color("TUIBLUE"))
                 .frame(width: 20, height: 20)
             Text(value)
-                .font(.caption2)
+                .font(.subheadline)
         }
     }
 }
@@ -440,10 +444,40 @@ struct StarRating: View {
             ForEach(1...5, id: \.self) { index in
                 Image(systemName: index <= rating ? "star.fill" : "star")
                     .foregroundColor(index <= rating ? .yellow : .gray)
-                    .font(.system(size: 10, weight: .regular, design: .default))
+                    .font(.system(size: 12, weight: .regular, design: .default))
             }
         }
     }
 }
-                    
-                    
+
+struct DetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        let samplePhoto = Photo(
+            id: "1",
+            title: "茶色蛙口夜鷹",
+            path: "testImage",
+            thumbnailPath100: "testImage_thumb100",
+            thumbnailPath350: "testImage_thumb350",
+            starRating: 5,
+            country: "Australia",
+            area: "Victoria",
+            locality: "Parkville",
+            dateTimeOriginal: "2024-08-05 13:15",
+            addTimestamp: "2024-08-05 13:20",
+            lensModel: "NIKKOR Z 400mm f/4.5 VR S Z TC-1.4x",
+            model: "NIKON Z 8",
+            exposureTime: 1/2000,
+            fNumber: 6.3,
+            focalLenIn35mmFilm: 560.0,
+            focalLength: 560.0,
+            ISOSPEEDRatings: 3200,
+            altitude: 48,
+            latitude: -37.7964,
+            longitude: 144.9612,
+            objectName: "茶色蛙口夜鷹",
+            caption: "英文名：Tawny Frogmouth (学名：Podargus strigoides)，是蛙口夜鹰目蛙口夜鹰科蛙口夜鹰属的鸟类。又名：褐蛙口鹰、茶色蛙口鹰、茶色夜鹰，是分布于澳大利亚和塔斯曼尼亚的特有鸟类。以大头、宽嘴和独特的黄色眼睛著称，能够巧妙地融入树皮背景，展现出高超的伪装技巧。这种鸟广泛分布于各种生境，包括城市郊区。"
+        )
+        
+        DetailView(photos: [samplePhoto], initialIndex: 0) { _ in }
+    }
+}

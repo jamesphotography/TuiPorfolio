@@ -60,7 +60,7 @@ struct CameraDetailView: View {
                     .padding()
             } else {
                 Text("Found \(photos.count) photos")
-                    .font(.caption2)
+                    .font(.headline)
                     .padding(.leading, 16)
                     .padding(.top, 8)
             }
@@ -77,7 +77,7 @@ struct CameraDetailView: View {
                 Image(systemName: sortOrder == .ascending ? "arrow.up.square" : "arrow.down.square")
             }
             .foregroundColor(Color("TUIBLUE"))
-            .font(.caption)
+            .font(.subheadline)
         }
         .padding(.horizontal)
     }

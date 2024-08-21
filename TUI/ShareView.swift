@@ -162,15 +162,7 @@ struct ShareView: View {
         }
         imageSaver.saveImage(image)
     }
-    
-    private func saveOriginalToPhotoLibrary() {
-        guard let image = originalImage else {
-            imageSaver.saveResult = "Save failed: No original image available"
-            return
-        }
-        imageSaver.saveImage(image)
-    }
-    
+        
     private func loadBirdList() {
         do {
             guard let url = Bundle.main.url(forResource: "birdInfo", withExtension: "json") else {
@@ -556,5 +548,44 @@ struct VisualEffectView: UIViewRepresentable {
     
     func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) {
         uiView.effect = effect
+    }
+}
+
+extension ShareView {
+    private func saveOriginalToPhotoLibrary() {
+        let fileManager = FileManager.default
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fullPath = documentsURL.appendingPathComponent(photo.path)
+        
+        guard fileManager.fileExists(atPath: fullPath.path) else {
+            imageSaver.saveResult = "Save failed: Original file not found"
+            return
+        }
+        
+        // 获取原始文件名
+        let originalFileName = URL(fileURLWithPath: photo.title).lastPathComponent
+        
+        PHPhotoLibrary.requestAuthorization { status in
+            if status == .authorized {
+                PHPhotoLibrary.shared().performChanges({
+                    let creationRequest = PHAssetCreationRequest.forAsset()
+                    let options = PHAssetResourceCreationOptions()
+                    options.originalFilename = originalFileName
+                    creationRequest.addResource(with: .photo, fileURL: fullPath, options: options)
+                }) { success, error in
+                    DispatchQueue.main.async {
+                        if success {
+                            self.imageSaver.saveResult = "Original image '\(originalFileName)' successfully saved to photo library"
+                        } else {
+                            self.imageSaver.saveResult = "Save failed: \(error?.localizedDescription ?? "Unknown error")"
+                        }
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.imageSaver.saveResult = "Save failed: No permission to access photo library"
+                }
+            }
+        }
     }
 }

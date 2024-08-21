@@ -57,7 +57,7 @@ struct BirdNameListView: View {
                                 .foregroundColor(Color("TUIBLUE"))
                                 .padding(.leading, 8)
                             TextField("Search bird name", text: $searchText, onCommit: performSearch)
-                                .font(.caption2)
+                                .font(.caption)
                         }
                         .padding(8)
                         .background(Color.white)
@@ -106,7 +106,7 @@ struct BirdNameListView: View {
                         // Hot searches
                         VStack(alignment: .leading) {
                             Text("Popular Searches")
-                                .font(.caption2)
+                                .font(.subheadline)
                                 .padding(.leading)
                             LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
                                 ForEach(hotSearches, id: \.self) { item in
@@ -115,10 +115,10 @@ struct BirdNameListView: View {
                                         performSearch()
                                     }) {
                                         Text(item)
-                                            .padding(8)
+                                            .padding(12)
                                             .background(Color(.systemGray5))
                                             .cornerRadius(3)
-                                            .font(.caption2)
+                                            .font(.headline)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: 3)
                                                     .stroke(Color("TUIBLUE"), lineWidth: 1)

@@ -42,14 +42,15 @@ struct CameraCountView: View {
                         } else {
                             HStack {
                                 Text("Found \(cameraCounts.count) camera models")
-                                    .font(.caption2)
+                                    .font(.headline)
+                                    .padding(5)
                                 Spacer()
                                 Button(action: {
                                     showingSortOptions = true
                                 }) {
                                     Image(systemName: "arrow.up.arrow.down")
                                         .foregroundColor(Color("TUIBLUE"))
-                                        .font(.caption)
+                                        .font(.subheadline)
                                 }
                                 .actionSheet(isPresented: $showingSortOptions) {
                                     ActionSheet(
@@ -75,13 +76,13 @@ struct CameraCountView: View {
                             .padding(.horizontal, 16)
                             .padding(.top, 8)
 
-                            ForEach(Array(cameraCounts.enumerated()), id: \.element.0) { index, cameraData in
+                            ForEach(Array(zip(cameraCounts.indices, cameraCounts)), id: \.0) { index, cameraData in
                                 let (model, count, earliestTime) = cameraData
                                 NavigationLink(destination: CameraDetailView(cameraModel: model)) {
                                     HStack(spacing: 10) {
                                         Text("No. \(index + 1)")
                                             .foregroundColor(.secondary)
-                                            .frame(width: 50, alignment: .leading)
+                                            .frame(width: 60, alignment: .leading)
                                             .lineLimit(1)
                                             .minimumScaleFactor(0.5)
                                         
@@ -90,7 +91,7 @@ struct CameraCountView: View {
                                                 .foregroundColor(.primary)
                                                 .lineLimit(1)
                                             Text("Last used: \(formatDate(earliestTime))")
-                                                .font(.caption)
+                                                .font(.subheadline)
                                                 .foregroundColor(.secondary)
                                                 .lineLimit(1)
                                         }
@@ -102,7 +103,7 @@ struct CameraCountView: View {
                                             .frame(minWidth: 30, alignment: .trailing)
                                         
                                         Image(systemName: "chevron.right")
-                                            .font(.caption2)
+                                            .font(.subheadline)
                                             .foregroundColor(.blue)
                                     }
                                     .padding(.vertical, 8)

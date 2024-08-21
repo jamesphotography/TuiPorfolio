@@ -1,6 +1,9 @@
 import SwiftUI
 import Photos
 import SQLite3
+import UIKit
+import ImageIO
+
 
 struct AddImageView: View {
     @State private var image: Image? = nil
@@ -46,12 +49,14 @@ struct AddImageView: View {
                             
                             if let image = image {
                                 Text("\(imageName)")
-                                    .font(.caption)
+                                    .font(.title3)
+                                    .fontWeight(.thin)
                                 image
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: geometry.size.width * 0.7)
-                                    .padding()
+                                    .frame(width: geometry.size.width * 0.9)
+                                    .cornerRadius(5)
+                                    .shadow(radius: 3)
                                 
                                 ReviewView(cameraInfo: $cameraInfo, lensInfo: $lensInfo, captureDate: $captureDate,
                                            country: $country, area: $area, locality: $locality, starRating: $starRating,
@@ -66,7 +71,7 @@ struct AddImageView: View {
                                         .foregroundColor(.white)
                                         .padding()
                                         .background(Color("TUIBLUE"))
-                                        .cornerRadius(10)
+                                        .cornerRadius(5)
                                 }
                                 .padding()
                             } else {
@@ -95,8 +100,8 @@ struct AddImageView: View {
                                     .padding(30)
                                     Spacer()
                                     Text(NSLocalizedString("Note: Apple GPS lookup requires an active internet. The process may be delayed due to a limit of one queries per 2 seconds. Please patient during bulk imports.", comment: "Expanded explanation for GPS reverse lookup limitations and requirements"))
-                                                                            .font(.caption)
-                                                                            .foregroundColor(.secondary)
+                                                                            .font(.subheadline)
+                                                                            .foregroundColor(.blue)
                                                                             .multilineTextAlignment(.leading)
                                                                             .padding(.horizontal)
                                     Spacer()
@@ -147,13 +152,127 @@ struct AddImageView: View {
         guard let inputImage = inputImage else { return }
         image = Image(uiImage: inputImage)
     }
-    
-    func saveImage() {
-        guard let inputImage = inputImage else {
+
+    // 辅助函数：打印EXIF信息
+    func printEXIFInfo(from imageData: Data) {
+        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
+            print("Failed to create image source")
             return
         }
         
+        guard let metadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] else {
+            print("No metadata found")
+            return
+        }
+        
+        if let exif = metadata["{Exif}"] as? [String: Any] {
+            print("EXIF data:")
+            for (key, value) in exif {
+                print("\(key): \(value)")
+            }
+        } else {
+            print("No EXIF data found")
+        }
+        
+        if let tiff = metadata["{TIFF}"] as? [String: Any] {
+            print("TIFF data:")
+            for (key, value) in tiff {
+                print("\(key): \(value)")
+            }
+        }
+        
+        if let gps = metadata["{GPS}"] as? [String: Any] {
+            print("GPS data:")
+            for (key, value) in gps {
+                print("\(key): \(value)")
+            }
+        }
+    }
+
+    func generateThumbnail(for image: UIImage, size: CGSize) -> UIImage? {
+        let aspectWidth = size.width / image.size.width
+        let aspectHeight = size.height / image.size.height
+        let aspectRatio = max(aspectWidth, aspectHeight)
+        
+        let newSize = CGSize(width: image.size.width * aspectRatio, height: image.size.height * aspectRatio)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        
+        return renderer.image { _ in
+            let x = (newSize.width - size.width) / 2
+            let y = (newSize.height - size.height) / 2
+            image.draw(in: CGRect(x: -x, y: -y, width: newSize.width, height: newSize.height))
+        }
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
+    func deleteTemporaryFile() {
+        let tempDirectory = FileManager.default.temporaryDirectory
+        let tempFileURL = tempDirectory.appendingPathComponent(imageName)
+        
+        do {
+            if FileManager.default.fileExists(atPath: tempFileURL.path) {
+                try FileManager.default.removeItem(at: tempFileURL)
+            }
+        } catch {
+            print("Failed to delete temporary file: \(error.localizedDescription)")
+        }
+    }
+}
+
+struct ButtonContent: View {
+    let icon: String
+    let text: String
+    let color: Color
+    
+    var body: some View {
+        VStack {
+            Image(systemName: icon)
+                .font(.system(size: 60))
+            Text(text)
+                .font(.headline)
+        }
+        .foregroundColor(.white)
+        .frame(width: 200, height: 200)
+        .background(color)
+        .cornerRadius(10)
+    }
+}
+
+struct AddImageView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddImageView()
+    }
+}
+
+import UniformTypeIdentifiers
+
+extension AddImageView {
+    func saveImage() {
+        guard let inputImage = inputImage else {
+            saveMessage = "No input image"
+            showingSaveMessage = true
+            return
+        }
+        
+        // 获取原始图片数据
         guard let imageData = inputImage.jpegData(compressionQuality: 1.0) else {
+            saveMessage = "Failed to get image data"
+            showingSaveMessage = true
+            return
+        }
+        
+        // 打印原始图片的EXIF信息
+        print("Original image EXIF:")
+        printEXIFInfo(from: imageData)
+        
+        // 创建一个包含原始EXIF数据的CGImageSource
+        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
+            saveMessage = "Failed to create image source"
+            showingSaveMessage = true
             return
         }
         
@@ -202,12 +321,56 @@ struct AddImageView: View {
         let fileName = "\(uuid).jpg"
         let fileURL = portfolioDirectory.appendingPathComponent(fileName)
         
-        do {
-            try imageData.write(to: fileURL)
+        // 创建一个新的CGImageDestination来保存图像
+        guard let destination = CGImageDestinationCreateWithURL(fileURL as CFURL, UTType.jpeg.identifier as CFString, 1, nil) else {
+            saveMessage = "Failed to create image destination"
+            showingSaveMessage = true
+            return
+        }
+        
+        // 复制原始图像的属性
+        let originalProps = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] ?? [:]
+        
+        // 更新或添加我们想要的EXIF数据
+        var newProps = originalProps
+        var exifDict = (newProps[kCGImagePropertyExifDictionary as String] as? [String: Any]) ?? [:]
+        exifDict[kCGImagePropertyExifDateTimeOriginal as String] = formattedCaptureDate
+        exifDict[kCGImagePropertyExifLensModel as String] = lensInfo
+        exifDict[kCGImagePropertyExifExposureTime as String] = exposureTime
+        exifDict[kCGImagePropertyExifFNumber as String] = fNumber
+        exifDict[kCGImagePropertyExifFocalLenIn35mmFilm as String] = focalLenIn35mmFilm
+        exifDict[kCGImagePropertyExifFocalLength as String] = focalLength
+        exifDict[kCGImagePropertyExifISOSpeedRatings as String] = ISOSPEEDRatings
+        newProps[kCGImagePropertyExifDictionary as String] = exifDict
+        
+        var tiffDict = (newProps[kCGImagePropertyTIFFDictionary as String] as? [String: Any]) ?? [:]
+        tiffDict[kCGImagePropertyTIFFModel as String] = cameraInfo
+        newProps[kCGImagePropertyTIFFDictionary as String] = tiffDict
+        
+        var gpsDict = (newProps[kCGImagePropertyGPSDictionary as String] as? [String: Any]) ?? [:]
+        gpsDict[kCGImagePropertyGPSLatitude as String] = Double(latitude) ?? 0.0
+        gpsDict[kCGImagePropertyGPSLongitude as String] = Double(longitude) ?? 0.0
+        gpsDict[kCGImagePropertyGPSAltitude as String] = altitude
+        newProps[kCGImagePropertyGPSDictionary as String] = gpsDict
+        
+        // 将图像添加到目标，包括更新后的属性
+        CGImageDestinationAddImageFromSource(destination, source, 0, newProps as CFDictionary)
+        
+        // 完成图像目标的创建过程
+        if CGImageDestinationFinalize(destination) {
             let title = URL(fileURLWithPath: imageName).deletingPathExtension().lastPathComponent
             imageName = fileName
-            saveMessage = "\(title) Image saved successfully"
+            saveMessage = "\(title) " + NSLocalizedString("image_saved_successfully", comment: "")
             
+            // 打印保存后图片的EXIF信息
+            //print("Saved image EXIF:")
+            if let savedImageData = try? Data(contentsOf: fileURL) {
+                printEXIFInfo(from: savedImageData)
+            } else {
+                print("Failed to read saved image data")
+            }
+            
+            // 生成缩略图
             let thumbnail100 = generateThumbnail(for: inputImage, size: CGSize(width: 100, height: 100))
             let thumbnail350 = generateThumbnail(for: inputImage, size: CGSize(width: 350, height: 350))
             
@@ -216,8 +379,14 @@ struct AddImageView: View {
             let thumbnail100Path = portfolioDirectory.appendingPathComponent(thumbnail100Name)
             let thumbnail350Path = portfolioDirectory.appendingPathComponent(thumbnail350Name)
             
-            try thumbnail100?.jpegData(compressionQuality: 1.0)?.write(to: thumbnail100Path)
-            try thumbnail350?.jpegData(compressionQuality: 1.0)?.write(to: thumbnail350Path)
+            do {
+                try thumbnail100?.jpegData(compressionQuality: 0.8)?.write(to: thumbnail100Path)
+                try thumbnail350?.jpegData(compressionQuality: 0.8)?.write(to: thumbnail350Path)
+            } catch {
+                saveMessage = "Failed to save thumbnails: \(error)"
+                showingSaveMessage = true
+                return
+            }
             
             let relativePath = fileURL.path.replacingOccurrences(of: getDocumentsDirectory().path, with: "")
             let relativeThumbnail100Path = thumbnail100Path.path.replacingOccurrences(of: getDocumentsDirectory().path, with: "")
@@ -282,69 +451,11 @@ struct AddImageView: View {
             } else {
                 saveMessage = "Failed to save photo to SQLite"
             }
-            
-        } catch {
-            saveMessage = "Failed to save image: \(error)"
+        } else {
+            saveMessage = "Failed to save image"
         }
+        
         UserDefaults.standard.set(false, forKey: "isFirstLaunch")
         showingSaveMessage = true
-    }
-    
-    func generateThumbnail(for image: UIImage, size: CGSize) -> UIImage? {
-        let aspectWidth = size.width / image.size.width
-        let aspectHeight = size.height / image.size.height
-        let aspectRatio = max(aspectWidth, aspectHeight)
-        
-        let newSize = CGSize(width: image.size.width * aspectRatio, height: image.size.height * aspectRatio)
-        let renderer = UIGraphicsImageRenderer(size: size)
-        
-        return renderer.image { _ in
-            let x = (newSize.width - size.width) / 2
-            let y = (newSize.height - size.height) / 2
-            image.draw(in: CGRect(x: -x, y: -y, width: newSize.width, height: newSize.height))
-        }
-    }
-    
-    func getDocumentsDirectory() -> URL {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-    
-    func deleteTemporaryFile() {
-        let tempDirectory = FileManager.default.temporaryDirectory
-        let tempFileURL = tempDirectory.appendingPathComponent(imageName)
-        
-        do {
-            if FileManager.default.fileExists(atPath: tempFileURL.path) {
-                try FileManager.default.removeItem(at: tempFileURL)
-            }
-        } catch {
-            print("Failed to delete temporary file: \(error.localizedDescription)")
-        }
-    }
-}
-
-struct ButtonContent: View {
-    let icon: String
-    let text: String
-    let color: Color
-    
-    var body: some View {
-        VStack {
-            Image(systemName: icon)
-                .font(.system(size: 60))
-            Text(text)
-                .font(.headline)
-        }
-        .foregroundColor(.white)
-        .frame(width: 200, height: 200)
-        .background(color)
-        .cornerRadius(10)
-    }
-}
-
-struct AddImageView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddImageView()
     }
 }

@@ -77,7 +77,7 @@ struct HistoryView: View {
                                         .foregroundStyle(color)
                                         .annotation(position: .overlay) {
                                             Text("\(item.count)")
-                                                .font(.caption)
+                                                .font(.subheadline)
                                                 .foregroundColor(.white)
                                         }
                                     }
@@ -92,7 +92,7 @@ struct HistoryView: View {
                                                 .fill(color)
                                                 .frame(width: 10, height: 10)
                                             Text(item.name)
-                                                .font(.caption)
+                                                .font(.subheadline)
                                         }
                                     }
                                 }
@@ -107,7 +107,7 @@ struct HistoryView: View {
                                 }) {
                                     Image(systemName: "ellipsis.circle")
                                         .foregroundColor(.blue)
-                                        .font(.system(size: 24))
+                                        .font(.system(size: 32))
                                         .padding(5)
                                         .background(Color.white)
                                         .clipShape(Circle())
@@ -270,19 +270,18 @@ struct HistoryCardView: View {
                             stats.totalDays,
                             stats.userName,
                             formatTimePeriod(years: stats.years, months: stats.months, days: stats.days)))
-                    .foregroundColor(.white)
                 Text(String(format: NSLocalizedString("You've used %d cameras and %d lenses to capture %d stunning photos, each telling a unique story.", comment: ""), stats.totalCameras, stats.totalLenses, stats.totalPhotos))
-                    .foregroundColor(.white)
                 Text(String(format: NSLocalizedString("Your lens has spanned %d countries and %d regions, bringing the world closer.", comment: ""), stats.totalCountries, stats.totalRegions))
-                    .foregroundColor(.white)
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 15)
+            .foregroundColor(.white)
+            .font(.title2)
             .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 20)
             Image("tuiblueapp")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 48, height: 48)
+                .frame(width: 96, height: 96)
             Spacer()
         }
         .padding(.vertical, 20)

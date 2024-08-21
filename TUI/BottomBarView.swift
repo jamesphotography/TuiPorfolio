@@ -23,7 +23,7 @@ struct BottomBarView: View {
             Spacer()
             NavigationLink(destination: AddImageView()) {
                 Image(systemName: "plus.circle.fill")
-                    .font(.title)
+                    .font(.largeTitle)
                     .foregroundColor(Color("Flare"))
                     .padding()
             }
