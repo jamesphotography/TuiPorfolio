@@ -25,6 +25,7 @@ struct DetailView: View {
     @State private var navigateToLens = false
     @State private var showingDeleteAlert = false
     @State private var showingDeleteSuccessAlert = false
+    @AppStorage("enableBirdWatching") private var enableBirdWatching = false
     var onDismiss: (Int) -> Void
     
     private var currentPhoto: Photo { photos[currentIndex] }
@@ -138,7 +139,9 @@ struct DetailView: View {
         .onAppear {
             birdList = loadBirdList()
             checkIfBird()
-            if isBirdSpecies { getBirdNumber() }
+        }
+        .onChange(of: enableBirdWatching) { _, _ in
+            checkIfBird()
         }
     }
     
@@ -314,7 +317,7 @@ struct DetailView: View {
     }
     
     private var titleWithBirdNumber: String {
-        if isBirdSpecies, let number = birdNumber {
+        if enableBirdWatching && isBirdSpecies, let number = birdNumber {
             return "No.\(number) \(objectName.isEmpty ? currentPhoto.title : objectName)"
         } else {
             return objectName.isEmpty ? currentPhoto.title : objectName
@@ -353,14 +356,24 @@ struct DetailView: View {
     }
     
     private func checkIfBird() {
+        guard enableBirdWatching else {
+            isBirdSpecies = false
+            birdNumber = nil
+            return
+        }
         isBirdSpecies = birdList.contains { birdNames in
             birdNames.contains(objectName)
+        }
+        if isBirdSpecies {
+            getBirdNumber()
+        } else {
+            birdNumber = nil
         }
     }
     
     private func copyEXIFInfo() {
         var exifInfo = EXIFManager.shared.copyEXIFInfo(for: currentPhoto)
-        if isBirdSpecies, let number = birdNumber {
+        if enableBirdWatching && isBirdSpecies, let number = birdNumber {
             exifInfo += "\nBird ID:No.\(number)"
         }
         UIPasteboard.general.string = exifInfo
@@ -368,6 +381,10 @@ struct DetailView: View {
     }
     
     private func getBirdNumber() {
+        guard enableBirdWatching && isBirdSpecies else {
+            birdNumber = nil
+            return
+        }
         DispatchQueue.global(qos: .background).async {
             let allObjectNames = SQLiteManager.shared.getAllObjectNames()
             let earliestPhotoTimes = SQLiteManager.shared.getEarliestPhotoTimeForBirds()
