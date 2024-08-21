@@ -81,6 +81,13 @@ struct WaterfallView: View {
                     calculateBirdNumbers()
                 }
             }
+            .onChange(of: enableBirdWatching) { oldValue, newValue in
+                if newValue {
+                    calculateBirdNumbers()
+                } else {
+                    birdNumbers.removeAll()
+                }
+            }
         }
     }
     
@@ -94,6 +101,8 @@ struct WaterfallView: View {
     }
     
     private func calculateBirdNumbers() {
+        guard enableBirdWatching else { return }
+        
         let allObjectNames = SQLiteManager.shared.getAllObjectNames()
         let earliestPhotoTimes = SQLiteManager.shared.getEarliestPhotoTimeForBirds()
         
