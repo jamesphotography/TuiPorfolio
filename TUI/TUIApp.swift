@@ -1,3 +1,5 @@
+// TUIApp.swift
+
 import SwiftUI
 
 @main
@@ -13,8 +15,8 @@ struct TUIApp: App {
                         Color("BGColor").edgesIgnoringSafeArea(.all)
                         
                         LandingView()
-                            .frame(maxWidth: min(geometry.size.width, 600))
-                            .frame(maxHeight: geometry.size.height)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .padding(.horizontal, geometry.size.width > 712 ? (geometry.size.width - 712) / 2 : 0)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
