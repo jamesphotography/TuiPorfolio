@@ -32,7 +32,13 @@ class PhotoExtractor {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
         
-        let captureDate = exifDict[kCGImagePropertyExifDateTimeOriginal as String] as? String ?? ""
+        guard let captureDate = exifDict[kCGImagePropertyExifDateTimeOriginal as String] as? String, !captureDate.isEmpty else {
+            getThumbnail(from: imageData) { thumbnail in
+                completion(false, "Photo has no capture date", thumbnail)
+            }
+            return
+        }
+        
         let formattedCaptureDate = formatDate(captureDate)
         
         // 处理文件名作为 title
