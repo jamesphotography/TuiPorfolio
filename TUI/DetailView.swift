@@ -23,6 +23,8 @@ struct DetailView: View {
     @State private var position: MapCameraPosition
     @State private var navigateToCamera = false
     @State private var navigateToLens = false
+    @State private var showingDeleteAlert = false
+    @State private var showingDeleteSuccessAlert = false
     var onDismiss: (Int) -> Void
     
     private var currentPhoto: Photo { photos[currentIndex] }
@@ -69,6 +71,13 @@ struct DetailView: View {
             .alert(isPresented: $showingCopyAlert) {
                 Alert(title: Text("Copy Successful"), message: Text("EXIF information has been copied to the clipboard"), dismissButton: .default(Text("OK")))
             }
+            .alert("Photo Deleted", isPresented: $showingDeleteSuccessAlert) {
+                Button("OK") {
+                    self.presentationMode.wrappedValue.dismiss()
+                }
+            } message: {
+                Text("The photo has been deleted successfully. Please tap the Tui logo to refresh the main page.")
+            }
             .background(Color("BGColor").edgesIgnoringSafeArea(.all))
             .ignoresSafeArea()
         }
@@ -112,7 +121,10 @@ struct DetailView: View {
                 shouldNavigateToHome: $shouldNavigateToHome,
                 initialRating: currentPhoto.starRating,
                 initialLatitude: currentPhoto.latitude,
-                initialLongitude: currentPhoto.longitude
+                initialLongitude: currentPhoto.longitude,
+                initialCountry: currentPhoto.country,
+                initialArea: currentPhoto.area,
+                initialLocality: currentPhoto.locality
             )
         }
         .sheet(isPresented: $showingShareView) {
@@ -190,10 +202,13 @@ struct DetailView: View {
     private var controlSection: some View {
         HStack {
             Button(action: { showingShareView = true }) {
-                Image(systemName: "square.and.arrow.up")
+                Image(systemName: "square.and.arrow.up.circle.fill")
                     .foregroundColor(.blue)
             }
-            
+            Button(action: { copyEXIFInfo() }) {
+                Image(systemName: "doc.circle.fill")
+                    .foregroundColor(.blue)
+            }
             Spacer()
             VStack {
                 Button(action: { navigateToSameday = true }) {
@@ -204,18 +219,43 @@ struct DetailView: View {
                 StarRating(rating: currentPhoto.starRating)
             }
             Spacer()
-            
             Button(action: { showingEditor = true }) {
-                Image(systemName: "pencil")
+                Image(systemName: "square.and.pencil.circle.fill")
                     .foregroundColor(.blue)
             }
             
-            Button(action: { copyEXIFInfo() }) {
-                Image(systemName: "doc.on.doc")
-                    .foregroundColor(.blue)
+            Button(action: { showingDeleteAlert = true }) {
+                Image(systemName: "trash.circle.fill")
+                    .foregroundColor(Color("Flare"))
+            }
+            .alert("Delete Photo", isPresented: $showingDeleteAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) { deletePhoto() }
+            } message: {
+                Text("Are you sure you want to delete this photo? This action cannot be undone.")
             }
         }
         .padding(.horizontal)
+    }
+    
+    private func deletePhoto() {
+        // 删除文件
+        let fileManager = FileManager.default
+        let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fullPath = documentsPath.appendingPathComponent(currentPhoto.path)
+        
+        do {
+            try fileManager.removeItem(at: fullPath)
+           // print("File deleted successfully")
+            
+            // 删除数据库记录
+            SQLiteManager.shared.deletePhotoRecord(imagePath: currentPhoto.path)
+            
+            // 显示删除成功的提示框
+            showingDeleteSuccessAlert = true
+        } catch {
+            print("Error deleting file: \(error)")
+        }
     }
     
     private var infoSection: some View {
@@ -334,7 +374,7 @@ struct DetailView: View {
             }
             
             let sortedBirdCounts = filteredBirdCounts.compactMap { (objectName, count) -> (String, String)? in
-                if let earliestTime = earliestPhotoTimes.first(where: { $0.0 == objectName })?.1 {
+                if let earliestTime = earliestPhotoTimes.first(where: {$0.0 == objectName })?.1 {
                     return (objectName, earliestTime)
                 }
                 return nil
@@ -405,3 +445,5 @@ struct StarRating: View {
         }
     }
 }
+                    
+                    

@@ -286,7 +286,7 @@ struct AddImageView: View {
         } catch {
             saveMessage = "Failed to save image: \(error)"
         }
-        
+        UserDefaults.standard.set(false, forKey: "isFirstLaunch")
         showingSaveMessage = true
     }
     

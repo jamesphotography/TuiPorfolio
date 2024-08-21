@@ -193,31 +193,31 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
         
         func geocodeLocation(latitude: Double, longitude: Double) {
-            let location = CLLocation(latitude: latitude, longitude: longitude)
-            let geocoder = CLGeocoder()
-            
-            let locale = Locale(identifier: "en_US")
-            geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
-                if let error = error {
-                    self.handleGeocodingFailure()
-                    return
+                    let location = CLLocation(latitude: latitude, longitude: longitude)
+                    let geocoder = CLGeocoder()
+                    
+                    let locale = Locale(identifier: "en_US")
+                    geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
+                        if error != nil {
+                            self.handleGeocodingFailure()
+                            return
+                        }
+                        
+                        if let placemark = placemarks?.first {
+                            self.parent.country = placemark.country ?? "Unknown country"
+                            self.parent.area = placemark.administrativeArea ?? "Unknown area"
+                            self.parent.locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown locality"
+                        } else {
+                            self.handleGeocodingFailure()
+                        }
+                    }
                 }
                 
-                if let placemark = placemarks?.first {
-                    self.parent.country = placemark.country ?? "Unknown country"
-                    self.parent.area = placemark.administrativeArea ?? "Unknown area"
-                    self.parent.locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown locality"
-                } else {
-                    self.handleGeocodingFailure()
+                private func handleGeocodingFailure() {
+                    self.parent.country = "Unknown country"
+                    self.parent.area = "Unknown area"
+                    self.parent.locality = "Unknown locality"
                 }
-            }
-        }
-        
-        private func handleGeocodingFailure() {
-            self.parent.country = "Unknown country"
-            self.parent.area = "Unknown area"
-            self.parent.locality = "Unknown locality"
-        }
     }
     
     func makeCoordinator() -> Coordinator {

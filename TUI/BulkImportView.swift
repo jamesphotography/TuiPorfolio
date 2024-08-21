@@ -169,24 +169,32 @@ struct BulkImportView: View {
     }
 
     private var requestAccessView: some View {
-        VStack {
-            Text("Photo Library Access Required")
+        VStack(spacing: 20) {
+            Text(NSLocalizedString("Photo Library Access Required", comment: "Photo library access required title"))
                 .font(.title)
-                .foregroundColor(Color("TUIBLUE"))
-            Text("Please grant access to your photo library in Settings.")
+                .fontWeight(.bold)
+            
+            Text(NSLocalizedString("Please grant access to your photo library in Settings.", comment: "Instruct user to grant access in settings"))
+                .multilineTextAlignment(.center)
+            
+            Text(NSLocalizedString("We need access to your photo library so you can select individual photos or entire albums to import into your portfolio. We read metadata (such as capture date, location, and camera information) from the selected photos, but we do not modify or delete your original photos. This allows us to organize your portfolio efficiently and provide features like timeline view and location-based browsing. You can manage or delete imported photos within the app at any time. We do not share your photos or metadata with third parties.", comment: "Detailed explanation of photo library usage"))
+                .font(.footnote)
                 .multilineTextAlignment(.center)
                 .padding()
-                .foregroundColor(Color("TUIBLUE"))
-            Button("Open Settings") {
+            
+            Button(action: {
                 if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(settingsUrl)
                 }
+            }) {
+                Text(NSLocalizedString("Open Settings", comment: "Open settings button"))
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.blue)
+                    .cornerRadius(10)
             }
-            .foregroundColor(.white)
-            .padding()
-            .background(Color("TUIBLUE"))
-            .cornerRadius(10)
         }
+        .padding()
         .background(Color("BGColor"))
     }
 
@@ -233,6 +241,9 @@ struct BulkImportView: View {
                 // Set the error message if there are any failures
                 if let firstFailure = results.first(where: { $0.status == .failure }) {
                     self.errorMessage = firstFailure.reason ?? "Unknown error occurred"
+                }
+                if self.successCount > 0 {
+                    UserDefaults.standard.set(false, forKey: "isFirstLaunch")
                 }
             }
         }

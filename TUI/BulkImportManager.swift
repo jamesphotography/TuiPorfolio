@@ -102,6 +102,7 @@ class BulkImportManager {
                 }
                 group.leave()
             }
+            UserDefaults.standard.set(false, forKey: "isFirstLaunch")
         }
         
         group.notify(queue: .main) {
@@ -332,26 +333,26 @@ class BulkImportManager {
     }
     
     private func geocodeLocation(latitude: Double, longitude: Double, completion: @escaping (Result<(String, String, String), Error>) -> Void) {
-        let location = CLLocation(latitude: latitude, longitude: longitude)
-        let geocoder = CLGeocoder()
-        
-        let locale = Locale(identifier: "en_US")
-        geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
-            if let error = error {
-                completion(.failure(ImportError.geocodingFailed))
-                return
-            }
+            let location = CLLocation(latitude: latitude, longitude: longitude)
+            let geocoder = CLGeocoder()
             
-            if let placemark = placemarks?.first {
-                let country = placemark.country ?? "Unknown Country"
-                let area = placemark.administrativeArea ?? "Unknown Area"
-                let locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown Location"
-                completion(.success((country, area, locality)))
-            } else {
-                completion(.failure(ImportError.geocodingFailed))
+            let locale = Locale(identifier: "en_US")
+            geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
+                if error != nil {
+                    completion(.failure(ImportError.geocodingFailed))
+                    return
+                }
+                
+                if let placemark = placemarks?.first {
+                    let country = placemark.country ?? "Unknown Country"
+                    let area = placemark.administrativeArea ?? "Unknown Area"
+                    let locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown Location"
+                    completion(.success((country, area, locality)))
+                } else {
+                    completion(.failure(ImportError.geocodingFailed))
+                }
             }
         }
-    }
     
     private func saveBulkPhoto(_ photo: Photo, imageData: Data, completion: @escaping (Bool, Error?) -> Void) {
         let fileManager = FileManager.default

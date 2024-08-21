@@ -12,7 +12,6 @@ struct EditorView: View {
     @Binding var shouldNavigateToHome: Bool
     
     @Environment(\.presentationMode) var presentationMode
-    @State private var showDeleteConfirmation = false
     @State private var localObjectName: String
     @State private var localCaption: String
     @State private var localRating: Int
@@ -24,9 +23,7 @@ struct EditorView: View {
     @State private var locationLookupMessage = ""
     @State private var isPerformingLookup = false
     
-    var onDelete: (() -> Void)?
-    
-    init(image: Binding<UIImage?>, imageName: Binding<String>, objectName: Binding<String>, caption: Binding<String>, imagePath: Binding<String>, thumbnailPath100: Binding<String>, thumbnailPath350: Binding<String>, shouldNavigateToHome: Binding<Bool>, initialRating: Int, initialLatitude: Double, initialLongitude: Double) {
+    init(image: Binding<UIImage?>, imageName: Binding<String>, objectName: Binding<String>, caption: Binding<String>, imagePath: Binding<String>, thumbnailPath100: Binding<String>, thumbnailPath350: Binding<String>, shouldNavigateToHome: Binding<Bool>, initialRating: Int, initialLatitude: Double, initialLongitude: Double, initialCountry: String, initialArea: String, initialLocality: String) {
         self._image = image
         self._imageName = imageName
         self._objectName = objectName
@@ -40,6 +37,7 @@ struct EditorView: View {
         self._localRating = State(initialValue: initialRating)
         self._latitude = State(initialValue: String(initialLatitude))
         self._longitude = State(initialValue: String(initialLongitude))
+        self._locationInfo = State(initialValue: "\(initialCountry), \(initialArea), \(initialLocality)")
     }
     
     var body: some View {
@@ -61,31 +59,18 @@ struct EditorView: View {
                         Spacer()
                         EditableStarRating(rating: $localRating)
                     }
-                    TextField("Object Name", text: $localObjectName)
-                    TextEditor(text: $localCaption)
-                        .frame(height: 150)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
+                    EditableField(title: "Title", text: $localObjectName)
+                    EditableTextEditor(title: "Caption", text: $localCaption)
                 }
                 
                 Section(header: Text("GPS Information")) {
-                    HStack(alignment: .top) {
-                        VStack {
-                            HStack {
-                                Text("Lat:")
-                                    .font(.caption)
-                                    .frame(width: 35, alignment: .leading)
-                                TextField("Latitude", text: $latitude)
-                                    .keyboardType(.numbersAndPunctuation)
-                            }
-                            HStack {
-                                Text("Lon:")
-                                    .font(.caption)
-                                    .frame(width: 35, alignment: .leading)
-                                TextField("Longitude", text: $longitude)
-                                    .keyboardType(.numbersAndPunctuation)
-                            }
+                    HStack(alignment: .top, spacing: 10) {
+                        VStack(spacing: 10) {
+                            EditableField(title: "Lat:", text: $latitude, keyboardType: .numbersAndPunctuation)
+                            EditableField(title: "Lon:", text: $longitude, keyboardType: .numbersAndPunctuation)
                         }
+                        .frame(maxWidth: .infinity)
+                        
                         Button(action: lookupLocation) {
                             if isPerformingLookup {
                                 ProgressView()
@@ -95,24 +80,12 @@ struct EditorView: View {
                                     .font(.title)
                             }
                         }
-                        .frame(height: 80)  // Adjust this value to match the height of two text fields
+                        .frame(width: 44, height: 80)
                         .disabled(isPerformingLookup)
                     }
                     
                     Text(locationInfo)
                         .font(.caption)
-                }
-                
-                Section {
-                    Button(action: {
-                        showDeleteConfirmation = true
-                    }) {
-                        HStack {
-                            Image(systemName: "trash")
-                            Text("Delete Image")
-                        }
-                        .foregroundColor(.red)
-                    }
                 }
             }
             .navigationBarTitle("Edit Image", displayMode: .inline)
@@ -125,16 +98,6 @@ struct EditorView: View {
                     presentationMode.wrappedValue.dismiss()
                 }
             )
-            .alert(isPresented: $showDeleteConfirmation) {
-                Alert(
-                    title: Text("Confirm Delete"),
-                    message: Text("Are you sure you want to delete this image?"),
-                    primaryButton: .destructive(Text("Delete")) {
-                        deleteImage()
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
             .alert(isPresented: $showLocationLookupAlert) {
                 Alert(
                     title: Text("Location Lookup"),
@@ -161,24 +124,6 @@ struct EditorView: View {
             area: extractLocationComponent(.area),
             locality: extractLocationComponent(.locality)
         )
-    }
-    
-    private func deleteImage() {
-        let fileManager = FileManager.default
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        
-        let imagePaths = [imagePath, thumbnailPath350, thumbnailPath100]
-        
-        for path in imagePaths {
-            let fileURL = documentsURL.appendingPathComponent(path)
-            try? fileManager.removeItem(at: fileURL)
-        }
-        
-        SQLiteManager.shared.deletePhotoRecord(imagePath: imagePath)
-        
-        onDelete?()
-        shouldNavigateToHome = true
-        presentationMode.wrappedValue.dismiss()
     }
     
     private func lookupLocation() {
@@ -242,5 +187,66 @@ struct EditableStarRating: View {
                     }
             }
         }
+    }
+}
+
+struct EditableField: View {
+    let title: String
+    @Binding var text: String
+    var keyboardType: UIKeyboardType = .default
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.caption)
+                .frame(width: 80, alignment: .leading)
+                .lineLimit(1)
+            TextField("", text: $text)
+                .keyboardType(keyboardType)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+        }
+    }
+}
+
+struct EditableTextEditor: View {
+    let title: String
+    @Binding var text: String
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.caption)
+            TextEditor(text: $text)
+                .frame(height: 100)
+                .background(Color(.systemGray6))
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
+        }
+    }
+}
+
+struct EditorView_Previews: PreviewProvider {
+    static var previews: some View {
+        EditorView(
+            image: .constant(UIImage(systemName: "photo")),
+            imageName: .constant("Sample Image"),
+            objectName: .constant("Sample Object"),
+            caption: .constant("Sample Caption"),
+            imagePath: .constant("/path/to/image"),
+            thumbnailPath100: .constant("/path/to/thumbnail100"),
+            thumbnailPath350: .constant("/path/to/thumbnail350"),
+            shouldNavigateToHome: .constant(false),
+            initialRating: 3,
+            initialLatitude: 40.7128,
+            initialLongitude: -74.0060,
+            initialCountry: "United States",
+            initialArea: "New York",
+            initialLocality: "New York City"
+        )
     }
 }

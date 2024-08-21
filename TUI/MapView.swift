@@ -48,12 +48,18 @@ struct MapView: View {
                                         .clipShape(Circle())
                                         .overlay(Circle().stroke(Color.white, lineWidth: 2))
                                         .shadow(radius: 3)
+                                        .onTapGesture {
+                                            showingActionSheet = true
+                                        }
                                 } else {
                                     Image(systemName: "photo")
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 60, height: 60)
                                         .foregroundColor(.gray)
+                                        .onTapGesture {
+                                            showingActionSheet = true
+                                        }
                                 }
                                 
                                 Button(action: {

@@ -77,20 +77,6 @@ struct BlogArticleView: View {
     }
 }
 
-// 其余代码保持不变...
-
-struct WebView: UIViewRepresentable {
-    let url: URL
-    
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
-        webView.load(URLRequest(url: url))
-        return webView
-    }
-    
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
-}
-
 class BlogViewModel: ObservableObject {
     @Published var articles: [RSSItem] = []
     @Published var isLoading = false

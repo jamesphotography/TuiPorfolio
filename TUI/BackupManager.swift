@@ -5,6 +5,8 @@ class BackupManager {
     static let shared = BackupManager()
     private let fileManager = FileManager.default
     
+    private let defaultUsername = NSLocalizedString("James", comment: "Default username for factory reset")
+    
     private init() {}
     
     enum BackupError: Error {
@@ -32,18 +34,18 @@ class BackupManager {
         
         do {
             try fileManager.createDirectory(at: tempBackupDirURL, withIntermediateDirectories: true, attributes: nil)
-            progressUpdate(0.1)
+            await MainActor.run { progressUpdate(0.1) }
             
             try await backupDatabase(to: tempBackupDirURL)
-            progressUpdate(0.4)
+            await MainActor.run { progressUpdate(0.4) }
             
             try await backupImages(to: tempBackupDirURL)
-            progressUpdate(0.7)
+            await MainActor.run { progressUpdate(0.7) }
             
             guard SSZipArchive.createZipFile(atPath: backupURL.path, withContentsOfDirectory: tempBackupDirURL.path) else {
                 throw BackupError.failedToCreateZip
             }
-            progressUpdate(1.0)
+            await MainActor.run { progressUpdate(1.0) }
 
             return backupURL
         } catch {
@@ -53,62 +55,58 @@ class BackupManager {
     }
     
     func restoreBackup(from backupURL: URL, progressUpdate: @escaping (Double) -> Void) async throws {
-            let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-            let tempRestoreDirURL = documentsURL.appendingPathComponent("TempRestore")
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let tempRestoreDirURL = documentsURL.appendingPathComponent("TempRestore")
+        
+        defer {
+            try? fileManager.removeItem(at: tempRestoreDirURL)
+        }
+        
+        do {
+            try fileManager.createDirectory(at: tempRestoreDirURL, withIntermediateDirectories: true, attributes: nil)
+            await MainActor.run { progressUpdate(0.1) }
             
-            defer {
-                try? fileManager.removeItem(at: tempRestoreDirURL)
+            guard SSZipArchive.unzipFile(atPath: backupURL.path, toDestination: tempRestoreDirURL.path) else {
+                throw BackupError.failedToUnzip
             }
+            await MainActor.run { progressUpdate(0.3) }
             
-            do {
-                try fileManager.createDirectory(at: tempRestoreDirURL, withIntermediateDirectories: true, attributes: nil)
-                progressUpdate(0.1)
-                
-                guard SSZipArchive.unzipFile(atPath: backupURL.path, toDestination: tempRestoreDirURL.path) else {
-                    throw BackupError.failedToUnzip
+            let backupFileName = backupURL.lastPathComponent
+            let username = extractUsername(from: backupFileName)
+            
+            await MainActor.run {
+                if backupURL.lastPathComponent.starts(with: "DefaultBackup_") {
+                    setDefaultSettings()
+                } else {
+                    UserDefaults.standard.set(username, forKey: "userName")
                 }
-                progressUpdate(0.4)
-                
-                // Extract username from backup file name
-                let backupFileName = backupURL.lastPathComponent
-                let username = extractUsername(from: backupFileName)
-                
-                // Update username in UserDefaults
-                UserDefaults.standard.set(username, forKey: "userName")
-                
-                try await restoreDatabase(from: tempRestoreDirURL)
-                progressUpdate(0.7)
-                
-                try await restoreImages(from: tempRestoreDirURL)
-                progressUpdate(1.0)
-                
-                print("Backup successfully restored")
-            } catch {
-                print("Restore failed: \(error.localizedDescription)")
-                throw error
             }
+            
+            try await restoreDatabase(from: tempRestoreDirURL)
+            await MainActor.run { progressUpdate(0.5) }
+            
+            try await restoreImages(from: tempRestoreDirURL)
+            await MainActor.run { progressUpdate(0.7) }
+            
+            print("Backup successfully restored")
+            await MainActor.run { progressUpdate(1.0) }
+        } catch {
+            print("Restore failed: \(error.localizedDescription)")
+            throw error
         }
-        
-        private func extractUsername(from fileName: String) -> String {
-            let components = fileName.split(separator: "_")
-            if components.count >= 3 {
-                return String(components[2].dropLast(4)) // Remove ".zip" extension
-            }
-            return "Unknown"
-        }
+        UserDefaults.standard.set(false, forKey: "isFirstLaunch")
+    }
     
-    private func getBackupsDirectory() throws -> URL {
-        guard let appSupportURL = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
-            throw BackupError.failedToCreateDirectory
+    private func extractUsername(from fileName: String) -> String {
+        if fileName.starts(with: "DefaultBackup_") {
+            return defaultUsername
         }
         
-        let backupsURL = appSupportURL.appendingPathComponent("Backups", isDirectory: true)
-        
-        if !fileManager.fileExists(atPath: backupsURL.path) {
-            try fileManager.createDirectory(at: backupsURL, withIntermediateDirectories: true, attributes: nil)
+        let components = fileName.split(separator: "_")
+        if components.count >= 3 {
+            return String(components[2].dropLast(4)) // Remove ".zip" extension
         }
-        
-        return backupsURL
+        return defaultUsername
     }
     
     private func backupDatabase(to directory: URL) async throws {
@@ -143,5 +141,62 @@ class BackupManager {
     
     private func getDocumentsDirectory() -> URL {
         fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+    }
+    
+    func getDefaultBackupURL() -> URL? {
+        return Bundle.main.url(forResource: "JamesTuiPortfolio", withExtension: "zip")
+    }
+
+    func copyDefaultBackupIfNeeded() {
+        guard let defaultBackupURL = getDefaultBackupURL() else {
+            print("Default backup not found in bundle")
+            return
+        }
+
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let destinationURL = documentsURL.appendingPathComponent("DefaultBackup_JamesTuiPortfolio.zip")
+
+        if !fileManager.fileExists(atPath: destinationURL.path) {
+            do {
+                try fileManager.copyItem(at: defaultBackupURL, to: destinationURL)
+                print("Default backup copied to documents directory")
+            } catch {
+                print("Failed to copy default backup: \(error)")
+            }
+        }
+    }
+    
+    func restoreDefaultBackup(progressUpdate: @escaping (Double) -> Void) async throws {
+        guard getDefaultBackupURL() != nil else {
+            throw BackupError.invalidBackup
+        }
+        
+        copyDefaultBackupIfNeeded()
+        
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let copiedDefaultBackupURL = documentsURL.appendingPathComponent("DefaultBackup_JamesTuiPortfolio.zip")
+        
+        try await restoreBackup(from: copiedDefaultBackupURL) { progress in
+            Task { @MainActor in
+                progressUpdate(progress)
+            }
+        }
+        
+        await MainActor.run {
+            setDefaultSettings()
+        }
+        
+        try? fileManager.removeItem(at: copiedDefaultBackupURL)
+        
+        UserDefaults.standard.set(false, forKey: "isFirstLaunch")
+    }
+    
+    private func setDefaultSettings() {
+        UserDefaults.standard.set(defaultUsername, forKey: "userName")
+        UserDefaults.standard.set(true, forKey: "sortByShootingTime")
+        UserDefaults.standard.set(true, forKey: "enableBirdWatching")
+        UserDefaults.standard.set(true, forKey: "shareWithExif")
+        UserDefaults.standard.set(true, forKey: "shareWithGPS")
+        UserDefaults.standard.set(true, forKey: "omitCameraBrand")
     }
 }

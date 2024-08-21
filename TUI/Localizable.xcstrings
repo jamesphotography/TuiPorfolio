@@ -269,7 +269,30 @@
         }
       }
     },
+    "%@... %d%%" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@... %2$d%%"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@... %2$d%%"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@... %2$d%%"
+          }
+        }
+      }
+    },
     "%@... %lld%%" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -416,13 +439,52 @@
       }
     },
     "Access to photo library is limited" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访问照片库的权限有限"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訪問照片庫的權限有限"
+          }
+        }
+      }
     },
     "Access to photo library is restricted" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访问照片库被限制"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訪問照片庫受到限制"
+          }
+        }
+      }
     },
     "Access to photo library was denied" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访问照片库被拒绝"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訪問照片庫被拒絕"
+          }
+        }
+      }
     },
     "Add one image" : {
       "comment" : "Button to add a single image",
@@ -436,7 +498,23 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加一張作品"
+            "value" : "新增一張作品"
+          }
+        }
+      }
+    },
+    "Add Photo" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增照片"
           }
         }
       }
@@ -469,6 +547,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "加入作品集"
+          }
+        }
+      }
+    },
+    "Add Your First Photo" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加您的第一张照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新增您的第一張照片"
           }
         }
       }
@@ -557,6 +651,7 @@
       }
     },
     "Are you sure you want to delete this image?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -568,6 +663,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你確定要刪除這張作品"
+          }
+        }
+      }
+    },
+    "Are you sure you want to delete this photo? This action cannot be undone." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您确定要删除这张照片吗？此操作无法撤销。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您確定要刪除這張照片嗎？此操作無法撤銷。"
           }
         }
       }
@@ -589,6 +700,22 @@
         }
       }
     },
+    "Backing up" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在备份"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在備份"
+          }
+        }
+      }
+    },
     "Backup & Restore" : {
       "localizations" : {
         "zh-Hans" : {
@@ -601,6 +728,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "備份與還原"
+          }
+        }
+      }
+    },
+    "Backup created at: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备份创建于："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "備份建立於："
+          }
+        }
+      }
+    },
+    "Backup failed: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备份失败："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "備份失敗："
+          }
+        }
+      }
+    },
+    "Backup file not found" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备份文件未找到"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "備份檔案未找到"
           }
         }
       }
@@ -716,6 +891,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鸛鳥"
+          }
+        }
+      }
+    },
+    "Browse photos by date" : {
+      "comment" : "Feature description for date-based photo browsing",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按日期浏览照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "依日期瀏覽照片"
           }
         }
       }
@@ -1094,6 +1286,22 @@
         }
       }
     },
+    "Creating backup..." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在创建备份…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在建立備份…"
+          }
+        }
+      }
+    },
     "Current streak: %lld days" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1127,7 +1335,24 @@
         }
       }
     },
+    "Date: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日期："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日期："
+          }
+        }
+      }
+    },
     "Date: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1159,6 +1384,22 @@
         }
       }
     },
+    "Default Backup (Factory Reset)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认备份（恢复出厂设置）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "預設備份（恢復出廠設定）"
+          }
+        }
+      }
+    },
     "Delete" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1176,6 +1417,7 @@
       }
     },
     "Delete Image" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1187,6 +1429,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "刪除作品"
+          }
+        }
+      }
+    },
+    "Delete Photo" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除照片"
           }
         }
       }
@@ -1356,16 +1614,68 @@
       }
     },
     "Error accessing photo library" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "访问照片库时出错"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訪問照片庫時出錯"
+          }
+        }
+      }
     },
     "Error reading photo data" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取照片数据时出错"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讀取照片資料時出錯"
+          }
+        }
+      }
     },
     "Error reading photo metadata" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取照片元数据时出错"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讀取照片元資料時出錯"
+          }
+        }
+      }
     },
     "Error with Apple account" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 帐号出现错误"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 帳號出現錯誤"
+          }
+        }
+      }
     },
     "Error: %@" : {
       "localizations" : {
@@ -1547,6 +1857,22 @@
         }
       }
     },
+    "Failed to delete backup: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除备份失败："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刪除備份失敗："
+          }
+        }
+      }
+    },
     "Failed to import: %lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1559,6 +1885,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "導入失敗：%lld"
+          }
+        }
+      }
+    },
+    "Failed to load backups: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载备份失败："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法載入備份："
           }
         }
       }
@@ -1744,7 +2086,20 @@
       }
     },
     "GPS Information" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPS 信息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPS 資訊"
+          }
+        }
+      }
     },
     "Great job! You've uploaded today's photo." : {
       "extractionState" : "stale",
@@ -2042,6 +2397,23 @@
         }
       }
     },
+    "James" : {
+      "comment" : "Default username for factory reset",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詹姆斯"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詹姆斯"
+          }
+        }
+      }
+    },
     "Keep going! %lld days left to complete Project365" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2125,9 +2497,40 @@
       }
     },
     "Lat:" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "纬度："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "緯度："
+          }
+        }
+      }
+    },
+    "Later" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稍后"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稍後"
+          }
+        }
+      }
     },
     "Latitude" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2341,7 +2744,20 @@
       }
     },
     "Location Lookup" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置查询"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置查詢"
+          }
+        }
+      }
     },
     "Location Services Disabled" : {
       "extractionState" : "stale",
@@ -2377,7 +2793,21 @@
       }
     },
     "Lon:" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "经度："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "經度："
+          }
+        }
+      }
     },
     "Long press to copy exif" : {
       "extractionState" : "stale",
@@ -2413,6 +2843,7 @@
       }
     },
     "Longitude" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2488,6 +2919,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "導航選項"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一步"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一步"
           }
         }
       }
@@ -2735,9 +3182,24 @@
       }
     },
     "Note: Apple GPS lookup requires an active internet. The process may be delayed due to a limit of one queries per 2 seconds. Please patient during bulk imports." : {
-      "comment" : "Expanded explanation for GPS reverse lookup limitations and requirements"
+      "comment" : "Expanded explanation for GPS reverse lookup limitations and requirements",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意：Apple GPS 查询需要有效的互联网连接。由于每 2 秒限制查询一次，处理可能会有所延迟。在批量导入期间请耐心等待。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "注意：Apple GPS 查詢需要有效的網路連線。由於每 2 秒限制查詢一次，處理可能會有所延遲。批量匯入時請耐心等待。"
+          }
+        }
+      }
     },
     "Object Name" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2802,6 +3264,7 @@
       }
     },
     "Open Settings" : {
+      "comment" : "Open settings button",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2813,6 +3276,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "前往設定"
+          }
+        }
+      }
+    },
+    "Organize your photos" : {
+      "comment" : "Feature description for photo organization",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "组织你的照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "整理你的照片"
           }
         }
       }
@@ -2850,7 +3330,24 @@
         }
       }
     },
+    "Photo Deleted" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照片已删除"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照片已刪除"
+          }
+        }
+      }
+    },
     "Photo Library Access Required" : {
+      "comment" : "Photo library access required title",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3108,6 +3605,7 @@
       }
     },
     "Please exit Tui and restart the app to refresh the data." : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3124,6 +3622,7 @@
       }
     },
     "Please grant access to your photo library in Settings." : {
+      "comment" : "Instruct user to grant access in settings",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3221,6 +3720,23 @@
         }
       }
     },
+    "Rate your favorite shots" : {
+      "comment" : "Feature description for photo rating",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "评分你最喜欢的照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為你最喜歡的照片評分"
+          }
+        }
+      }
+    },
     "Rating" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3233,6 +3749,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "評分"
+          }
+        }
+      }
+    },
+    "Restart Now" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即重启"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即重新啟動"
           }
         }
       }
@@ -3265,6 +3797,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "恢復完成"
+          }
+        }
+      }
+    },
+    "Restore completed successfully" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复成功完成"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢復成功完成"
+          }
+        }
+      }
+    },
+    "Restore failed: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复失败："
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢復失敗："
+          }
+        }
+      }
+    },
+    "Restore from Backup" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还原出厂照片库"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "還原出廠照片庫"
+          }
+        }
+      }
+    },
+    "Restoring" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在恢复"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在恢復"
           }
         }
       }
@@ -3530,7 +4126,24 @@
         }
       }
     },
+    "Selected backup: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择的备份"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇的備份"
+          }
+        }
+      }
+    },
     "Selected backup: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3644,7 +4257,24 @@
         }
       }
     },
+    "Size: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尺寸"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大小"
+          }
+        }
+      }
+    },
     "Size: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3902,6 +4532,38 @@
         }
       }
     },
+    "The backup has been successfully restored. Please restart the app to apply the changes." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "备份已成功恢复。请重新启动应用以应用更改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "備份已成功恢復。請重新啟動應用程式以套用變更。"
+          }
+        }
+      }
+    },
+    "The photo has been deleted successfully. Please tap the Tui logo to refresh the main page." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照片已成功删除。请点击 Tui 图标以刷新主页。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "照片已成功刪除。請點擊 Tui 標誌以刷新主頁。"
+          }
+        }
+      }
+    },
     "There are %lld photos at this location." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3932,6 +4594,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "標題"
+          }
+        }
+      }
+    },
+    "To get started, let's add your first photo to your portfolio." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首先，添加您的第一张照片到您的作品集中。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首先，將您的第一張照片新增到您的作品集中。"
           }
         }
       }
@@ -4035,6 +4713,22 @@
         }
       }
     },
+    "Unknown" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知"
+          }
+        }
+      }
+    },
     "Unknown Date" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4052,7 +4746,20 @@
       }
     },
     "Unknown error occurred" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发生未知错误"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "發生未知錯誤"
+          }
+        }
+      }
     },
     "Usage" : {
       "localizations" : {
@@ -4119,7 +4826,24 @@
         }
       }
     },
+    "User: " : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用者"
+          }
+        }
+      }
+    },
     "User: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -4135,7 +4859,40 @@
         }
       }
     },
+    "Username is not set. Please set a username in Settings." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户名尚未设置。请在设置中设置用户名。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用者名稱尚未設定。請在設定中設定使用者名稱。"
+          }
+        }
+      }
+    },
+    "Video Tutorial" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视频教程"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "影片教學"
+          }
+        }
+      }
+    },
     "Video Tutorials" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -4163,6 +4920,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "看所有照片"
+          }
+        }
+      }
+    },
+    "View photos by location" : {
+      "comment" : "Feature description for location-based photo viewing",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按位置查看照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "依位置查看照片"
+          }
+        }
+      }
+    },
+    "We need access to your photo library so you can select individual photos or entire albums to import into your portfolio. We read metadata (such as capture date, location, and camera information) from the selected photos, but we do not modify or delete your original photos. This allows us to organize your portfolio efficiently and provide features like timeline view and location-based browsing. You can manage or delete imported photos within the app at any time. We do not share your photos or metadata with third parties." : {
+      "comment" : "Detailed explanation of photo library usage",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我们需要访问您的照片库，以便您可以选择单张照片或整个相册导入到您的作品集中。我们会读取所选照片的元数据（如拍摄日期、位置和相机信息），但不会修改或删除您的原始照片。这使我们能够高效地组织您的作品集，并提供时间轴视图和基于位置的浏览等功能。您可以随时在应用内管理或删除导入的照片。我们不会与第三方共享您的照片或元数据。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我們需要存取您的相片庫，以便您可以選擇個別相片或整個相簿匯入到您的作品集中。我們會讀取所選相片的元數據（如拍攝日期、位置和相機資訊），但不會修改或刪除您的原始相片。這使我們能夠高效地組織您的作品集，並提供時間軸檢視和基於位置的瀏覽等功能。您可以隨時在應用程式內管理或刪除匯入的相片。我們不會與第三方分享您的相片或元數據。"
+          }
+        }
+      }
+    },
+    "Welcome to Tui" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎来到图忆！"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歡迎來到圖億！"
+          }
+        }
+      }
+    },
+    "Welcome to Tui!" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎来到图忆"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歡迎來到圖億"
           }
         }
       }
@@ -4347,6 +5170,38 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "鏡頭穿越了%1$lld國家和%2$lld地區，將世界變得更加緊密。"
+          }
+        }
+      }
+    },
+    "Your personal photo portfolio" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的个人摄影作品集"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的個人攝影作品集"
+          }
+        }
+      }
+    },
+    "Your personal photo portfolio app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的个人摄影作品集应用"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您的個人攝影作品集應用程式"
           }
         }
       }

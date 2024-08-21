@@ -11,12 +11,16 @@
 		97023A662C5670B2004E62D2 /* Project365View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97023A652C5670B2004E62D2 /* Project365View.swift */; };
 		970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53B92C571C2800B031D6 /* LandingView.swift */; };
 		970E53BE2C576DB400B031D6 /* LocalityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53BD2C576DB400B031D6 /* LocalityListView.swift */; };
+		971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */ = {isa = PBXBuildFile; fileRef = 971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */; };
 		97497D432C5103D000FAE305 /* CustomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D422C5103D000FAE305 /* CustomCalendarView.swift */; };
 		97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D442C5118C000FAE305 /* WaterfallView.swift */; };
+		974BDCD32C6C54FA00378033 /* TutorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974BDCD22C6C54FA00378033 /* TutorView.swift */; };
 		976615B62C670DAD00636700 /* birdInfo.json in Resources */ = {isa = PBXBuildFile; fileRef = 976615B52C670DAD00636700 /* birdInfo.json */; };
 		976615B82C67B3A700636700 /* BackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976615B72C67B3A700636700 /* BackupManager.swift */; };
 		976615BA2C67B51800636700 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976615B92C67B51800636700 /* BackupView.swift */; };
 		976615BD2C67BE4000636700 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 976615BC2C67BE4000636700 /* ZipArchive */; };
+		97A6F3DC2C6BA09B00A515A7 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */; };
+		97A6F3DE2C6C473E00A515A7 /* Webview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A6F3DD2C6C473E00A515A7 /* Webview.swift */; };
 		97A70AE22C512E3D00A97007 /* SamedayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A70AE12C512E3D00A97007 /* SamedayView.swift */; };
 		97AD6D032C66539D004F0380 /* BlogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AD6D022C66539D004F0380 /* BlogView.swift */; };
 		97AF203E2C60FA110033F379 /* EXIFManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AF203D2C60FA110033F379 /* EXIFManager.swift */; };
@@ -66,7 +70,6 @@
 		97CE663A2C4A54620002B6B2 /* LocalityPhotoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE66392C4A54620002B6B2 /* LocalityPhotoListView.swift */; };
 		97CE66402C4A58CF0002B6B2 /* EN_photography_quotes.json in Resources */ = {isa = PBXBuildFile; fileRef = 97CE66222C4A526E0002B6B2 /* EN_photography_quotes.json */; };
 		97D5F9E12C6650A900C7F543 /* BeginnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D5F9DF2C6650A900C7F543 /* BeginnerView.swift */; };
-		97D5F9E22C6650A900C7F543 /* TutorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97D5F9E02C6650A900C7F543 /* TutorView.swift */; };
 		97F4A1BC2C57B4D100633ABC /* countriesCode.json in Resources */ = {isa = PBXBuildFile; fileRef = 97F4A1BB2C57B4D100633ABC /* countriesCode.json */; };
 		97F4A1BE2C57B5F600633ABC /* CountryCodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F4A1BD2C57B5F600633ABC /* CountryCodeManager.swift */; };
 		97F4A1C22C589E3200633ABC /* BirdCountCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F4A1C12C589E3200633ABC /* BirdCountCache.swift */; };
@@ -81,12 +84,16 @@
 		97023A652C5670B2004E62D2 /* Project365View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project365View.swift; sourceTree = "<group>"; };
 		970E53B92C571C2800B031D6 /* LandingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		970E53BD2C576DB400B031D6 /* LocalityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityListView.swift; sourceTree = "<group>"; };
-		9732381A2C4FE13B0050673C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JamesTuiPortfolio.zip; sourceTree = "<group>"; };
 		97497D422C5103D000FAE305 /* CustomCalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCalendarView.swift; sourceTree = "<group>"; };
 		97497D442C5118C000FAE305 /* WaterfallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterfallView.swift; sourceTree = "<group>"; };
+		974BDCD22C6C54FA00378033 /* TutorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorView.swift; sourceTree = "<group>"; };
 		976615B52C670DAD00636700 /* birdInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = birdInfo.json; sourceTree = "<group>"; };
 		976615B72C67B3A700636700 /* BackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupManager.swift; sourceTree = "<group>"; };
 		976615B92C67B51800636700 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
+		97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		97A6F3DD2C6C473E00A515A7 /* Webview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webview.swift; sourceTree = "<group>"; };
+		97A6F3DF2C6C49EF00A515A7 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		97A70AE12C512E3D00A97007 /* SamedayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SamedayView.swift; sourceTree = "<group>"; };
 		97AD6D022C66539D004F0380 /* BlogView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlogView.swift; sourceTree = "<group>"; };
 		97AF203D2C60FA110033F379 /* EXIFManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EXIFManager.swift; sourceTree = "<group>"; };
@@ -138,8 +145,6 @@
 		97CE66372C4A540E0002B6B2 /* ZoomInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomInView.swift; sourceTree = "<group>"; };
 		97CE66392C4A54620002B6B2 /* LocalityPhotoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityPhotoListView.swift; sourceTree = "<group>"; };
 		97D5F9DF2C6650A900C7F543 /* BeginnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeginnerView.swift; sourceTree = "<group>"; };
-		97D5F9E02C6650A900C7F543 /* TutorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorView.swift; sourceTree = "<group>"; };
-		97D5F9E32C6650AF00C7F543 /* TutorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TutorView.swift; path = ../../../Documents/TUI/TUI/TutorView.swift; sourceTree = "<group>"; };
 		97D5F9E42C6650AF00C7F543 /* BeginnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BeginnerView.swift; path = ../../../Documents/TUI/TUI/BeginnerView.swift; sourceTree = "<group>"; };
 		97D5F9E72C6650E700C7F543 /* BeginnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BeginnerView.swift; path = ../../../Documents/TUI/TUI/BeginnerView.swift; sourceTree = "<group>"; };
 		97F4A1BB2C57B4D100633ABC /* countriesCode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = countriesCode.json; sourceTree = "<group>"; };
@@ -201,6 +206,7 @@
 				97CE66032C4A4EE60002B6B2 /* CalendarView.swift */,
 				97B8A7BF2C53316A00B039A4 /* CameraCountView.swift */,
 				97B8A7C12C535A3D00B039A4 /* CameraDetailView.swift */,
+				97A6F3DF2C6C49EF00A515A7 /* Config.xcconfig */,
 				97CE65E12C4A4A610002B6B2 /* ContentView.swift */,
 				97F4A1BD2C57B5F600633ABC /* CountryCodeManager.swift */,
 				97497D422C5103D000FAE305 /* CustomCalendarView.swift */,
@@ -212,7 +218,6 @@
 				97CE65F92C4A4D610002B6B2 /* HistoryView.swift */,
 				97CE66092C4A50460002B6B2 /* HotSearchManager.swift */,
 				97CE660B2C4A505F0002B6B2 /* ImagePicker.swift */,
-				9732381A2C4FE13B0050673C /* Info.plist */,
 				970E53B92C571C2800B031D6 /* LandingView.swift */,
 				97B8A7C32C535B9900B039A4 /* LensCountView.swift */,
 				97B8A7C52C535BB400B039A4 /* LensDetailView.swift */,
@@ -223,6 +228,7 @@
 				97CE66152C4A518D0002B6B2 /* NationalPhotoListView.swift */,
 				97CE66172C4A51B10002B6B2 /* NationalView.swift */,
 				97CE66192C4A51D20002B6B2 /* ObjectNameView.swift */,
+				97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */,
 				97CE661B2C4A51E90002B6B2 /* Photo.swift */,
 				97CE661D2C4A51FD0002B6B2 /* PhotoImageView.swift */,
 				97CE661F2C4A52190002B6B2 /* PhotoListView.swift */,
@@ -242,9 +248,9 @@
 				97CE66332C4A539A0002B6B2 /* StarRatingView.swift */,
 				97CE66362C4A53EE0002B6B2 /* TUI.entitlements */,
 				97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */,
-				97D5F9E02C6650A900C7F543 /* TutorView.swift */,
-				97D5F9E32C6650AF00C7F543 /* TutorView.swift */,
+				974BDCD22C6C54FA00378033 /* TutorView.swift */,
 				97497D442C5118C000FAE305 /* WaterfallView.swift */,
+				97A6F3DD2C6C473E00A515A7 /* Webview.swift */,
 				97CE66372C4A540E0002B6B2 /* ZoomInView.swift */,
 			);
 			path = TUI;
@@ -264,6 +270,7 @@
 		97CE66212C4A52440002B6B2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */,
 				97F4A1BB2C57B4D100633ABC /* countriesCode.json */,
 				976615B52C670DAD00636700 /* birdInfo.json */,
 				97CE66222C4A526E0002B6B2 /* EN_photography_quotes.json */,
@@ -339,6 +346,7 @@
 			files = (
 				97CE66402C4A58CF0002B6B2 /* EN_photography_quotes.json in Resources */,
 				97CE66242C4A52A50002B6B2 /* CH-photography_quotes.json in Resources */,
+				971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */,
 				976615B62C670DAD00636700 /* birdInfo.json in Resources */,
 				97CE66262C4A52C10002B6B2 /* TW-photography_quotes.json in Resources */,
 				97CE65E72C4A4A620002B6B2 /* Preview Assets.xcassets in Resources */,
@@ -371,6 +379,7 @@
 				97CE66022C4A4EC90002B6B2 /* BlockView.swift in Sources */,
 				97CE65F42C4A4C900002B6B2 /* AppDelegate.swift in Sources */,
 				97F4A1C82C5B491600633ABC /* BulkImportManager.swift in Sources */,
+				97A6F3DC2C6BA09B00A515A7 /* OnboardingView.swift in Sources */,
 				976615B82C67B3A700636700 /* BackupManager.swift in Sources */,
 				97F4A1C42C5A05C100633ABC /* SinglePhotoView.swift in Sources */,
 				97CE66142C4A51750002B6B2 /* MapView.swift in Sources */,
@@ -398,7 +407,6 @@
 				97CE65E02C4A4A610002B6B2 /* TUIApp.swift in Sources */,
 				97CE65F82C4A4D0F0002B6B2 /* HeadBarView.swift in Sources */,
 				97CE66282C4A52DE0002B6B2 /* ReviewView.swift in Sources */,
-				97D5F9E22C6650A900C7F543 /* TutorView.swift in Sources */,
 				97CE65FA2C4A4D610002B6B2 /* HistoryView.swift in Sources */,
 				97B8A7C22C535A3D00B039A4 /* CameraDetailView.swift in Sources */,
 				97CE65F02C4A4C4B0002B6B2 /* QuotesView.swift in Sources */,
@@ -407,7 +415,9 @@
 				97023A642C5630C0004E62D2 /* BirdNameListView.swift in Sources */,
 				97CE66302C4A535C0002B6B2 /* SQLiteManager.swift in Sources */,
 				97CE66062C4A4EFF0002B6B2 /* DetailView.swift in Sources */,
+				974BDCD32C6C54FA00378033 /* TutorView.swift in Sources */,
 				97CE66182C4A51B10002B6B2 /* NationalView.swift in Sources */,
+				97A6F3DE2C6C473E00A515A7 /* Webview.swift in Sources */,
 				97B8A7C62C535BB400B039A4 /* LensDetailView.swift in Sources */,
 				97CE65FE2C4A4D9C0002B6B2 /* SearchView.swift in Sources */,
 				97CE66162C4A518D0002B6B2 /* NationalPhotoListView.swift in Sources */,
@@ -554,8 +564,9 @@
 				INFOPLIST_KEY_CFBundleDisplayName = TUI;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save the poster to your library";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = YES;
+				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Tui needs access to your files to share and save backups.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Tui needs access to the local network to share backups via AirDrop.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library so you can select individual photos or entire albums to import into your portfolio";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -575,7 +586,8 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
+				YOUTUBE_API_KEY = "$(YOUTUBE_API_KEY)";
 			};
 			name = Debug;
 		};
@@ -595,8 +607,9 @@
 				INFOPLIST_KEY_CFBundleDisplayName = TUI;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Save the poster to your library";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = YES;
+				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Tui needs access to your files to share and save backups.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Tui needs access to the local network to share backups via AirDrop.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library so you can select individual photos or entire albums to import into your portfolio";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -616,7 +629,8 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
+				YOUTUBE_API_KEY = "$(YOUTUBE_API_KEY)";
 			};
 			name = Release;
 		};

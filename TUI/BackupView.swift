@@ -9,13 +9,15 @@ struct BackupView: View {
     @State private var backupProgress: Double = 0.0
     @State private var existingBackups: [BackupFile] = []
     @State private var selectedBackup: BackupFile?
-    @State private var showingRestartAlert = false
+    @State private var showingRestoreSuccessAlert = false
     @State private var animatedProgress: Double = 0.0
     @State private var backupToShare: BackupFile?
     @State private var showingErrorAlert = false
     @State private var errorMessage: String = ""
     @State private var backupToDelete: BackupFile?
     @State private var showingDeleteConfirmation = false
+    @State private var defaultBackup: BackupFile?
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         GeometryReader { geometry in
@@ -41,31 +43,37 @@ struct BackupView: View {
         }
         .navigationTitle("")
         .navigationBarHidden(true)
-        .onAppear(perform: loadExistingBackups)
-        .alert(isPresented: $showingRestartAlert) {
+        .onAppear {
+            loadExistingBackups()
+            loadDefaultBackup()
+        }
+        .alert(isPresented: $showingRestoreSuccessAlert) {
             Alert(
-                title: Text("Restore Completed"),
-                message: Text("Please exit Tui and restart the app to refresh the data."),
-                dismissButton: .default(Text("OK"))
+                title: Text(NSLocalizedString("Restore Completed", comment: "")),
+                message: Text(NSLocalizedString("The backup has been successfully restored. Please restart the app to apply the changes.", comment: "")),
+                primaryButton: .default(Text(NSLocalizedString("Restart Now", comment: ""))) {
+                    exit(0)
+                },
+                secondaryButton: .cancel(Text(NSLocalizedString("Later", comment: "")))
             )
         }
         .alert(isPresented: $showingErrorAlert) {
             Alert(
-                title: Text("Error"),
+                title: Text(NSLocalizedString("Error", comment: "")),
                 message: Text(errorMessage),
-                dismissButton: .default(Text("OK"))
+                dismissButton: .default(Text(NSLocalizedString("OK", comment: "")))
             )
         }
         .alert(isPresented: $showingDeleteConfirmation) {
             Alert(
-                title: Text("Confirm Delete"),
-                message: Text("Are you sure you want to delete this backup? This action cannot be undone."),
-                primaryButton: .destructive(Text("Delete")) {
+                title: Text(NSLocalizedString("Confirm Delete", comment: "")),
+                message: Text(NSLocalizedString("Are you sure you want to delete this backup? This action cannot be undone.", comment: "")),
+                primaryButton: .destructive(Text(NSLocalizedString("Delete", comment: ""))) {
                     if let backup = backupToDelete {
                         deleteBackup(backup)
                     }
                 },
-                secondaryButton: .cancel()
+                secondaryButton: .cancel(Text(NSLocalizedString("Cancel", comment: "")))
             )
         }
         .sheet(item: $backupToShare) { backup in
@@ -75,16 +83,16 @@ struct BackupView: View {
     
     private var backupSection: some View {
         VStack(spacing: 15) {
-            Text("Create New Backup")
+            Text(NSLocalizedString("Create New Backup", comment: ""))
                 .font(.title2)
                 .fontWeight(.bold)
             
-            Text("User: \(userName)")
+            Text(NSLocalizedString("User: ", comment: "") + userName)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             
             Button(action: performBackup) {
-                Text("Create Backup")
+                Text(NSLocalizedString("Create Backup", comment: ""))
                     .padding()
                     .background(Color.blue)
                     .foregroundColor(.white)
@@ -94,7 +102,7 @@ struct BackupView: View {
             
             if isBackingUp || isRestoring {
                 ProgressView(value: animatedProgress) {
-                    Text("\(isBackingUp ? "Backing up" : "Restoring")... \(Int(animatedProgress * 100))%")
+                    Text(String(format: NSLocalizedString("%@... %d%%", comment: ""), isBackingUp ? NSLocalizedString("Backing up", comment: "") : NSLocalizedString("Restoring", comment: ""), Int(animatedProgress * 100)))
                 }
                 .progressViewStyle(LinearProgressViewStyle())
             }
@@ -116,70 +124,35 @@ struct BackupView: View {
     
     private var existingBackupsAndRestoreSection: some View {
         VStack(alignment: .leading, spacing: 15) {
-            Text("Existing Backups")
+            Text(NSLocalizedString("Existing Backups", comment: ""))
                 .font(.title2)
                 .fontWeight(.bold)
             
-            if existingBackups.isEmpty {
-                Text("No backups found")
+            if existingBackups.isEmpty && defaultBackup == nil {
+                Text(NSLocalizedString("No backups found", comment: ""))
                     .foregroundColor(.secondary)
             } else {
+                if let defaultBackup = defaultBackup {
+                    backupRow(for: defaultBackup, isDefault: true)
+                }
+                
                 ForEach(existingBackups) { backup in
-                    HStack {
-                        Image(systemName: selectedBackup == backup ? "largecircle.fill.circle" : "circle")
-                            .foregroundColor(.blue)
-                            .onTapGesture {
-                                selectedBackup = backup
-                            }
-                        
-                        VStack(alignment: .leading) {
-                            Text(backup.url.lastPathComponent)
-                                .font(.subheadline)
-                            HStack {
-                                Text("Date: \(backup.creationDate, formatter: itemFormatter)")
-                                Spacer()
-                                Text("Size: \(backup.size)")
-                            }
-                            Text("User: \(backup.username)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            print("Share button tapped for: \(backup.url.path)")
-                            self.backupToShare = backup
-                        }) {
-                            Image(systemName: "square.and.arrow.up")
-                                .foregroundColor(.blue)
-                        }
-                        
-                        Button(action: {
-                            print("Delete button tapped for: \(backup.url.lastPathComponent)")
-                            backupToDelete = backup
-                            showingDeleteConfirmation = true
-                        }) {
-                            Image(systemName: "trash")
-                                .foregroundColor(.red)
-                        }
-                    }
-                    .padding(.vertical, 5)
+                    backupRow(for: backup, isDefault: false)
                 }
             }
             
             Divider()
             
-            Text("Restore")
+            Text(NSLocalizedString("Restore", comment: ""))
                 .font(.title2)
                 .fontWeight(.bold)
             
             if let selectedBackup = selectedBackup {
-                Text("Selected backup: \(selectedBackup.url.lastPathComponent)")
+                Text(NSLocalizedString("Selected backup: ", comment: "") + selectedBackup.url.lastPathComponent)
                     .foregroundColor(.secondary)
                 
                 Button(action: { performRestore(from: selectedBackup.url) }) {
-                    Text("Start Restore")
+                    Text(NSLocalizedString("Start Restore", comment: ""))
                         .padding()
                         .background(Color.orange)
                         .foregroundColor(.white)
@@ -187,19 +160,62 @@ struct BackupView: View {
                 }
                 .disabled(isBackingUp || isRestoring)
             } else {
-                Text("Select a backup from the list above")
+                Text(NSLocalizedString("Select a backup from the list above", comment: ""))
                     .foregroundColor(.secondary)
             }
             
             if isRestoring {
                 ProgressView()
-                Text("Restoring...")
+                Text(NSLocalizedString("Restoring...", comment: ""))
                     .foregroundColor(.secondary)
             }
         }
         .padding()
         .background(Color.gray.opacity(0.1))
         .cornerRadius(15)
+    }
+    
+    private func backupRow(for backup: BackupFile, isDefault: Bool) -> some View {
+        HStack {
+            Image(systemName: selectedBackup == backup ? "largecircle.fill.circle" : "circle")
+                .foregroundColor(.blue)
+                .onTapGesture {
+                    selectedBackup = backup
+                }
+            
+            VStack(alignment: .leading) {
+                Text(isDefault ? NSLocalizedString("Default Backup (Factory Reset)", comment: "") : backup.url.lastPathComponent)
+                    .font(.subheadline)
+                HStack {
+                    Text(NSLocalizedString("Date: ", comment: "") + itemFormatter.string(from: backup.creationDate))
+                    Spacer()
+                    Text(NSLocalizedString("Size: ", comment: "") + backup.size)
+                }
+                Text(NSLocalizedString("User: ", comment: "") + backup.username)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            if !isDefault {
+                Button(action: {
+                    self.backupToShare = backup
+                }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .foregroundColor(.blue)
+                }
+                
+                Button(action: {
+                    backupToDelete = backup
+                    showingDeleteConfirmation = true
+                }) {
+                    Image(systemName: "trash")
+                        .foregroundColor(.red)
+                }
+            }
+        }
+        .padding(.vertical, 5)
     }
     
     private func loadExistingBackups() {
@@ -223,7 +239,16 @@ struct BackupView: View {
                 .sorted { $0.creationDate > $1.creationDate }
         } catch {
             print("Failed to get directory contents: \(error.localizedDescription)")
-            showError("Failed to load backups: \(error.localizedDescription)")
+            showError(NSLocalizedString("Failed to load backups: ", comment: "") + error.localizedDescription)
+        }
+    }
+    
+    private func loadDefaultBackup() {
+        if let defaultBackupURL = BackupManager.shared.getDefaultBackupURL() {
+            let attributes = try? FileManager.default.attributesOfItem(atPath: defaultBackupURL.path)
+            let creationDate = attributes?[.creationDate] as? Date ?? Date()
+            let size = attributes?[.size] as? Int64 ?? 0
+            defaultBackup = BackupFile(url: defaultBackupURL, creationDate: creationDate, size: formatFileSize(size), username: "James")
         }
     }
     
@@ -237,15 +262,13 @@ struct BackupView: View {
                 try fileManager.removeItem(at: backup.url)
                 print("Backup file successfully deleted")
                 
-                // Remove the deleted backup from the existingBackups array
                 existingBackups.removeAll { $0.id == backup.id }
                 print("Backup removed from list")
                 
-                // Refresh the backup list
                 loadExistingBackups()
             } else {
                 print("Backup file does not exist at path")
-                showError("Backup file not found")
+                showError(NSLocalizedString("Backup file not found", comment: ""))
             }
             
             if selectedBackup == backup {
@@ -254,30 +277,30 @@ struct BackupView: View {
             }
         } catch {
             print("Failed to delete backup: \(error.localizedDescription)")
-            showError("Failed to delete backup: \(error.localizedDescription)")
+            showError(NSLocalizedString("Failed to delete backup: ", comment: "") + error.localizedDescription)
         }
     }
     
     private func performBackup() {
         guard !userName.isEmpty else {
-            showError("Username is not set. Please set a username in Settings.")
+            showError(NSLocalizedString("Username is not set. Please set a username in Settings.", comment: ""))
             return
         }
         
         Task {
             do {
                 isBackingUp = true
-                backupStatus = "Creating backup..."
+                backupStatus = NSLocalizedString("Creating backup...", comment: "")
                 let backupURL = try await BackupManager.shared.createBackup(username: userName) { progress in
                     DispatchQueue.main.async {
                         self.backupProgress = progress
                     }
                 }
-                backupStatus = "Backup created at: \(backupURL.lastPathComponent)"
+                backupStatus = NSLocalizedString("Backup created at: ", comment: "") + backupURL.lastPathComponent
                 loadExistingBackups()
             } catch {
                 print("Backup failed: \(error)")
-                showError("Backup failed: \(error.localizedDescription)")
+                showError(NSLocalizedString("Backup failed: ", comment: "") + error.localizedDescription)
             }
             isBackingUp = false
         }
@@ -287,23 +310,34 @@ struct BackupView: View {
         Task {
             do {
                 isRestoring = true
-                backupStatus = "Restoring..."
-                try await BackupManager.shared.restoreBackup(from: backupURL) { progress in
-                    DispatchQueue.main.async {
-                        self.backupProgress = progress
+                backupStatus = NSLocalizedString("Restoring...", comment: "")
+                
+                if backupURL == BackupManager.shared.getDefaultBackupURL() {
+                    try await BackupManager.shared.restoreDefaultBackup { progress in
+                        DispatchQueue.main.async {
+                            self.backupProgress = progress
+                        }
+                    }
+                } else {
+                    try await BackupManager.shared.restoreBackup(from: backupURL) { progress in
+                        DispatchQueue.main.async {
+                            self.backupProgress = progress
+                        }
                     }
                 }
-                backupStatus = "Restore completed successfully"
                 
-                // Update the userName in the view
+                // 在这里添加设置 isFirstLaunch 为 false 的代码
+                UserDefaults.standard.set(false, forKey: "isFirstLaunch")
+                
+                backupStatus = NSLocalizedString("Restore completed successfully", comment: "")
+                
                 DispatchQueue.main.async {
-                    self.userName = UserDefaults.standard.string(forKey: "userName") ?? "Unknown"
+                    self.userName = UserDefaults.standard.string(forKey: "userName") ?? NSLocalizedString("Unknown", comment: "")
+                    self.showingRestoreSuccessAlert = true
                 }
-                
-                showingRestartAlert = true  // Show restart reminder
             } catch {
                 print("Restore failed: \(error)")
-                showError("Restore failed: \(error.localizedDescription)")
+                showError(NSLocalizedString("Restore failed: ", comment: "") + error.localizedDescription)
             }
             isRestoring = false
         }

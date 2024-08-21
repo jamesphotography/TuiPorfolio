@@ -72,9 +72,6 @@ struct SettingsView: View {
                         NavigationLink(destination: BeginnerView()) {
                             Text("Beginner's Guide")
                         }
-                        NavigationLink(destination: TutorView()) {
-                            Text("Video Tutorials")
-                        }
                     }
                 }
                 .padding()

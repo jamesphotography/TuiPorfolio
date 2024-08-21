@@ -351,7 +351,6 @@ extension SQLiteManager {
             
             let result = sqlite3_step(insertStatement)
             if result == SQLITE_DONE {
-                print("Successfully inserted bulk photo.")
                 sqlite3_finalize(insertStatement)
                 return true
             } else {

@@ -6,7 +6,7 @@ struct ContentView: View {
     @AppStorage("userName") private var userName: String = "Tui"
     @AppStorage("sortByShootingTime") private var sortByShootingTime = true
     @AppStorage("useWaterfallLayout") private var useWaterfallLayout = false
-    @AppStorage("useSingleColumnLayout") private var useSingleColumnLayout = false //
+    @AppStorage("useSingleColumnLayout") private var useSingleColumnLayout = false
     @State private var needsReload: Bool = true
     @State private var page: Int = 0
     @State private var isRefreshing: Bool = false
@@ -78,7 +78,7 @@ struct ContentView: View {
 
     var mainContentView: some View {
         Group {
-            if !useSingleColumnLayout { // 修改這裡
+            if !useSingleColumnLayout {
                 WaterfallView(
                     photos: displayedImages.map { getPhoto(for: $0.path) },
                     onPhotoTapped: { photo in
@@ -178,6 +178,7 @@ struct ContentView: View {
     }
     
     func loadImages() {
+        SQLiteManager.shared.invalidateCache()  // 确保从数据库获取最新数据
         let photos = SQLiteManager.shared.getAllPhotos(sortByShootingTime: sortByShootingTime)
         images = photos.map { photo in
             let dateFormatter = DateFormatter()
@@ -213,7 +214,7 @@ struct ContentView: View {
     }
     
     func getPhoto(for path: String) -> Photo {
-        return SQLiteManager.shared.getPhoto(for: path) ?? Photo(id: "", title: "", path: path, thumbnailPath100: "", thumbnailPath350: "", starRating: 0, country: "",area: "", locality: "", dateTimeOriginal: "", addTimestamp: "", lensModel: "", model: "", exposureTime: 0, fNumber: 0, focalLenIn35mmFilm: 0, focalLength: 0, ISOSPEEDRatings: 0, altitude: 0, latitude: 0, longitude: 0, objectName: "", caption: "")
+        return SQLiteManager.shared.getPhoto(for: path) ?? Photo(id: "", title: "", path: path, thumbnailPath100: "", thumbnailPath350: "", starRating: 0, country: "", area: "", locality: "", dateTimeOriginal: "", addTimestamp: "", lensModel: "", model: "", exposureTime: 0, fNumber: 0, focalLenIn35mmFilm: 0, focalLength: 0, ISOSPEEDRatings: 0, altitude: 0, latitude: 0, longitude: 0, objectName: "", caption: "")
     }
 }
 

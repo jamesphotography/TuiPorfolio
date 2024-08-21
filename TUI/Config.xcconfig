@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  TUI
+//
+//  Created by James Zhen Yu on 14/8/2024.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+YouTubeAPIKey = AIzaSyAWPEp2aX4KErmrvLGuW45J7Y1yJXj8RwQ

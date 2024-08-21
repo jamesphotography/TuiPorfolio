@@ -328,7 +328,7 @@ class SQLiteManager {
         sqlite3_finalize(queryStatement)
         return photos
     }
-    
+
     func getAllPhotos(sortByShootingTime: Bool = true) -> [Photo] {
         if let cachedPhotos = cachedPhotos, lastSortOrder == sortByShootingTime {
             return cachedPhotos
@@ -341,42 +341,77 @@ class SQLiteManager {
         var queryStatement: OpaquePointer?
         var photos: [Photo] = []
         
-        if sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK {
-            while sqlite3_step(queryStatement) == SQLITE_ROW {
-                let id = String(describing: String(cString: sqlite3_column_text(queryStatement, 0)))
-                let title = String(describing: String(cString: sqlite3_column_text(queryStatement, 1)))
-                let path = String(describing: String(cString: sqlite3_column_text(queryStatement, 2)))
-                let thumbnailPath100 = String(describing: String(cString: sqlite3_column_text(queryStatement, 3)))
-                let thumbnailPath350 = String(describing: String(cString: sqlite3_column_text(queryStatement, 4)))
-                let starRating = sqlite3_column_int(queryStatement, 5)
-                let country = String(describing: String(cString: sqlite3_column_text(queryStatement, 6)))
-                let area = String(describing: String(cString: sqlite3_column_text(queryStatement, 7)))
-                let locality = String(describing: String(cString: sqlite3_column_text(queryStatement, 8)))
-                let dateTimeOriginal = String(describing: String(cString: sqlite3_column_text(queryStatement, 9)))
-                let addTimestamp = String(describing: String(cString: sqlite3_column_text(queryStatement, 10)))
-                let lensModel = String(describing: String(cString: sqlite3_column_text(queryStatement, 11)))
-                let model = String(describing: String(cString: sqlite3_column_text(queryStatement, 12)))
-                let exposureTime = sqlite3_column_double(queryStatement, 13)
-                let fNumber = sqlite3_column_double(queryStatement, 14)
-                let focalLenIn35mmFilm = sqlite3_column_double(queryStatement, 15)
-                let focalLength = sqlite3_column_double(queryStatement, 16)
-                let ISOSPEEDRatings = sqlite3_column_int(queryStatement, 17)
-                let altitude = sqlite3_column_double(queryStatement, 18)
-                let latitude = sqlite3_column_double(queryStatement, 19)
-                let longitude = sqlite3_column_double(queryStatement, 20)
-                let objectName = String(describing: String(cString: sqlite3_column_text(queryStatement, 21)))
-                let caption = String(describing: String(cString: sqlite3_column_text(queryStatement, 22)))
-                
-                photos.append(Photo(id: id, title: title, path: path, thumbnailPath100: thumbnailPath100, thumbnailPath350: thumbnailPath350, starRating: Int(starRating), country: country, area: area, locality: locality, dateTimeOriginal: dateTimeOriginal, addTimestamp: addTimestamp, lensModel: lensModel, model: model, exposureTime: exposureTime, fNumber: fNumber, focalLenIn35mmFilm: focalLenIn35mmFilm, focalLength: focalLength, ISOSPEEDRatings: Int(ISOSPEEDRatings),altitude: altitude, latitude: latitude, longitude: longitude, objectName: objectName, caption: caption))
-            }
-        } else {
+        guard sqlite3_prepare_v2(db, queryStatementString, -1, &queryStatement, nil) == SQLITE_OK else {
             print("SELECT statement could not be prepared")
+            return []
         }
-        sqlite3_finalize(queryStatement)
+        
+        defer {
+            sqlite3_finalize(queryStatement)
+        }
+        
+        while sqlite3_step(queryStatement) == SQLITE_ROW {
+            if let photo = createPhotoFromQueryResult(queryStatement) {
+                photos.append(photo)
+            } else {
+                print("Failed to create photo from query result")
+            }
+        }
         
         cachedPhotos = photos
         lastSortOrder = sortByShootingTime
         return photos
+    }
+
+    private func createPhotoFromQueryResult(_ queryStatement: OpaquePointer?) -> Photo? {
+        guard let queryStatement = queryStatement else { return nil }
+        
+        // 使用可選綁定來安全地獲取可能為nil的文本列
+        guard let id = sqlite3_column_text(queryStatement, 0),
+              let title = sqlite3_column_text(queryStatement, 1),
+              let path = sqlite3_column_text(queryStatement, 2),
+              let thumbnailPath100 = sqlite3_column_text(queryStatement, 3),
+              let thumbnailPath350 = sqlite3_column_text(queryStatement, 4),
+              let country = sqlite3_column_text(queryStatement, 6),
+              let area = sqlite3_column_text(queryStatement, 7),
+              let locality = sqlite3_column_text(queryStatement, 8),
+              let dateTimeOriginal = sqlite3_column_text(queryStatement, 9),
+              let addTimestamp = sqlite3_column_text(queryStatement, 10),
+              let lensModel = sqlite3_column_text(queryStatement, 11),
+              let model = sqlite3_column_text(queryStatement, 12),
+              let objectName = sqlite3_column_text(queryStatement, 21),
+              let caption = sqlite3_column_text(queryStatement, 22)
+        else {
+            return nil
+        }
+        
+        // 將 UnsafePointer<UInt8> 轉換為 String
+        let idString = String(cString: id)
+        let titleString = String(cString: title)
+        let pathString = String(cString: path)
+        let thumbnailPath100String = String(cString: thumbnailPath100)
+        let thumbnailPath350String = String(cString: thumbnailPath350)
+        let countryString = String(cString: country)
+        let areaString = String(cString: area)
+        let localityString = String(cString: locality)
+        let dateTimeOriginalString = String(cString: dateTimeOriginal)
+        let addTimestampString = String(cString: addTimestamp)
+        let lensModelString = String(cString: lensModel)
+        let modelString = String(cString: model)
+        let objectNameString = String(cString: objectName)
+        let captionString = String(cString: caption)
+        
+        let starRating = sqlite3_column_int(queryStatement, 5)
+        let exposureTime = sqlite3_column_double(queryStatement, 13)
+        let fNumber = sqlite3_column_double(queryStatement, 14)
+        let focalLenIn35mmFilm = sqlite3_column_double(queryStatement, 15)
+        let focalLength = sqlite3_column_double(queryStatement, 16)
+        let ISOSPEEDRatings = sqlite3_column_int(queryStatement, 17)
+        let altitude = sqlite3_column_double(queryStatement, 18)
+        let latitude = sqlite3_column_double(queryStatement, 19)
+        let longitude = sqlite3_column_double(queryStatement, 20)
+        
+        return Photo(id: idString, title: titleString, path: pathString, thumbnailPath100: thumbnailPath100String, thumbnailPath350: thumbnailPath350String, starRating: Int(starRating), country: countryString, area: areaString, locality: localityString, dateTimeOriginal: dateTimeOriginalString, addTimestamp: addTimestampString, lensModel: lensModelString, model: modelString, exposureTime: exposureTime, fNumber: fNumber, focalLenIn35mmFilm: focalLenIn35mmFilm, focalLength: focalLength, ISOSPEEDRatings: Int(ISOSPEEDRatings), altitude: altitude, latitude: latitude, longitude: longitude, objectName: objectNameString, caption: captionString)
     }
     
     func invalidateCache() {
