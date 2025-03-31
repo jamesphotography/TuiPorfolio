@@ -7,8 +7,7 @@ import UniformTypeIdentifiers
 import MobileCoreServices
 
 class PhotoExtractor {
-    static let geocodeQueue = DispatchQueue(label: "com.app.geocodeQueue", attributes: .concurrent)
-    static var geocodeOperations = 0
+    static let geocodeQueue = DispatchQueue(label: "com.app.geocodeQueue", qos: .utility)
     static let geocodeSemaphore = DispatchSemaphore(value: 1)
     
     static func extractAndSaveBulkPhotoInfo(asset: PHAsset, imageData: Data, fileNamePrefix: String, completion: @escaping (Bool, String?, UIImage?) -> Void) {
@@ -41,9 +40,7 @@ class PhotoExtractor {
         
         let formattedCaptureDate = formatDate(captureDate)
         
-        // 处理文件名作为 title
         let title = URL(string: fileNamePrefix)?.deletingPathExtension().lastPathComponent ?? fileNamePrefix
-        print("Processing photo with title: \(title)")  // 添加日志
         
         if SQLiteManager.shared.isPhotoExists(captureDate: formattedCaptureDate, fileNamePrefix: title) {
             getThumbnail(from: imageData) { thumbnail in
@@ -147,11 +144,7 @@ class PhotoExtractor {
             let relativeThumbnail350Path = thumbnail350Path.path.replacingOccurrences(of: getDocumentsDirectory().path, with: "")
             
             geocodeLocation(latitude: latitude, longitude: longitude) { country, area, locality in
-                print("Geocoding result - Country: \(country), Area: \(area), Locality: \(locality)")
-                
                 let addTimestamp = Date().ISO8601Format()
-                
-                print("Saving photo with title: \(title)")  // 添加日志
                 
                 let success = SQLiteManager.shared.addBulkPhoto(
                     id: uuid,
@@ -180,7 +173,6 @@ class PhotoExtractor {
                 )
                 
                 if success {
-                    print("Successfully saved photo to SQLite - ID: \(uuid)")
                     completion(true, nil, thumbnail100)
                 } else {
                     print("Failed to save photo to SQLite - ID: \(uuid)")
@@ -229,8 +221,9 @@ class PhotoExtractor {
     private static func geocodeLocation(latitude: Double, longitude: Double, completion: @escaping (String, String, String) -> Void) {
         geocodeQueue.async {
             geocodeSemaphore.wait()
-            geocodeOperations += 1
-            print("Starting geocode operation. Current operations: \(geocodeOperations)")
+            
+            // 增加延迟以降低请求频率
+            Thread.sleep(forTimeInterval: 2.0)
             
             let location = CLLocation(latitude: latitude, longitude: longitude)
             let geocoder = CLGeocoder()
@@ -238,8 +231,6 @@ class PhotoExtractor {
             let locale = Locale(identifier: "en_US")
             geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
                 defer {
-                    geocodeOperations -= 1
-                    print("Finished geocode operation. Remaining operations: \(geocodeOperations)")
                     geocodeSemaphore.signal()
                 }
                 
@@ -251,16 +242,12 @@ class PhotoExtractor {
                     let country = placemark.country ?? "Unknown Country"
                     let area = placemark.administrativeArea ?? "Unknown Area"
                     let locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown Location"
-                    print("Geocoding success - Country: \(country), Area: \(area), Locality: \(locality)")
                     completion(country, area, locality)
                 } else {
                     print("No placemark found, using default values")
                     completion("Unknown Country", "Unknown Area", "Unknown Location")
                 }
             }
-            
-            // 添加延迟以确保不超过 Apple 的 API 限制
-            Thread.sleep(forTimeInterval: 1.2) // 确保每次调用之间至少有 1.2 秒的间隔
         }
     }
     

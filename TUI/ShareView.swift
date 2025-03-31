@@ -2,7 +2,6 @@ import SwiftUI
 import Photos
 
 // MARK: - ImageSaver
-
 class ImageSaver: NSObject, ObservableObject {
     @Published var isSaving = false
     @Published var saveResult: String?
@@ -36,7 +35,6 @@ class ImageSaver: NSObject, ObservableObject {
 }
 
 // MARK: - ShareView
-
 struct ShareView: View {
     @State private var animateButtons = false
     @StateObject private var imageSaver = ImageSaver()
@@ -50,6 +48,7 @@ struct ShareView: View {
     @State private var shouldRegeneratePoster: Bool = false
     @State private var showingCopyAlert = false
     @State private var isShowingShareSheet = false
+    @State private var isShowingOriginalShareSheet = false
     @AppStorage("shareWithExif") private var shareWithExif = false
     @AppStorage("shareWithGPS") private var shareWithGPS = false
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
@@ -57,6 +56,7 @@ struct ShareView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            // Header
             HStack {
                 Button(action: {
                     dismiss()
@@ -73,12 +73,20 @@ struct ShareView: View {
             
             Spacer(minLength: 20)
             
+            // Poster Preview
             GeometryReader { geometry in
-                PosterView(photo: photo, processedImage: $processedImage, originalImage: $originalImage, isBirdSpecies: isBirdSpecies, birdNumber: birdNumber, shouldRegenerate: $shouldRegeneratePoster, saveImage: saveImage)
+                PosterView(photo: photo,
+                          processedImage: $processedImage,
+                          originalImage: $originalImage,
+                          isBirdSpecies: isBirdSpecies,
+                          birdNumber: birdNumber,
+                          shouldRegenerate: $shouldRegeneratePoster,
+                          saveImage: saveImage)
                     .frame(width: geometry.size.width, height: geometry.size.width)
             }
             .frame(height: UIScreen.main.bounds.width)
             
+            // Status Messages
             if imageSaver.isSaving {
                 ProgressView("Saving image...")
                     .padding(.top, 10)
@@ -90,7 +98,9 @@ struct ShareView: View {
             
             Spacer(minLength: 20)
             
+            // Action Buttons
             HStack(spacing: 20) {
+                // Share Poster Button
                 Button(action: sharePoster) {
                     VStack {
                         Image(systemName: "square.and.arrow.up")
@@ -104,10 +114,11 @@ struct ShareView: View {
                 }
                 .disabled(imageSaver.isSaving)
                 
-                Button(action: saveOriginalToPhotoLibrary) {
+                // Share Original Button
+                Button(action: shareOriginal) {
                     VStack {
-                        Image(systemName: "photo.artframe")
-                        Text("Save Original")
+                        Image(systemName: "photo.on.rectangle")
+                        Text("Share Original")
                             .font(.caption2)
                     }
                     .padding()
@@ -117,6 +128,7 @@ struct ShareView: View {
                 }
                 .disabled(imageSaver.isSaving)
                 
+                // Copy EXIF Button
                 Button(action: saveExifInfo) {
                     VStack {
                         Image(systemName: "character.textbox")
@@ -133,7 +145,9 @@ struct ShareView: View {
             .padding(.bottom, 20)
         }
         .alert(isPresented: $showingCopyAlert) {
-            Alert(title: Text("Copy Successful"), message: Text("EXIF has been copied to the clipboard"), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Copy Successful"),
+                  message: Text("EXIF has been copied to the clipboard"),
+                  dismissButton: .default(Text("OK")))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
@@ -155,18 +169,34 @@ struct ShareView: View {
                 ShareActivityViewController(activityItems: [image])
             }
         }
+        .sheet(isPresented: $isShowingOriginalShareSheet) {
+            if let fileURL = getOriginalFileURL() {
+                ShareActivityViewController(activityItems: [fileURL])
+            }
+        }
     }
-
+    
+    // MARK: - Helper Methods
+    private func getOriginalFileURL() -> URL? {
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fileURL = documentsURL.appendingPathComponent(photo.path)
+        return FileManager.default.fileExists(atPath: fileURL.path) ? fileURL : nil
+    }
+    
     func saveImage(_ image: UIImage) {
         imageSaver.saveImage(image)
     }
-
+    
     private func sharePoster() {
-        if let _ = processedImage {
+        if processedImage != nil {
             isShowingShareSheet = true
         }
     }
-
+    
+    private func shareOriginal() {
+        isShowingOriginalShareSheet = true
+    }
+    
     private func saveExifInfo() {
         var exifInfo = EXIFManager.shared.copyEXIFInfo(for: photo)
         if isBirdSpecies, let number = birdNumber {
@@ -176,16 +206,16 @@ struct ShareView: View {
         showingCopyAlert = true
     }
     
+    // MARK: - Bird Species Methods
     private func loadBirdList() {
         do {
             guard let url = Bundle.main.url(forResource: "birdInfo", withExtension: "json") else {
                 return
             }
-            
             let data = try Data(contentsOf: url)
             birdList = try JSONDecoder().decode([[String]].self, from: data)
         } catch {
-            // Handle error
+            print("Error loading bird list: \(error)")
         }
     }
     
@@ -204,6 +234,7 @@ struct ShareView: View {
             birdNumber = nil
             return
         }
+        
         DispatchQueue.global(qos: .background).async {
             do {
                 let allObjectNames = SQLiteManager.shared.getAllObjectNames()
@@ -230,97 +261,18 @@ struct ShareView: View {
             }
         }
     }
-    
-    private func saveOriginalToPhotoLibrary() {
-        let fileManager = FileManager.default
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fullPath = documentsURL.appendingPathComponent(photo.path)
-        
-        guard fileManager.fileExists(atPath: fullPath.path) else {
-            imageSaver.saveResult = "Save failed: Original file not found"
-            return
-        }
-        
-        // 获取原始文件名
-        let originalFileName = URL(fileURLWithPath: photo.title).lastPathComponent
-        
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                PHPhotoLibrary.shared().performChanges({
-                    let creationRequest = PHAssetCreationRequest.forAsset()
-                    let options = PHAssetResourceCreationOptions()
-                    options.originalFilename = originalFileName
-                    creationRequest.addResource(with: .photo, fileURL: fullPath, options: options)
-                }) { success, error in
-                    DispatchQueue.main.async {
-                        if success {
-                            self.imageSaver.saveResult = "Original image '\(originalFileName)' successfully saved to photo library"
-                        } else {
-                            self.imageSaver.saveResult = "Save failed: \(error?.localizedDescription ?? "Unknown error")"
-                        }
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.imageSaver.saveResult = "Save failed: No permission to access photo library"
-                }
-            }
-        }
-    }
 }
 
 // MARK: - ShareActivityViewController
-
 struct ShareActivityViewController: UIViewControllerRepresentable {
     let activityItems: [Any]
     let applicationActivities: [UIActivity]? = nil
-
+    
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        let controller = UIActivityViewController(activityItems: activityItems,
+                                                applicationActivities: applicationActivities)
         return controller
     }
-
+    
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
-
-// MARK: - ShareButton
-
-struct ShareButton: View {
-    let icon: String
-    let text: String
-    let color: Color
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            VStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                    .font(.system(size: 24, weight: .semibold))
-                Text(text)
-                    .foregroundColor(color)
-                    .font(.caption)
-                    .padding(.top, 5)
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-        }
-        .background(Color.white.opacity(0.9))
-        .cornerRadius(15)
-        .shadow(color: color.opacity(0.3), radius: 5, x: 0, y: 2)
-    }
-}
-
-// MARK: - VisualEffectView
-
-struct VisualEffectView: UIViewRepresentable {
-    let effect: UIVisualEffect
-    
-    func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView {
-        UIVisualEffectView()
-    }
-    
-    func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) {
-        uiView.effect = effect
-    }
 }

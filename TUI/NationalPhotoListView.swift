@@ -6,67 +6,94 @@ struct NationalPhotoListView: View {
     var locality: String?
     @State private var photos: [Photo] = []
     @State private var currentPage = 1
+    @State private var executionTime: TimeInterval = 0
     private let itemsPerPage = 9
     
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                // Headbar
-                HeadBarView(title: locality != nil ? "\(country), \(locality!)" : country)
-                    .padding(.top, geometry.safeAreaInsets.top)
-
-                // Main
-                ScrollView {
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 5), GridItem(.flexible(), spacing: 5), GridItem(.flexible(), spacing: 5)], spacing: 20) {
-                        ForEach(Array(photos.prefix(currentPage * itemsPerPage).enumerated()), id: \.element.id) { index, photo in
-                            NavigationLink(destination: DetailView(photos: photos, initialIndex: photos.firstIndex(where: { $0.id == photo.id }) ?? 0, onDismiss: { _ in })) {
-                                PhotoThumbnailView(photo: photo, size: (UIScreen.main.bounds.width / 3) - 15)
-                            }
-                        }
-                    }
-                    
-                    if photos.count > currentPage * itemsPerPage {
-                        Button(action: {
-                            currentPage += 1
-                        }) {
-                            Text("Load more ...")
-                                .foregroundColor(.white)
-                                .font(.system(size: 14))
-                                .padding(8)
-                                .frame(maxWidth: UIScreen.main.bounds.width / 2)
-                                .background(Color.black)
-                                .cornerRadius(15)
-                        }
-                        .padding(.top)
-                    }
-                }
-                .padding(.horizontal, 5)
-                .onAppear(perform: loadPhotos)
-
-                // Bottombar
-                BottomBarView()
-                    .padding(.bottom, geometry.safeAreaInsets.bottom)
+                headbar(geometry: geometry)
+                mainContent(geometry: geometry)
+                executionTimeView
+                bottombar(geometry: geometry)
             }
             .background(Color("BGColor").edgesIgnoringSafeArea(.all))
             .ignoresSafeArea()
         }
         .navigationBarHidden(true)
     }
+    
+    private func headbar(geometry: GeometryProxy) -> some View {
+        HeadBarView(title: locality != nil ? "\(country), \(locality!)" : country)
+            .padding(.top, geometry.safeAreaInsets.top)
+    }
+    
+    private func mainContent(geometry: GeometryProxy) -> some View {
+        ScrollView {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 5), GridItem(.flexible(), spacing: 5), GridItem(.flexible(), spacing: 5)], spacing: 20) {
+                ForEach(Array(photos.prefix(currentPage * itemsPerPage).enumerated()), id: \.element.id) { index, photo in
+                    photoLink(photo: photo)
+                }
+            }
+            
+            loadMoreButton
+        }
+        .padding(.horizontal, 5)
+        .onAppear(perform: loadPhotos)
+    }
+    
+    private func photoLink(photo: Photo) -> some View {
+        NavigationLink(destination:  DetailView(photo: photo)){
+            PhotoThumbnailView(photo: photo, size: (UIScreen.main.bounds.width / 3) - 15)
+        }
+    }
+    
+    private var loadMoreButton: some View {
+        Group {
+            if photos.count > currentPage * itemsPerPage {
+                Button(action: {
+                    currentPage += 1
+                }) {
+                    Text("Load more ...")
+                        .foregroundColor(.white)
+                        .font(.system(size: 14))
+                        .padding(8)
+                        .frame(maxWidth: UIScreen.main.bounds.width / 2)
+                        .background(Color.black)
+                        .cornerRadius(15)
+                }
+                .padding(.top)
+            }
+        }
+    }
+    
+    private var executionTimeView: some View {
+        Group {
+            if !photos.isEmpty {
+                Text("Execution Time: \(String(format: "%.3f", executionTime))s")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 4)
+                    .frame(maxWidth: .infinity)
+                    .background(Color.white)
+            }
+        }
+    }
+    
+    private func bottombar(geometry: GeometryProxy) -> some View {
+        BottomBarView()
+            .padding(.bottom, geometry.safeAreaInsets.bottom)
+    }
 
     private func loadPhotos() {
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
         photos = SQLiteManager.shared.getAllPhotos()
             .filter { $0.country == country && (locality == nil || $0.locality == locality) }
             .sorted { $0.dateTimeOriginal > $1.dateTimeOriginal }
-    }
-
-    private func loadImage(named imageName: String) -> UIImage? {
-        let fileManager = FileManager.default
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fullPath = documentsURL.appendingPathComponent(imageName).path
-        if fileManager.fileExists(atPath: fullPath) {
-            return UIImage(contentsOfFile: fullPath)
-        }
-        return nil
+        
+        let endTime = CFAbsoluteTimeGetCurrent()
+        executionTime = endTime - startTime
     }
 }
 

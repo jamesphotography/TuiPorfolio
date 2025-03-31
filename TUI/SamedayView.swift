@@ -16,20 +16,16 @@ struct SameDayView: View {
                     Spacer()
                 }
                 
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                    ForEach(photos.prefix(9).filter { $0.id != currentPhotoID }, id: \.id) { photo in
-                        if let uiImage = loadImage(from: photo.thumbnailPath100) {
-                            NavigationLink(destination: DetailView(photos: photos, initialIndex: photos.firstIndex(where: { $0.id == photo.id }) ?? 0) { index in
-                                self.selectedPhotoIndex = index
-                            }) {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 100)
-                                    .clipped()
-                                    .cornerRadius(3)
-                                    .shadow(radius: 3)
-                            }
+                ForEach(photos.prefix(9).filter { $0.id != currentPhotoID }, id: \.id) { photo in
+                    if let uiImage = loadImage(from: photo.thumbnailPath100) {
+                        NavigationLink(destination: DetailView(photo: photo)) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 100)
+                                .clipped()
+                                .cornerRadius(3)
+                                .shadow(radius: 3)
                         }
                     }
                 }

@@ -2,9 +2,7 @@ import SwiftUI
 import MapKit
 
 struct DetailView: View {
-    let photos: [Photo]
-    @State private var currentIndex: Int
-    @State private var dragOffset: CGFloat = 0
+    let photo: Photo
     @State private var showingEditor = false
     @State private var image: UIImage?
     @State private var objectName: String
@@ -26,40 +24,32 @@ struct DetailView: View {
     @State private var showingDeleteAlert = false
     @State private var showingDeleteSuccessAlert = false
     @AppStorage("enableBirdWatching") private var enableBirdWatching = false
-    var onDismiss: (Int) -> Void
     
-    private var currentPhoto: Photo { photos[currentIndex] }
-    private var hasGPSData: Bool { currentPhoto.latitude != 0 && currentPhoto.longitude != 0 }
+    private var hasGPSData: Bool { photo.latitude != 0 && photo.longitude != 0 }
     
-    init(photos: [Photo], initialIndex: Int, onDismiss: @escaping (Int) -> Void) {
-        self.photos = photos
-        self._currentIndex = State(initialValue: initialIndex)
-        let initialPhoto = photos[initialIndex]
-        self._objectName = State(initialValue: initialPhoto.objectName)
-        self._caption = State(initialValue: initialPhoto.caption)
-        self.onDismiss = onDismiss
-        let coordinate = CLLocationCoordinate2D(latitude: initialPhoto.latitude, longitude: initialPhoto.longitude)
+    init(photo: Photo) {
+        self.photo = photo
+        self._objectName = State(initialValue: photo.objectName)
+        self._caption = State(initialValue: photo.caption)
+        let coordinate = CLLocationCoordinate2D(latitude: photo.latitude, longitude: photo.longitude)
         self._position = State(initialValue: .region(MKCoordinateRegion(
             center: coordinate,
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )))
-        self._birdList = State(initialValue: [])
-        self._birdNumber = State(initialValue: nil)
-        self._image = State(initialValue: loadImage(from: initialPhoto.path))
+        self._image = State(initialValue: loadImage(from: photo.path))
     }
     
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 HeadBarView(title: titleWithBirdNumber, onBackButtonTap: {
-                    self.onDismiss(currentIndex)
                     self.presentationMode.wrappedValue.dismiss()
                 })
                 .padding(.top, geometry.safeAreaInsets.top)
                 
                 ScrollView {
                     VStack(spacing: 10) {
-                        imageSection(geometry: geometry)
+                        imageSection
                         controlSection
                         infoSection
                             .gesture(LongPressGesture(minimumDuration: 0.5).onEnded { _ in copyEXIFInfo() })
@@ -92,50 +82,49 @@ struct DetailView: View {
         .navigationDestination(isPresented: $navigateToMap) {
             if hasGPSData {
                 MapView(
-                    latitude: currentPhoto.latitude,
-                    longitude: currentPhoto.longitude,
-                    country: currentPhoto.country,
-                    locality: currentPhoto.locality,
-                    thumbnailPath: currentPhoto.thumbnailPath100,
+                    latitude: photo.latitude,
+                    longitude: photo.longitude,
+                    country: photo.country,
+                    locality: photo.locality,
+                    thumbnailPath: photo.thumbnailPath100,
                     showMap: $showMap
                 )
             }
         }
         .navigationDestination(isPresented: $navigateToSameday) {
-            CalendarView(date: dateFromString(currentPhoto.dateTimeOriginal))
+            CalendarView(date: dateFromString(photo.dateTimeOriginal))
         }
         .navigationDestination(isPresented: $navigateToCamera) {
-            CameraDetailView(cameraModel: currentPhoto.model)
+            CameraDetailView(cameraModel: photo.model)
         }
         .navigationDestination(isPresented: $navigateToLens) {
-            LensDetailView(lensModel: currentPhoto.lensModel)
+            LensDetailView(lensModel: photo.lensModel)
         }
         .sheet(isPresented: $showingEditor) {
             EditorView(
                 image: $image,
-                imageName: .constant(currentPhoto.title),
+                imageName: .constant(photo.title),
                 objectName: $objectName,
                 caption: $caption,
-                imagePath: .constant(currentPhoto.path),
-                thumbnailPath100: .constant(currentPhoto.thumbnailPath100),
-                thumbnailPath350: .constant(currentPhoto.thumbnailPath350),
+                imagePath: .constant(photo.path),
+                thumbnailPath100: .constant(photo.thumbnailPath100),
+                thumbnailPath350: .constant(photo.thumbnailPath350),
                 shouldNavigateToHome: $shouldNavigateToHome,
-                initialRating: currentPhoto.starRating,
-                initialLatitude: currentPhoto.latitude,
-                initialLongitude: currentPhoto.longitude,
-                initialCountry: currentPhoto.country,
-                initialArea: currentPhoto.area,
-                initialLocality: currentPhoto.locality
+                initialRating: photo.starRating,
+                initialLatitude: photo.latitude,
+                initialLongitude: photo.longitude,
+                initialCountry: photo.country,
+                initialArea: photo.area,
+                initialLocality: photo.locality
             )
         }
         .sheet(isPresented: $showingShareView) {
-            ShareView(photo: currentPhoto)
+            ShareView(photo: photo)
         }
         .onChange(of: objectName) { _, _ in checkIfBird() }
         .onChange(of: shouldNavigateToHome) { _, newValue in
             if newValue { handleNavigation() }
         }
-        .onChange(of: currentIndex) { _, _ in updateCurrentPhotoInfo() }
         .onAppear {
             birdList = loadBirdList()
             checkIfBird()
@@ -145,61 +134,20 @@ struct DetailView: View {
         }
     }
     
-    private func loadImage(from path: String) -> UIImage? {
-        let fileManager = FileManager.default
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fullPath = documentsURL.appendingPathComponent(path).path
-        
-        if fileManager.fileExists(atPath: fullPath) {
-            return UIImage(contentsOfFile: fullPath)
-        } else {
-            return nil
-        }
-    }
-    
-    private func updateCurrentPhotoInfo() {
-        objectName = currentPhoto.objectName
-        caption = currentPhoto.caption
-        image = loadImage(from: currentPhoto.path)
-        position = .region(MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: currentPhoto.latitude, longitude: currentPhoto.longitude),
-            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        ))
-        checkIfBird()
-        if isBirdSpecies {
-            getBirdNumber()
-        }
-    }
-    
-    private func imageSection(geometry: GeometryProxy) -> some View {
-        ZStack {
+    private var imageSection: some View {
+        Group {
             if let uiImage = image {
                 Image(uiImage: uiImage)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: geometry.size.width)
                     .aspectRatio(contentMode: .fit)
                     .padding(.vertical, 10)
-                    .offset(x: self.dragOffset)
-                    .animation(.interactiveSpring(), value: dragOffset)
             } else {
                 Text("Image could not be loaded")
                     .foregroundColor(.red)
             }
         }
         .onTapGesture { showingSinglePhotoView = true }
-        .gesture(DragGesture()
-            .onChanged { self.dragOffset = $0.translation.width }
-            .onEnded { value in
-                let threshold = geometry.size.width * 0.2
-                if value.translation.width > threshold {
-                    self.showPreviousImage()
-                } else if value.translation.width < -threshold {
-                    self.showNextImage()
-                }
-                self.dragOffset = 0
-            }
-        )
     }
     
     private var controlSection: some View {
@@ -215,12 +163,12 @@ struct DetailView: View {
             Spacer()
             VStack {
                 Button(action: { navigateToSameday = true }) {
-                    Text(EXIFManager.shared.formatDate(currentPhoto.dateTimeOriginal))
+                    Text(EXIFManager.shared.formatDate(photo.dateTimeOriginal))
                         .font(.subheadline)
                         .frame(maxWidth: .infinity)
                 }
                 Spacer()
-                StarRating(rating: currentPhoto.starRating)
+                StarRating(rating: photo.starRating)
             }
             Spacer()
             Button(action: { showingEditor = true }) {
@@ -243,26 +191,6 @@ struct DetailView: View {
         .font(.title)
     }
     
-    private func deletePhoto() {
-        // 删除文件
-        let fileManager = FileManager.default
-        let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let fullPath = documentsPath.appendingPathComponent(currentPhoto.path)
-        
-        do {
-            try fileManager.removeItem(at: fullPath)
-           // print("File deleted successfully")
-            
-            // 删除数据库记录
-            SQLiteManager.shared.deletePhotoRecord(imagePath: currentPhoto.path)
-            
-            // 显示删除成功的提示框
-            showingDeleteSuccessAlert = true
-        } catch {
-            print("Error deleting file: \(error)")
-        }
-    }
-    
     private var infoSection: some View {
         VStack(alignment: .leading, spacing: 6) {
             if !caption.isEmpty {
@@ -274,37 +202,37 @@ struct DetailView: View {
             }
             
             Button(action: { navigateToCamera = true }) {
-                InfoRow(icon: "camera.viewfinder", value: currentPhoto.model)
+                InfoRow(icon: "camera.viewfinder", value: photo.model)
                     .underline()
             }
             Button(action: { navigateToLens = true }) {
-                InfoRow(icon: "button.programmable.square", value: currentPhoto.lensModel)
+                InfoRow(icon: "button.programmable.square", value: photo.lensModel)
                     .underline()
             }
-            InfoRow(icon: "camera.aperture", value: EXIFManager.shared.exposureInfo(photo: currentPhoto))
+            InfoRow(icon: "camera.aperture", value: EXIFManager.shared.exposureInfo(photo: photo))
             
             if hasGPSData {
                 Divider()
                 HStack {
                     Spacer()
                     Button(action: {
-                        if !currentPhoto.country.isEmpty && !currentPhoto.locality.isEmpty {
+                        if !photo.country.isEmpty && !photo.locality.isEmpty {
                             navigateToMap = true
                         }
                     }) {
                         HStack {
-                            if let countryCode = CountryCodeManager.shared.getCountryCode(for: currentPhoto.country) {
+                            if let countryCode = CountryCodeManager.shared.getCountryCode(for: photo.country) {
                                 FlagView(country: countryCode)
                                     .frame(width: 20, height: 30)
                             }
-                            Text(EXIFManager.shared.locationInfoWithAltitude(photo: currentPhoto))
+                            Text(EXIFManager.shared.locationInfoWithAltitude(photo: photo))
                                 .font(.caption)
                         }
                     }
-                    .disabled(currentPhoto.country.isEmpty && currentPhoto.locality.isEmpty)
+                    .disabled(photo.country.isEmpty && photo.locality.isEmpty)
                     Spacer()
                 }
-                MiniMapView(position: $position, photo: currentPhoto)
+                MiniMapView(position: $position, photo: photo)
                     .frame(height: 150)
                     .cornerRadius(10)
                     .onTapGesture { navigateToMap = true }
@@ -318,21 +246,54 @@ struct DetailView: View {
     
     private var titleWithBirdNumber: String {
         if enableBirdWatching && isBirdSpecies, let number = birdNumber {
-            return "No.\(number) \(objectName.isEmpty ? currentPhoto.title : objectName)"
+            return "No.\(number) \(objectName.isEmpty ? photo.title : objectName)"
         } else {
-            return objectName.isEmpty ? currentPhoto.title : objectName
+            return objectName.isEmpty ? photo.title : objectName
         }
     }
     
-    private func showNextImage() {
-        if currentIndex < photos.count - 1 {
-            currentIndex += 1
+    private func loadImage(from path: String) -> UIImage? {
+        let fileManager = FileManager.default
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let fullPath = documentsURL.appendingPathComponent(path).path
+        
+        if fileManager.fileExists(atPath: fullPath) {
+            return UIImage(contentsOfFile: fullPath)
+        } else {
+            return nil
         }
     }
     
-    private func showPreviousImage() {
-        if currentIndex > 0 {
-            currentIndex -= 1
+    private func deletePhoto() {
+        let fileManager = FileManager.default
+        let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        
+        // 删除原始图片
+        let fullPath = documentsPath.appendingPathComponent(photo.path)
+        // 删除缩略图
+        let thumbnail100Path = documentsPath.appendingPathComponent(photo.thumbnailPath100)
+        let thumbnail350Path = documentsPath.appendingPathComponent(photo.thumbnailPath350)
+        
+        do {
+            try fileManager.removeItem(at: fullPath)
+            try fileManager.removeItem(at: thumbnail100Path)
+            try fileManager.removeItem(at: thumbnail350Path)
+            
+            // 从数据库中删除记录
+            SQLiteManager.shared.deletePhotoRecord(imagePath: photo.path)
+            
+            // 刷新缓存
+            SQLiteManager.shared.invalidateCache()
+            
+            // 如果有其他相关缓存，也应该在这里刷新
+            BirdCountCache.shared.clear()
+            
+            // 发送通知，告知其他视图数据已更新
+            NotificationCenter.default.post(name: .photoDeleted, object: nil)
+            
+            showingDeleteSuccessAlert = true
+        } catch {
+            print("Error deleting file: \(error)")
         }
     }
     
@@ -372,7 +333,7 @@ struct DetailView: View {
     }
     
     private func copyEXIFInfo() {
-        var exifInfo = EXIFManager.shared.copyEXIFInfo(for: currentPhoto)
+        var exifInfo = EXIFManager.shared.copyEXIFInfo(for: photo)
         if enableBirdWatching && isBirdSpecies, let number = birdNumber {
             exifInfo += "\nBird ID:No.\(number)"
         }
@@ -467,34 +428,40 @@ struct StarRating: View {
     }
 }
 
+// 预览提供者
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
         let samplePhoto = Photo(
             id: "1",
-            title: "茶色蛙口夜鷹",
-            path: "testImage",
-            thumbnailPath100: "testImage_thumb100",
-            thumbnailPath350: "testImage_thumb350",
-            starRating: 5,
-            country: "Australia",
-            area: "Victoria",
-            locality: "Parkville",
-            dateTimeOriginal: "2024-08-05 13:15",
-            addTimestamp: "2024-08-05 13:20",
-            lensModel: "NIKKOR Z 400mm f/4.5 VR S Z TC-1.4x",
-            model: "NIKON Z 8",
-            exposureTime: 1/2000,
-            fNumber: 6.3,
-            focalLenIn35mmFilm: 560.0,
-            focalLength: 560.0,
-            ISOSPEEDRatings: 3200,
-            altitude: 48,
-            latitude: -37.7964,
-            longitude: 144.9612,
-            objectName: "茶色蛙口夜鷹",
-            caption: "英文名：Tawny Frogmouth (学名：Podargus strigoides)，是蛙口夜鹰目蛙口夜鹰科蛙口夜鹰属的鸟类。又名：褐蛙口鹰、茶色蛙口鹰、茶色夜鹰，是分布于澳大利亚和塔斯曼尼亚的特有鸟类。以大头、宽嘴和独特的黄色眼睛著称，能够巧妙地融入树皮背景，展现出高超的伪装技巧。这种鸟广泛分布于各种生境，包括城市郊区。"
+            title: "Sample Photo",
+            path: "samplePath",
+            thumbnailPath100: "sampleThumb100",
+            thumbnailPath350: "sampleThumb350",
+            starRating: 4,
+            country: "Sample Country",
+            area: "Sample Area",
+            locality: "Sample Locality",
+            dateTimeOriginal: "2023-08-21 12:00:00",
+            addTimestamp: "2023-08-21 12:05:00",
+            lensModel: "Sample Lens",
+            model: "Sample Camera",
+            exposureTime: 1/100,
+            fNumber: 2.8,
+            focalLenIn35mmFilm: 50.0,
+            focalLength: 50.0,
+            ISOSPEEDRatings: 100,
+            altitude: 100,
+            latitude: 0,
+            longitude: 0,
+            objectName: "Sample Object",
+            caption: "This is a sample caption for preview purposes."
         )
         
-        DetailView(photos: [samplePhoto], initialIndex: 0) { _ in }
+        DetailView(photo: samplePhoto)
     }
+}
+
+
+extension Notification.Name {
+    static let photoDeleted = Notification.Name("photoDeleted")
 }

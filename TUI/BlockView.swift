@@ -3,6 +3,7 @@ import MapKit
 
 enum NavigationDestination: Hashable {
     case locality(String)
+    case area(String)      // 新增的省份导航类型
     case country(String)
     case date(Date)
     case objectName(String)

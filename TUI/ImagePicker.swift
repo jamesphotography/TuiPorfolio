@@ -2,6 +2,8 @@ import SwiftUI
 import PhotosUI
 import UIKit
 import CoreLocation
+import ImageIO
+import UniformTypeIdentifiers
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var image: UIImage?
@@ -70,7 +72,6 @@ struct ImagePicker: UIViewControllerRepresentable {
                         coordinator.coordinate(readingItemAt: url, options: .immediatelyAvailableMetadataOnly, error: &coordError) { (newURL) in
                             do {
                                 try FileManager.default.copyItem(at: newURL, to: destinationURL)
-//                                print("File successfully copied to tmp directory: \(destinationURL)")
                                 
                                 // 读取文件数据并提取EXIF信息
                                 let data = try Data(contentsOf: destinationURL)
@@ -96,7 +97,6 @@ struct ImagePicker: UIViewControllerRepresentable {
         func extractExifInfo(from imageData: Data) {
             guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else { return }
             guard let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any] else { return }
-            
             
             if let tiffDict = properties[kCGImagePropertyTIFFDictionary] as? [CFString: Any] {
                 if let camera = tiffDict[kCGImagePropertyTIFFModel] as? String {
@@ -157,7 +157,7 @@ struct ImagePicker: UIViewControllerRepresentable {
                 }
             }
             
-            // 更新 GPS 信息提取和地理编码部分
+            // GPS信息处理
             if let gpsDict = properties[kCGImagePropertyGPSDictionary] as? [String: Any] {
                 if let latitudeRef = gpsDict[kCGImagePropertyGPSLatitudeRef as String] as? String,
                    let longitudeRef = gpsDict[kCGImagePropertyGPSLongitudeRef as String] as? String,
@@ -170,10 +170,6 @@ struct ImagePicker: UIViewControllerRepresentable {
                     self.parent.latitude = String(format: "%.6f", adjustedLatitude)
                     self.parent.longitude = String(format: "%.6f", adjustedLongitude)
                     
-//                    print("Extracted Latitude: \(adjustedLatitude) with ref: \(latitudeRef)")
-//                    print("Extracted Longitude: \(adjustedLongitude) with ref: \(longitudeRef)")
-                    
-                    // Altitude extraction
                     if let altitude = gpsDict[kCGImagePropertyGPSAltitude as String] as? Double {
                         self.parent.altitude = altitude
                     }
@@ -184,40 +180,58 @@ struct ImagePicker: UIViewControllerRepresentable {
             }
         }
         
-        // 转换GPS坐标为度数格式
-        func convertToDegrees(value: [NSNumber]) -> Double {
-            let d = Double(truncating: value[0])
-            let m = Double(truncating: value[1])
-            let s = Double(truncating: value[2])
-            return d + (m / 60.0) + (s / 3600.0)
+        private func handleGeocodingFailure() {
+            self.parent.country = "Unknown country"
+            self.parent.area = "Unknown area"
+            self.parent.locality = "Unknown location"
         }
         
-        func geocodeLocation(latitude: Double, longitude: Double) {
-                    let location = CLLocation(latitude: latitude, longitude: longitude)
-                    let geocoder = CLGeocoder()
-                    
-                    let locale = Locale(identifier: "en_US")
-                    geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
-                        if error != nil {
-                            self.handleGeocodingFailure()
-                            return
-                        }
-                        
-                        if let placemark = placemarks?.first {
-                            self.parent.country = placemark.country ?? "Unknown country"
-                            self.parent.area = placemark.administrativeArea ?? "Unknown area"
-                            self.parent.locality = placemark.locality ?? placemark.subAdministrativeArea ?? "Unknown locality"
-                        } else {
-                            self.handleGeocodingFailure()
-                        }
-                    }
+        private func geocodeLocation(latitude: Double, longitude: Double) {
+            let location = CLLocation(latitude: latitude, longitude: longitude)
+            let geocoder = CLGeocoder()
+            
+            let locale = Locale(identifier: "en_US")
+            geocoder.reverseGeocodeLocation(location, preferredLocale: locale) { placemarks, error in
+                if error != nil {
+                    self.handleGeocodingFailure()
+                    return
                 }
                 
-                private func handleGeocodingFailure() {
-                    self.parent.country = "Unknown country"
-                    self.parent.area = "Unknown area"
-                    self.parent.locality = "Unknown locality"
+                if let placemark = placemarks?.first {
+                    // 基本地理信息
+                    self.parent.country = placemark.country ?? "Unknown country"
+                    self.parent.area = placemark.administrativeArea ?? "Unknown area"
+                    
+                    // 优化的 locality 获取逻辑
+                    let possibleLocalities = [
+                        placemark.locality,                // 城市名
+                        placemark.subLocality,            // 区域名
+                        placemark.subAdministrativeArea,  // 次级行政区
+                        placemark.name,                   // 地点名称
+                        placemark.areasOfInterest?.first, // 兴趣点
+                        placemark.thoroughfare,           // 街道名
+                        placemark.inlandWater,            // 内陆水域名称
+                        placemark.ocean                   // 海洋名称
+                    ].compactMap { $0 }
+                    
+                    self.parent.locality = possibleLocalities.first ?? "Unknown Location"
+                    
+                    #if DEBUG
+                    print("Location Debug Info:")
+                    print("Country: \(placemark.country ?? "nil")")
+                    print("Area: \(placemark.administrativeArea ?? "nil")")
+                    print("Locality: \(placemark.locality ?? "nil")")
+                    print("SubLocality: \(placemark.subLocality ?? "nil")")
+                    print("Name: \(placemark.name ?? "nil")")
+                    print("AreasOfInterest: \(placemark.areasOfInterest ?? [])")
+                    print("Selected Locality: \(self.parent.locality)")
+                    #endif
+                    
+                } else {
+                    self.handleGeocodingFailure()
                 }
+            }
+        }
     }
     
     func makeCoordinator() -> Coordinator {

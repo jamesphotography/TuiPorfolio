@@ -60,6 +60,11 @@ struct SettingsView: View {
                         NavigationLink(destination: LensCountView()) {
                             Text("Lens Count")
                         }
+                        if enableBirdWatching {
+                            NavigationLink(destination: YearlyBirdReportView()) {
+                                Text("Yearly Bird Report")
+                            }
+                        }
                         NavigationLink(destination: BirdNameListView()) {
                             Text("Bird Name Match")
                         }

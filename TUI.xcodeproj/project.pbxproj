@@ -12,6 +12,9 @@
 		970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53B92C571C2800B031D6 /* LandingView.swift */; };
 		970E53BE2C576DB400B031D6 /* LocalityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53BD2C576DB400B031D6 /* LocalityListView.swift */; };
 		971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */ = {isa = PBXBuildFile; fileRef = 971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */; };
+		9723A4C42D275B1300AFE846 /* YearlyBirdReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9723A4C32D275B1300AFE846 /* YearlyBirdReportView.swift */; };
+		9723A4C62D275C5F00AFE846 /* SQLiteManagerBirdReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9723A4C52D275C5F00AFE846 /* SQLiteManagerBirdReport.swift */; };
+		97394C952D24B2B500AFAF77 /* StatePhotoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97394C942D24B26E00AFAF77 /* StatePhotoListView.swift */; };
 		973FC4512C75D0C700604B81 /* PosterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973FC4502C75D0C700604B81 /* PosterView.swift */; };
 		97497D432C5103D000FAE305 /* CustomCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D422C5103D000FAE305 /* CustomCalendarView.swift */; };
 		97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97497D442C5118C000FAE305 /* WaterfallView.swift */; };
@@ -20,6 +23,7 @@
 		976615B82C67B3A700636700 /* BackupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976615B72C67B3A700636700 /* BackupManager.swift */; };
 		976615BA2C67B51800636700 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976615B92C67B51800636700 /* BackupView.swift */; };
 		976615BD2C67BE4000636700 /* ZipArchive in Frameworks */ = {isa = PBXBuildFile; productRef = 976615BC2C67BE4000636700 /* ZipArchive */; };
+		9794C2252C776E64007ADE9D /* NationalViewCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9794C2242C776E64007ADE9D /* NationalViewCache.swift */; };
 		97A6F3DC2C6BA09B00A515A7 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */; };
 		97A6F3DE2C6C473E00A515A7 /* Webview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A6F3DD2C6C473E00A515A7 /* Webview.swift */; };
 		97A70AE22C512E3D00A97007 /* SamedayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A70AE12C512E3D00A97007 /* SamedayView.swift */; };
@@ -33,6 +37,7 @@
 		97B8A7CA2C54CBC600B039A4 /* testImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 97B8A7C72C54CBC600B039A4 /* testImage.jpg */; };
 		97B8A7CB2C54CBC600B039A4 /* testImage_thumb350.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 97B8A7C82C54CBC600B039A4 /* testImage_thumb350.jpg */; };
 		97B8A7CC2C54CBC600B039A4 /* testImage_thumb100.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 97B8A7C92C54CBC600B039A4 /* testImage_thumb100.jpg */; };
+		97CAF08C2C99B59D00EF8A48 /* LocalityBirdCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CAF08B2C99B59D00EF8A48 /* LocalityBirdCountView.swift */; };
 		97CE65E02C4A4A610002B6B2 /* TUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */; };
 		97CE65E22C4A4A610002B6B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE65E12C4A4A610002B6B2 /* ContentView.swift */; };
 		97CE65E42C4A4A620002B6B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97CE65E32C4A4A620002B6B2 /* Assets.xcassets */; };
@@ -91,6 +96,10 @@
 		970E53B92C571C2800B031D6 /* LandingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		970E53BD2C576DB400B031D6 /* LocalityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityListView.swift; sourceTree = "<group>"; };
 		971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JamesTuiPortfolio.zip; sourceTree = "<group>"; };
+		9723A4C32D275B1300AFE846 /* YearlyBirdReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlyBirdReportView.swift; sourceTree = "<group>"; };
+		9723A4C52D275C5F00AFE846 /* SQLiteManagerBirdReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteManagerBirdReport.swift; sourceTree = "<group>"; };
+		972CD13B2C7717DA005BC5B5 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		97394C942D24B26E00AFAF77 /* StatePhotoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatePhotoListView.swift; sourceTree = "<group>"; };
 		973FC4502C75D0C700604B81 /* PosterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PosterView.swift; sourceTree = "<group>"; };
 		97497D422C5103D000FAE305 /* CustomCalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCalendarView.swift; sourceTree = "<group>"; };
 		97497D442C5118C000FAE305 /* WaterfallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterfallView.swift; sourceTree = "<group>"; };
@@ -98,6 +107,7 @@
 		976615B52C670DAD00636700 /* birdInfo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = birdInfo.json; sourceTree = "<group>"; };
 		976615B72C67B3A700636700 /* BackupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupManager.swift; sourceTree = "<group>"; };
 		976615B92C67B51800636700 /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
+		9794C2242C776E64007ADE9D /* NationalViewCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NationalViewCache.swift; sourceTree = "<group>"; };
 		97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		97A6F3DD2C6C473E00A515A7 /* Webview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Webview.swift; sourceTree = "<group>"; };
 		97A6F3DF2C6C49EF00A515A7 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
@@ -112,6 +122,7 @@
 		97B8A7C72C54CBC600B039A4 /* testImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImage.jpg; sourceTree = "<group>"; };
 		97B8A7C82C54CBC600B039A4 /* testImage_thumb350.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImage_thumb350.jpg; sourceTree = "<group>"; };
 		97B8A7C92C54CBC600B039A4 /* testImage_thumb100.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImage_thumb100.jpg; sourceTree = "<group>"; };
+		97CAF08B2C99B59D00EF8A48 /* LocalityBirdCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityBirdCountView.swift; sourceTree = "<group>"; };
 		97CE65DC2C4A4A610002B6B2 /* TUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TUIApp.swift; sourceTree = "<group>"; };
 		97CE65E12C4A4A610002B6B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -229,15 +240,18 @@
 				97CE660B2C4A505F0002B6B2 /* ImagePicker.swift */,
 				97D9D0302C74B646008CD70F /* ImportErrors.swift */,
 				97D9D0322C74B7C2008CD70F /* ImportUtilities.swift */,
+				972CD13B2C7717DA005BC5B5 /* Info.plist */,
 				970E53B92C571C2800B031D6 /* LandingView.swift */,
 				97B8A7C32C535B9900B039A4 /* LensCountView.swift */,
 				97B8A7C52C535BB400B039A4 /* LensDetailView.swift */,
+				97CAF08B2C99B59D00EF8A48 /* LocalityBirdCountView.swift */,
 				970E53BD2C576DB400B031D6 /* LocalityListView.swift */,
 				97CE66392C4A54620002B6B2 /* LocalityPhotoListView.swift */,
 				97CE660F2C4A50F80002B6B2 /* Localizable.xcstrings */,
 				97CE66132C4A51750002B6B2 /* MapView.swift */,
 				97CE66152C4A518D0002B6B2 /* NationalPhotoListView.swift */,
 				97CE66172C4A51B10002B6B2 /* NationalView.swift */,
+				9794C2242C776E64007ADE9D /* NationalViewCache.swift */,
 				97CE66192C4A51D20002B6B2 /* ObjectNameView.swift */,
 				97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */,
 				97CE661B2C4A51E90002B6B2 /* Photo.swift */,
@@ -258,13 +272,16 @@
 				97CE662D2C4A534A0002B6B2 /* ShareView.swift */,
 				97F4A1C32C5A05C100633ABC /* SinglePhotoView.swift */,
 				97CE662F2C4A535C0002B6B2 /* SQLiteManager.swift */,
+				9723A4C52D275C5F00AFE846 /* SQLiteManagerBirdReport.swift */,
 				97CE66312C4A53820002B6B2 /* SQLiteManagerExtensions.swift */,
 				97CE66332C4A539A0002B6B2 /* StarRatingView.swift */,
+				97394C942D24B26E00AFAF77 /* StatePhotoListView.swift */,
 				97CE66362C4A53EE0002B6B2 /* TUI.entitlements */,
 				97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */,
 				974BDCD22C6C54FA00378033 /* TutorView.swift */,
 				97497D442C5118C000FAE305 /* WaterfallView.swift */,
 				97A6F3DD2C6C473E00A515A7 /* Webview.swift */,
+				9723A4C32D275B1300AFE846 /* YearlyBirdReportView.swift */,
 				97CE66372C4A540E0002B6B2 /* ZoomInView.swift */,
 			);
 			path = TUI;
@@ -380,6 +397,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9723A4C62D275C5F00AFE846 /* SQLiteManagerBirdReport.swift in Sources */,
 				97CE66002C4A4DC20002B6B2 /* AddImageView.swift in Sources */,
 				97CE65F62C4A4CCD0002B6B2 /* SettingsView.swift in Sources */,
 				97CE661A2C4A51D20002B6B2 /* ObjectNameView.swift in Sources */,
@@ -395,6 +413,7 @@
 				97F4A1C82C5B491600633ABC /* BulkImportManager.swift in Sources */,
 				97A6F3DC2C6BA09B00A515A7 /* OnboardingView.swift in Sources */,
 				976615B82C67B3A700636700 /* BackupManager.swift in Sources */,
+				97394C952D24B2B500AFAF77 /* StatePhotoListView.swift in Sources */,
 				97F4A1C42C5A05C100633ABC /* SinglePhotoView.swift in Sources */,
 				97CE66142C4A51750002B6B2 /* MapView.swift in Sources */,
 				97CE662E2C4A534A0002B6B2 /* ShareView.swift in Sources */,
@@ -403,6 +422,7 @@
 				97CE66382C4A540E0002B6B2 /* ZoomInView.swift in Sources */,
 				97CE66082C4A50150002B6B2 /* EditorView.swift in Sources */,
 				97CE661E2C4A51FD0002B6B2 /* PhotoImageView.swift in Sources */,
+				9794C2252C776E64007ADE9D /* NationalViewCache.swift in Sources */,
 				97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */,
 				97CE65FC2C4A4D780002B6B2 /* BottomBarView.swift in Sources */,
 				97CE65E22C4A4A610002B6B2 /* ContentView.swift in Sources */,
@@ -413,6 +433,7 @@
 				970E53BE2C576DB400B031D6 /* LocalityListView.swift in Sources */,
 				97D9D0352C74BBC6008CD70F /* PhotoExtractor.swift in Sources */,
 				97CE66322C4A53820002B6B2 /* SQLiteManagerExtensions.swift in Sources */,
+				9723A4C42D275B1300AFE846 /* YearlyBirdReportView.swift in Sources */,
 				97B8A7C02C53316A00B039A4 /* CameraCountView.swift in Sources */,
 				97CE66342C4A539A0002B6B2 /* StarRatingView.swift in Sources */,
 				97D9D0372C74BBDC008CD70F /* PhotoSaver.swift in Sources */,
@@ -429,6 +450,7 @@
 				97D9D02F2C74AEC8008CD70F /* BulkImportHelper.swift in Sources */,
 				97B8A7C22C535A3D00B039A4 /* CameraDetailView.swift in Sources */,
 				97CE65F02C4A4C4B0002B6B2 /* QuotesView.swift in Sources */,
+				97CAF08C2C99B59D00EF8A48 /* LocalityBirdCountView.swift in Sources */,
 				976615BA2C67B51800636700 /* BackupView.swift in Sources */,
 				970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */,
 				97023A642C5630C0004E62D2 /* BirdNameListView.swift in Sources */,
@@ -575,7 +597,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TUI/TUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"TUI/Preview Content\"";
 				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_PREVIEWS = YES;
@@ -585,6 +607,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Tui needs access to your files to share and save backups.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Tui needs access to the local network to share backups via AirDrop.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photo library so you can select individual photos or entire albums to import into your portfolio";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library so you can select individual photos or entire albums to import into your portfolio";
@@ -599,7 +622,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.08;
 				PRODUCT_BUNDLE_IDENTIFIER = jamesphotography.TUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -607,7 +630,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				YOUTUBE_API_KEY = "$(YOUTUBE_API_KEY)";
 			};
 			name = Debug;
@@ -619,7 +642,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = TUI/TUI.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"TUI/Preview Content\"";
 				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_PREVIEWS = YES;
@@ -629,6 +652,7 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSFileProviderDomainUsageDescription = "Tui needs access to your files to share and save backups.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Tui needs access to the local network to share backups via AirDrop.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photo library so you can select individual photos or entire albums to import into your portfolio";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library so you can select individual photos or entire albums to import into your portfolio";
@@ -643,7 +667,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.08;
 				PRODUCT_BUNDLE_IDENTIFIER = jamesphotography.TUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -651,7 +675,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				YOUTUBE_API_KEY = "$(YOUTUBE_API_KEY)";
 			};
 			name = Release;

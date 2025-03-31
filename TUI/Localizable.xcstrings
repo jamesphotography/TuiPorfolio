@@ -81,23 +81,6 @@
         }
       }
     },
-    "- %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "- %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "- %@"
-          }
-        }
-      }
-    },
     "-- %@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -114,23 +97,6 @@
         }
       }
     },
-    "," : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "，"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ","
-          }
-        }
-      }
-    },
     ", " : {
       "localizations" : {
         "zh-Hans" : {
@@ -143,6 +109,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "，"
+          }
+        }
+      }
+    },
+    ", %@ traveled through %lld countries and %lld areas, capturing %lld bird photos of %lld different species, with %lld newly discovered species!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : ", %1$@ traveled through %2$lld countries and %3$lld areas, capturing %4$lld bird photos of %5$lld different species, with %6$lld newly discovered species!"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 穿越了 %2$lld 个国家和 %3$lld 个地区，拍摄了 %4$lld 张鸟类照片，记录了 %5$lld 个不同鸟种，其中新发现了 %6$lld 个鸟种！"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "， %1$@ 走訪了 %2$lld 個國家和 %3$lld 個地區，拍攝了 %4$lld 張鳥類相片，紀錄了 %5$lld 種不同鳥類，其中新發現了 %6$lld 種鳥"
           }
         }
       }
@@ -202,23 +190,6 @@
         }
       }
     },
-    "%@ - %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ - %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ - %@"
-          }
-        }
-      }
-    },
     "%@ - %@, %@, %@" : {
       "localizations" : {
         "en" : {
@@ -241,23 +212,6 @@
         }
       }
     },
-    "%@ 's Portfolio" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@的作品集"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "%@的作品集"
-          }
-        }
-      }
-    },
     "%@ (%@)" : {
       "comment" : "Camera and lens model format",
       "localizations" : {
@@ -275,52 +229,65 @@
         }
       }
     },
-    "%@ Portfolio" : {
-      "extractionState" : "stale",
+    "%@ (%lld张)" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$lld张)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@作品集"
+            "value" : "%1$@ (%2$lld张)"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@作品集"
+            "value" : "%1$@ (%2$lld張)"
           }
         }
       }
     },
-    "%@, %@ (%@)" : {
-      "extractionState" : "stale",
+    "%@ %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "%@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@, %@ (%@)"
+            "value" : "%1$@, %2$@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@, %@ (%@)"
+            "value" : "%1$@, %2$@"
           }
         }
       }
     },
     "%@, %@, %@" : {
-      "extractionState" : "stale",
       "localizations" : {
-        "zh-Hans" : {
+        "en" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@, %2$@, %3$@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%1$@, %2$@, %3$@"
           }
         }
@@ -344,23 +311,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@... %2$d%%"
-          }
-        }
-      }
-    },
-    "%@... %lld%%" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@... %lld%%"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@... %lld%%"
           }
         }
       }
@@ -397,22 +347,56 @@
         }
       }
     },
-    "%lld days left to complete Project365" : {
-      "extractionState" : "stale",
+    "%lld Bird Species" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "距离完成365天摄影挑战还有 %lld 天。"
+            "value" : "%lld 种鸟"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "距離完成365天攝影挑戰還有 %lld 天。"
+            "value" : "%lld 鳥種"
           }
         }
       }
+    },
+    "%lld Bird Species Photographed" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拍摄 %lld 种鸟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已拍攝 %lld 種鳥"
+          }
+        }
+      }
+    },
+    "%lld birds" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 种鸟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 種鳥"
+          }
+        }
+      }
+    },
+    "%lld Birds" : {
+
     },
     "%lld photos" : {
       "localizations" : {
@@ -426,6 +410,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 張作品"
+          }
+        }
+      }
+    },
+    "%lld Photos" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 张照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 張相片"
           }
         }
       }
@@ -640,24 +640,6 @@
         }
       }
     },
-    "Altitude" : {
-      "comment" : "Location info",
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "海拔"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "海拔"
-          }
-        }
-      }
-    },
     "Altitude: %dm" : {
       "comment" : "Altitude info format",
       "localizations" : {
@@ -671,6 +653,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "海拔高度：%dm"
+          }
+        }
+      }
+    },
+    "Annual Bird Report" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年度观鸟报告"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "年度觀鳥報告"
           }
         }
       }
@@ -723,23 +721,6 @@
         }
       }
     },
-    "Are you sure you want to delete this image?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请确认 真的要删除这张作品?"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你確定要刪除這張作品"
-          }
-        }
-      }
-    },
     "Are you sure you want to delete this photo? This action cannot be undone." : {
       "localizations" : {
         "zh-Hans" : {
@@ -752,23 +733,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "您確定要刪除這張照片嗎？此操作無法撤銷。"
-          }
-        }
-      }
-    },
-    "Area: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "州/省："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "州/省：%@"
           }
         }
       }
@@ -885,23 +849,6 @@
         }
       }
     },
-    "Best attempt started on %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最佳尝试开始于%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最長挑戰開始於%@"
-          }
-        }
-      }
-    },
     "Bird Count" : {
       "localizations" : {
         "zh-Hans" : {
@@ -946,23 +893,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鳥名查詢"
-          }
-        }
-      }
-    },
-    "Bird Watching" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鸟类观测"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鸛鳥"
           }
         }
       }
@@ -1098,23 +1028,6 @@
         }
       }
     },
-    "Caption" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "介绍"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "介紹"
-          }
-        }
-      }
-    },
     "Caption: %@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1127,23 +1040,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "介紹：%@"
-          }
-        }
-      }
-    },
-    "Capture Date" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日期"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日期"
           }
         }
       }
@@ -1176,6 +1072,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "圖表類型"
+          }
+        }
+      }
+    },
+    "Computation Time: %@s" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "计算用时: %@秒"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "運算時間：%@秒"
           }
         }
       }
@@ -1288,40 +1200,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "複製成功"
-          }
-        }
-      }
-    },
-    "Country" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "国家"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "國家"
-          }
-        }
-      }
-    },
-    "Country: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "国家：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "國家：%@"
           }
         }
       }
@@ -1439,23 +1317,6 @@
         }
       }
     },
-    "Date: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "时间：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日期：%@"
-          }
-        }
-      }
-    },
     "Days" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1504,23 +1365,6 @@
         }
       }
     },
-    "Delete Image" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除作品"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "刪除作品"
-          }
-        }
-      }
-    },
     "Delete Photo" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1550,23 +1394,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "作品描述"
-          }
-        }
-      }
-    },
-    "Don't forget to upload today's photo to keep your streak!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "别忘了上传今天的照片，以保持你的挑战记录！"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "別忘了上傳今天的照片，以保持你的挑戰記錄！"
           }
         }
       }
@@ -1619,23 +1446,6 @@
         }
       }
     },
-    "Editable Information" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "信息调整区"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "資訊調整區"
-          }
-        }
-      }
-    },
     "Enable Bird Watching" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1664,23 +1474,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "結束於"
-          }
-        }
-      }
-    },
-    "Ended on %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "结束于 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "結束於 %@"
           }
         }
       }
@@ -1781,19 +1574,18 @@
         }
       }
     },
-    "Exif Data" : {
-      "extractionState" : "stale",
+    "Execution Time: %@s" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exif 信息"
+            "value" : "执行时间：%@ 秒"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exif 信息"
+            "value" : "執行時間：%@秒"
           }
         }
       }
@@ -1879,23 +1671,6 @@
         }
       }
     },
-    "Exposure Time" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "曝光时间"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "曝光時間"
-          }
-        }
-      }
-    },
     "Exposure: %@ mm f/%@ 1/%@ s ISO: %lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1908,23 +1683,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "曝光: %1$@ mm f/%2$@ 1/%3$@ s ISO: %4$lld"
-          }
-        }
-      }
-    },
-    "F Number" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "光圈"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "光圈"
           }
         }
       }
@@ -2026,22 +1784,6 @@
         }
       }
     },
-    "First Seen (%@)" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "首次出现 (%@)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "首次出現 (%@)"
-          }
-        }
-      }
-    },
     "First seen: %@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2054,57 +1796,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "首拍：%@"
-          }
-        }
-      }
-    },
-    "Focal Length" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "焦距"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "焦距"
-          }
-        }
-      }
-    },
-    "Focal Length (35mm)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "35mm 等效焦距"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "35毫米等效焦距"
-          }
-        }
-      }
-    },
-    "For %lld days, you've captured moments that span %lld years, %lld months, and %lld days. Each click of the shutter is a testament to your dedication and passion." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "在这%1$lld天里，你捕捉了%2$lld年%3$lld月和%4$lld天的瞬间。每次按下快门，都是我们对摄影热情和奉献的见证。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "在這%1$lld天裡，捕捉了%2$lld年%3$lld月和%4$lld天的瞬間。每次按下快門，都是我們對攝影熱情和奉獻的見證。"
           }
         }
       }
@@ -2205,40 +1896,6 @@
         }
       }
     },
-    "Great job! You've uploaded today's photo." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "干的漂亮！你已经上传了今天的照片。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "做得漂亮！你已經上傳了今天的照片。"
-          }
-        }
-      }
-    },
-    "Help & More" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "帮助及更多"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "帮助与更多"
-          }
-        }
-      }
-    },
     "Image" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2283,57 +1940,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "圖片不能被引入。"
-          }
-        }
-      }
-    },
-    "Image Information" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品信息"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品信息"
-          }
-        }
-      }
-    },
-    "Image Name" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品名稱"
-          }
-        }
-      }
-    },
-    "Image Name: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品名称: %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品名稱: %@"
           }
         }
       }
@@ -2467,57 +2073,6 @@
         }
       }
     },
-    "In these %d days, you've captured %@ of moments. Each press of the shutter is a testament to your passion and dedication to photography." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "这%lld天里，你用镜头定格了%@精彩瞬间。每次按下快门，都是你对摄影艺术热爱与坚持的印证。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "在這%1$d天裡，你捕捉了%2$@的瞬間。每次按下快門，都是你對攝影熱情和奉獻的見證。"
-          }
-        }
-      }
-    },
-    "In these %lld days, you've captured %@ of moments. Each press of the shutter is a testament to your passion and dedication to photography." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "这%lld天里，你用镜头定格了%@精彩瞬间。每次按下快门，都是你对摄影艺术热爱与坚持的印证。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這%lld天裡，你用鏡頭定格了%@精彩瞬間。每次按下快門，都是你對攝影藝術熱愛與堅持的印證。"
-          }
-        }
-      }
-    },
-    "Incredible Journey" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "非凡旅程"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "非凡旅程"
-          }
-        }
-      }
-    },
     "James" : {
       "comment" : "Default username for factory reset",
       "localizations" : {
@@ -2568,23 +2123,6 @@
         }
       }
     },
-    "Language" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "语言"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "語言"
-          }
-        }
-      }
-    },
     "Last Used (%@)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2617,23 +2155,6 @@
         }
       }
     },
-    "Lat:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "纬度："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "緯度："
-          }
-        }
-      }
-    },
     "Later" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2650,40 +2171,6 @@
         }
       }
     },
-    "Latitude" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "经度"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "經度"
-          }
-        }
-      }
-    },
-    "Layout" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "布局"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "佈局"
-          }
-        }
-      }
-    },
     "Lens Count" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2696,23 +2183,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鏡頭使用紀錄"
-          }
-        }
-      }
-    },
-    "Lens Info" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "镜头信息"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鏡頭信息"
           }
         }
       }
@@ -2813,40 +2283,6 @@
         }
       }
     },
-    "Locality" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地区"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地區"
-          }
-        }
-      }
-    },
-    "Locality: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地区：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地區：%@"
-          }
-        }
-      }
-    },
     "Location Info" : {
       "comment" : "EXIF info label",
       "localizations" : {
@@ -2880,23 +2316,6 @@
         }
       }
     },
-    "Location Services Disabled" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地址服务被禁止"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "地址服務被禁用"
-          }
-        }
-      }
-    },
     "Location: %@, %@, %@ " : {
       "localizations" : {
         "zh-Hans" : {
@@ -2909,40 +2328,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "位置: %1$@, %2$@, %3$@ "
-          }
-        }
-      }
-    },
-    "Lon:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "经度："
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "經度："
-          }
-        }
-      }
-    },
-    "Long press to copy exif" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "长按以复制Exif"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "長按以複製 EXIF"
           }
         }
       }
@@ -2975,23 +2360,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最長一次挑戰：%lld天"
-          }
-        }
-      }
-    },
-    "Longitude" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "纬度"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "緯度"
           }
         }
       }
@@ -3060,6 +2428,22 @@
         }
       }
     },
+    "NEW" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEW"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEW"
+          }
+        }
+      }
+    },
     "Next" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3107,6 +2491,25 @@
           }
         }
       }
+    },
+    "No bird photos in %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 年没有鸟类照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 沒有鳥類相片"
+          }
+        }
+      }
+    },
+    "No bird photos in this area" : {
+
     },
     "No bird records found" : {
       "localizations" : {
@@ -3156,23 +2559,6 @@
         }
       }
     },
-    "No matching photos found" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "没有找到任何符合的作品"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "沒有找到任何符合的作品"
-          }
-        }
-      }
-    },
     "No matching works found" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3201,39 +2587,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "沒有更多的作品了"
-          }
-        }
-      }
-    },
-    "No More Photos" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "没有更多照片了"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "沒有更多的照片了"
-          }
-        }
-      }
-    },
-    "No photos available for this date." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "这一天没有作品"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這一天沒有作品"
           }
         }
       }
@@ -3286,6 +2639,22 @@
         }
       }
     },
+    "No photos in this area" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此區域無相片"
+          }
+        }
+      }
+    },
     "No. %lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3331,23 +2700,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "注意：Apple GPS 查詢需要有效的網路連線。由於每 2 秒限制查詢一次，處理可能會有所延遲。批量匯入時請耐心等待。"
-          }
-        }
-      }
-    },
-    "Object Name" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "名稱"
           }
         }
       }
@@ -3500,19 +2852,18 @@
         }
       }
     },
-    "Photo Sorting" : {
-      "extractionState" : "stale",
+    "Photo not found" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "作品排序"
+            "value" : "没有作品"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "作品排序"
+            "value" : "沒有作品"
           }
         }
       }
@@ -3581,34 +2932,6 @@
         }
       }
     },
-    "Photographer's Journey:\nIn these %d days, you've captured %@ of moments.\nYou've taken %d stunning photos.\nYour lens has spanned %d countries and %d regions.\nYou've used %d cameras and %d lenses to capture these memories." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "摄影生涯：这%lld天里，你用镜头定格了%@精彩瞬间。每次按下快门，都是你对摄影艺术热爱与坚持的印证。"
-          }
-        }
-      }
-    },
-    "Photographer's Journey:\nIn these %d days, you've captured %@ of moments. Each press of the shutter is a testament to your passion and dedication to photography.\nYou've taken %d stunning photos, each telling a unique story.\nYour lens has spanned %d countries and %d regions, bringing the world closer through your eyes.\nYou've used %d cameras and %d lenses to capture these memories, each tool adding its unique touch to your art." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "\"\"\"攝影生涯： 在这%1$lld天里，你捕捉了%2$lld年%3$lld月和%4$lld天的瞬间。每次按下快门，都是我们对摄影热情和奉献的见证。這%lld令人叹为观止的照片，每一张都讲述着一个独特的故事。镜头记录了%lld个国家和%lld个地区的风采，用独特的视角拉近了世界的距离。你使用了 %lld 台相机和 %lld 支镜头来捕捉这些记忆，都为你的艺术作品增添了独特的风采。\"\"\""
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "攝影生涯：\n在這%1$lld天裡，你捕捉了%2$lld年%3$lld月和%4$lld天的瞬間。每次按下快門，都是我們對攝影熱情和奉獻的見證。\n這%lld令人嘆為觀止的照片，每一張都講述著一個獨特的故事。\n鏡頭記錄了%lld個國家和%lld個地區的風采，用獨特的視角拉近了世界的距離。\n你使用了%lld台相機和%lld支鏡頭來捕捉這些記憶，都為你的藝術作品增添了獨特的風采。"
-          }
-        }
-      }
-    },
     "Photographic Quotes" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3621,23 +2944,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "攝影金句"
-          }
-        }
-      }
-    },
-    "Photography Journey" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "摄影生涯"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "攝影生涯"
           }
         }
       }
@@ -3658,23 +2964,6 @@
         }
       }
     },
-    "Photos at %lf, %lf" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Photos at %lf, %lf"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品拍攝  %lf, %lf"
-          }
-        }
-      }
-    },
     "Photos on %@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3691,23 +2980,6 @@
         }
       }
     },
-    "Photos taken on %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品拍摄于 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "作品拍攝於 %@"
-          }
-        }
-      }
-    },
     "Photos taken on the same day" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3720,40 +2992,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "同一天拍攝的作品"
-          }
-        }
-      }
-    },
-    "Please enable location services in Settings." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请启用地址服务"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請在設置中啟用地址服務"
-          }
-        }
-      }
-    },
-    "Please exit Tui and restart the app to refresh the data." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "请退出 Tui 并重新启动应用以刷新数据。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "請退出圖憶並重新啟動應用程式以刷新資料。"
           }
         }
       }
@@ -4050,6 +3288,7 @@
       }
     },
     "Save Original" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -4061,40 +3300,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存原圖"
-          }
-        }
-      }
-    },
-    "Save Poster" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存海报"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存海報"
-          }
-        }
-      }
-    },
-    "Save Settings" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存设置"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存設置"
           }
         }
       }
@@ -4111,23 +3316,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存狀態"
-          }
-        }
-      }
-    },
-    "Save User Name" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存用户名"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存用戶名"
           }
         }
       }
@@ -4197,23 +3385,6 @@
         }
       }
     },
-    "Search View" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "搜索"
-          }
-        }
-      }
-    },
     "Select a backup from the list above" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4278,23 +3449,6 @@
         }
       }
     },
-    "Selected backup: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择的备份：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選擇的備份：%@"
-          }
-        }
-      }
-    },
     "Settings" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4327,39 +3481,8 @@
         }
       }
     },
-    "Share App" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "分享图忆APP"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "分享應用程式"
-          }
-        }
-      }
-    },
-    "Share Options" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "分享选项"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "分享選項"
-          }
-        }
-      }
+    "Share Original" : {
+
     },
     "Share Poster" : {
       "localizations" : {
@@ -4421,23 +3544,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "大小"
-          }
-        }
-      }
-    },
-    "Size: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文件大小：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文件大小：%@"
           }
         }
       }
@@ -4518,6 +3624,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "排序選項"
+          }
+        }
+      }
+    },
+    "Species List" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鸟类列表"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鸟種清單"
           }
         }
       }
@@ -4683,23 +3805,6 @@
         }
       }
     },
-    "Tap to copy GPS coordinates." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "点一下复制GPS经纬度"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "點一下複製GPS經緯度"
-          }
-        }
-      }
-    },
     "The backup has been successfully restored. Please restart the app to apply the changes." : {
       "localizations" : {
         "zh-Hans" : {
@@ -4732,40 +3837,6 @@
         }
       }
     },
-    "There are %lld photos at this location." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "该地总共有%lld 张作品"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "該地總共有%lld 張照片"
-          }
-        }
-      }
-    },
-    "Title" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "标题"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "標題"
-          }
-        }
-      }
-    },
     "To get started, let's add your first photo to your portfolio." : {
       "localizations" : {
         "zh-Hans" : {
@@ -4794,40 +3865,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "圖憶"
-          }
-        }
-      }
-    },
-    "TUI" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "图忆"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "圖憶"
-          }
-        }
-      }
-    },
-    "TUI Portfolio" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "图忆作品集"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "圖憶作品集"
           }
         }
       }
@@ -4876,23 +3913,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "無法導入作品"
-          }
-        }
-      }
-    },
-    "Unable to load photos" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无法加载照片 "
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法加載圖片"
           }
         }
       }
@@ -4977,23 +3997,6 @@
         }
       }
     },
-    "Use Waterfall Layout" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用双列瀑布流"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用 2 路瀑布佈局"
-          }
-        }
-      }
-    },
     "User Name" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5026,23 +4029,6 @@
         }
       }
     },
-    "User: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "用户：%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "攝影師：%@"
-          }
-        }
-      }
-    },
     "Username is not set. Please set a username in Settings." : {
       "localizations" : {
         "zh-Hans" : {
@@ -5071,23 +4057,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "影片教學"
-          }
-        }
-      }
-    },
-    "Video Tutorials" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "视频教程"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "視頻教程"
           }
         }
       }
@@ -5158,23 +4127,6 @@
         }
       }
     },
-    "Welcome to Tui!" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "欢迎来到图忆"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "歡迎來到圖億"
-          }
-        }
-      }
-    },
     "Year" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5191,53 +4143,18 @@
         }
       }
     },
-    "You have taken %lld breathtaking photos, each telling a unique story." : {
-      "extractionState" : "stale",
+    "Yearly Bird Report" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這%lld令人叹为观止的照片，每一张都讲述着一个独特的故事。"
+            "value" : "年度观鸟报告"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這%lld令人嘆為觀止的照片，每一張都訴說著一個獨特的故事。"
-          }
-        }
-      }
-    },
-    "You've taken %d stunning photos, each telling a unique story." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這%lld令人叹为观止的照片，每一张都讲述着一个独特的故事。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你拍攝了%d張令人驚嘆的照片，每一張都講述著一個獨特的故事。"
-          }
-        }
-      }
-    },
-    "You've taken %lld stunning photos, each telling a unique story." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這%lld令人叹为观止的照片，每一张都讲述着一个独特的故事。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這%lld令人嘆為觀止的照片，每一張都訴說著一個獨特的故事。"
+            "value" : "年度鳥類報告"
           }
         }
       }
@@ -5258,57 +4175,6 @@
         }
       }
     },
-    "You've used %d cameras and %d lenses to capture these memories, each tool adding its unique touch to your art." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "你使用了 %lld 台相机和 %lld 支镜头来捕捉这些记忆，都为你的艺术作品增添了独特的风采。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "你使用了%1$d台相機和%2$d支鏡頭來捕捉這些記憶，每一個工具都為你的藝術作品增添了獨特的風采。"
-          }
-        }
-      }
-    },
-    "You've used %lld cameras and %lld lenses to capture these memories, each tool adding its unique touch to your art." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你使用了 %lld 台相机和 %lld 支镜头来捕捉这些记忆，都为你的艺术作品增添了独特的风采。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你使用了 %lld 台相機和 %lld 支鏡頭來捕捉這些記憶，都為你的藝術作品增添了獨特的風采。"
-          }
-        }
-      }
-    },
-    "Your lens has spanned %d countries and %d regions, bringing the world closer through your eyes." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "镜头记录了%lld个国家和%lld个地区的风采，用独特的视角拉近了世界的距离。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "你的鏡頭跨越了%1$d個國家和%2$d個地區，通過你的視角拉近了世界的距離。"
-          }
-        }
-      }
-    },
     "Your lens has spanned %d countries and %d regions, bringing the world closer." : {
       "localizations" : {
         "zh-Hans" : {
@@ -5321,57 +4187,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的鏡頭已經遍及 %d 個國家和 %d 個地區，讓世界變得更加親近。"
-          }
-        }
-      }
-    },
-    "Your lens has spanned %lld countries and %lld regions, bringing the world closer through your eyes." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "镜头记录了%lld个国家和%lld个地区的风采，用独特的视角拉近了世界的距离。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "镜头记录了%lld个国家和%lld个地区的风采，用独特的视角拉近了世界的距离。"
-          }
-        }
-      }
-    },
-    "Your lens has traveled across %lld countries and %lld regions, bringing the world closer through your eyes." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "镜头已经穿越了%1$lld国家和%2$lld地区，将世界变得更加紧密。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "鏡頭穿越了%1$lld國家和%2$lld地區，將世界變得更加緊密。"
-          }
-        }
-      }
-    },
-    "Your personal photo portfolio" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "您的个人摄影作品集"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "您的個人攝影作品集"
           }
         }
       }
@@ -5408,52 +4223,50 @@
         }
       }
     },
-    "Your settings have been saved successfully. Please restart the app for the changes to take effect." : {
-      "extractionState" : "stale",
+    "复制成功" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您的设置已成功保存。请重新启动图忆以使更改生效。"
+            "value" : "复制成功"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您的設定已成功儲存。請重新啟動應用程式以使變更生效。"
+            "value" : "複製成功"
           }
         }
       }
     },
-    "删除" : {
-      "extractionState" : "stale",
+    "确定" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "删除"
+            "value" : "确定"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確定"
           }
         }
       }
     },
-    "您确定要删除这个备份吗？此操作不可撤销。" : {
-      "extractionState" : "stale",
+    "鸟种列表已复制到剪贴板" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您确定要删除这个备份吗？此操作不可撤销。"
+            "value" : "鸟种列表已复制到剪贴板"
           }
-        }
-      }
-    },
-    "确认删除" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "zh-Hans" : {
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "确认删除"
+            "value" : "鳥種清單已複製至剪貼簿"
           }
         }
       }

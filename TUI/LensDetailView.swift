@@ -81,13 +81,11 @@ struct LensDetailView: View {
         }
         .padding(.horizontal)
     }
-
+    
     private func photoGridView(geometry: GeometryProxy) -> some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-            ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
-                NavigationLink(destination: DetailView(photos: photos, initialIndex: index) { returnedIndex in
-                    self.selectedPhotoIndex = returnedIndex
-                }) {
+            ForEach(photos, id: \.id) { photo in
+                NavigationLink(destination: DetailView(photo: photo)) {
                     photoThumbnail(for: photo)
                         .frame(width: (geometry.size.width - 40) / 3, height: (geometry.size.width - 40) / 3)
                         .clipped()

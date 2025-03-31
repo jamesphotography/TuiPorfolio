@@ -26,10 +26,10 @@ struct WaterfallView: View {
                 LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
                         WaterfallItemView(photo: photo,
-                                          onPhotoTapped: onPhotoTapped,
-                                          onNavigate: onNavigate,
-                                          enableBirdWatching: enableBirdWatching,
-                                          birdNumber: birdNumbers[photo.objectName])
+                                        onPhotoTapped: onPhotoTapped,
+                                        onNavigate: onNavigate,
+                                        enableBirdWatching: enableBirdWatching,
+                                        birdNumber: birdNumbers[photo.objectName])
                             .id(index)
                     }
                 }
@@ -159,7 +159,11 @@ struct WaterfallItemView: View {
                     onPhotoTapped(photo)
                 }
                 
-                Button(action: { onNavigate(.objectName(photo.objectName)) }) {
+                Button(action: {
+                    if !photo.objectName.isEmpty {
+                        onNavigate(.objectName(photo.objectName))
+                    }
+                }) {
                     Text(birdTitleText)
                         .font(.subheadline)
                         .foregroundColor(.primary)
@@ -174,12 +178,29 @@ struct WaterfallItemView: View {
 
                     Spacer()
 
-                    if !photo.locality.isEmpty {
-                        Button(action: { onNavigate(.locality(photo.locality)) }) {
-                            Text(truncatedString(photo.area + ", " + photo.locality, limit: 20))
+                    HStack(spacing: 2) {
+                        // 省份导航按钮
+                        if !photo.area.isEmpty {
+                            Button(action: { onNavigate(.area(photo.area)) }) {
+                                Text(photo.area)
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                                    .lineLimit(1)
+                            }
+                            
+                            Text(", ")
                                 .font(.caption)
-                                .foregroundColor(.blue)
-                                .lineLimit(1)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        // 地区导航按钮
+                        if !photo.locality.isEmpty {
+                            Button(action: { onNavigate(.locality(photo.locality)) }) {
+                                Text(photo.locality)
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                                    .lineLimit(1)
+                            }
                         }
                     }
                 }
@@ -241,7 +262,7 @@ struct WaterfallItemView: View {
             }
             
             if count > limit {
-                result += "…"
+                result += "..."
                 break
             }
             

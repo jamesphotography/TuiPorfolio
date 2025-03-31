@@ -129,8 +129,8 @@ struct SameDayPhotoGrid: View {
             GeometryReader { geometry in
                 let size = (geometry.size.width - spacing * 2) / 3
                 LazyVGrid(columns: columns, spacing: spacing) {
-                    ForEach(Array(photos.prefix(9).enumerated()), id: \.element.id) { index, photo in
-                        NavigationLink(destination: DetailView(photos: photos, initialIndex: photos.firstIndex(where: { $0.id == photo.id }) ?? 0, onDismiss: { _ in })) {
+                    ForEach(photos.prefix(9), id: \.id) { photo in
+                        NavigationLink(destination: DetailView(photo: photo)) {
                             PhotoThumbnailView(photo: photo, size: size)
                         }
                     }
@@ -176,8 +176,8 @@ struct MorePhotosView: View {
             GeometryReader { geometry in
                 let size = (geometry.size.width - spacing * 2) / 3
                 LazyVGrid(columns: columns, spacing: spacing) {
-                    ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
-                        NavigationLink(destination: DetailView(photos: photos, initialIndex: photos.firstIndex(where: { $0.id == photo.id }) ?? 0, onDismiss: { _ in })) {
+                    ForEach(photos, id: \.id) { photo in
+                        NavigationLink(destination: DetailView(photo: photo)) {
                             PhotoThumbnailView(photo: photo, size: size)
                         }
                     }

@@ -97,9 +97,9 @@ struct PosterView: View {
     
     private func addCustomCanvas(to image: UIImage, canvasHeight: CGFloat, canvasWidth: CGFloat) -> UIImage? {
         let canvasSize = CGSize(width: canvasWidth, height: canvasHeight)
-        let canvasPadding: CGFloat = 30
-        let cornerRadius: CGFloat = 20 // 图片的圆角半径
-        let borderWidth: CGFloat = 3 // 增加边框宽度
+        let canvasPadding: CGFloat = 100
+        let cornerRadius: CGFloat = 30 // 图片的圆角半径
+        let borderWidth: CGFloat = 4 // 增加边框宽度
         
         UIGraphicsBeginImageContextWithOptions(canvasSize, false, image.scale)
         defer { UIGraphicsEndImageContext() }

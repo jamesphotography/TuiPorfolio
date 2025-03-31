@@ -18,6 +18,9 @@ struct EditorView: View {
     @State private var latitude: String
     @State private var longitude: String
     @State private var locationInfo: String = ""
+    @State private var country: String = ""
+    @State private var area: String = ""
+    @State private var locality: String = ""
     
     @State private var showLocationLookupAlert = false
     @State private var locationLookupMessage = ""
@@ -37,6 +40,9 @@ struct EditorView: View {
         self._localRating = State(initialValue: initialRating)
         self._latitude = State(initialValue: String(initialLatitude))
         self._longitude = State(initialValue: String(initialLongitude))
+        self._country = State(initialValue: initialCountry)
+        self._area = State(initialValue: initialArea)
+        self._locality = State(initialValue: initialLocality)
         self._locationInfo = State(initialValue: "\(initialCountry), \(initialArea), \(initialLocality)")
     }
     
@@ -86,7 +92,7 @@ struct EditorView: View {
                     }
                     HStack{
                         Spacer()
-                        Text(locationInfo)
+                        Text("\(country), \(area), \(locality)")
                             .font(.subheadline)
                         Spacer()
                     }
@@ -124,10 +130,11 @@ struct EditorView: View {
             starRating: localRating,
             latitude: newLatitude,
             longitude: newLongitude,
-            country: extractLocationComponent(.country),
-            area: extractLocationComponent(.area),
-            locality: extractLocationComponent(.locality)
+            country: country,
+            area: area,
+            locality: locality
         )
+        SQLiteManager.shared.invalidateCache()
     }
     
     private func lookupLocation() {
@@ -142,40 +149,72 @@ struct EditorView: View {
         let geocoder = CLGeocoder()
         
         geocoder.reverseGeocodeLocation(location, preferredLocale: Locale(identifier: "en_US")) { placemarks, error in
-            isPerformingLookup = false
-            if let error = error {
-                locationLookupMessage = "Error looking up location: \(error.localizedDescription)"
-                showLocationLookupAlert = true
-                return
-            }
-            
-            if let placemark = placemarks?.first {
-                let country = placemark.country ?? "Unknown Country"
-                let area = placemark.administrativeArea ?? "Unknown Area"
-                let locality = placemark.locality ?? "Unknown Locality"
+            DispatchQueue.main.async {
+                isPerformingLookup = false
                 
-                locationInfo = "\(country), \(area), \(locality)"
-            } else {
-                locationInfo = "No location information found"
+                if let error = error {
+                    locationLookupMessage = "Error looking up location: \(error.localizedDescription)"
+                    showLocationLookupAlert = true
+                    return
+                }
+                
+                if let placemark = placemarks?.first {
+                    // 国家信息处理
+                    country = placemark.country ?? "Unknown Country"
+                    
+                    // 区域信息的降级处理
+                    let possibleAreas = [
+                        placemark.administrativeArea,
+                        placemark.subAdministrativeArea,
+                        placemark.locality,
+                        placemark.subLocality,
+                        placemark.inlandWater,
+                        placemark.ocean,
+                        placemark.country // 添加国家作为area的备选项
+                    ].compactMap { $0 }
+                    
+                    area = possibleAreas.first ?? country // 如果没有其他选项，使用国家名称
+                    
+                    // 地点信息的降级处理
+                    let areasOfInterest = placemark.areasOfInterest ?? []
+                    let possibleLocalities = [
+                        placemark.locality,
+                        placemark.subLocality,
+                        placemark.name
+                    ].compactMap { $0 }
+                    
+                    // 优先使用areasOfInterest中除国家名称外的第一个地点
+                    let filteredAreasOfInterest = areasOfInterest.filter { $0 != country }
+                    if let firstArea = filteredAreasOfInterest.first {
+                        locality = firstArea
+                    } else {
+                        locality = possibleLocalities.first ?? "Unknown Location"
+                    }
+                    
+                    locationInfo = "\(country), \(area), \(locality)"
+                    
+#if DEBUG
+                    print("Location Debug Info:")
+                    print("Country: \(country)")
+                    print("Area: \(area)")
+                    print("Locality: \(locality)")
+                    print("Raw Placemark Data:")
+                    print("- Administrative Area: \(placemark.administrativeArea ?? "nil")")
+                    print("- Sub-Administrative Area: \(placemark.subAdministrativeArea ?? "nil")")
+                    print("- Locality: \(placemark.locality ?? "nil")")
+                    print("- Sub-Locality: \(placemark.subLocality ?? "nil")")
+                    print("- Inland Water: \(placemark.inlandWater ?? "nil")")
+                    print("- Ocean: \(placemark.ocean ?? "nil")")
+                    print("- Areas of Interest: \(placemark.areasOfInterest ?? [])")
+#endif
+                    
+                } else {
+                    locationLookupMessage = "No location information found"
+                    showLocationLookupAlert = true
+                }
             }
         }
     }
-    
-    private func extractLocationComponent(_ component: LocationComponent) -> String {
-        let components = locationInfo.components(separatedBy: ", ")
-        switch component {
-        case .country:
-            return components.first ?? "Unknown Country"
-        case .area:
-            return components.count > 1 ? components[1] : "Unknown Area"
-        case .locality:
-            return components.last ?? "Unknown Locality"
-        }
-    }
-}
-
-enum LocationComponent {
-    case country, area, locality
 }
 
 struct EditableStarRating: View {

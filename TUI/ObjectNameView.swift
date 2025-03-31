@@ -26,8 +26,8 @@ struct ObjectNameView: View {
                                 .padding(.leading, 16)
                                 .padding(.top, 8)
                             
-                            ForEach(Array(photos.enumerated()), id: \.element.id) { index, photo in
-                                NavigationLink(destination: DetailView(photos: photos, initialIndex: photos.firstIndex(where: { $0.id == photo.id }) ?? 0, onDismiss: { _ in })) {
+                            ForEach(photos, id: \.id) { photo in
+                                NavigationLink(destination: DetailView(photo: photo)) {
                                     HStack {
                                         photoThumbnail(for: photo)
                                         VStack(alignment: .leading, spacing: 4) {

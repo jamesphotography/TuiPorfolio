@@ -19,7 +19,8 @@ struct ContentView: View {
     @State private var previousPathCount: Int = 0
     @State private var screenSize: CGSize = .zero
     @State private var safeAreaInsets: EdgeInsets = .init()
-
+    @State private var refreshTrigger = false
+    
     var body: some View {
         NavigationStack(path: $navigationPath) {
             GeometryReader { geometry in
@@ -53,6 +54,8 @@ struct ContentView: View {
                 switch destination {
                 case .locality(let locality):
                     LocalityPhotoListView(locality: locality)
+                case .area(let area):
+                    StatePhotoListView(area: area)
                 case .country(let country):
                     NationalPhotoListView(country: country)
                 case .date(let date):
@@ -60,11 +63,11 @@ struct ContentView: View {
                 case .objectName(let name):
                     ObjectNameView(objectName: name)
                 case .detail(let index):
-                    let photos = displayedImages.map { getPhoto(for: $0.path) }
-                    DetailView(photos: photos, initialIndex: index) { returnedIndex in
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self.selectedPhotoIndex = returnedIndex
-                        }
+                    if index < displayedImages.count {
+                        let photo = getPhoto(for: displayedImages[index].path)
+                        DetailView(photo: photo)
+                    } else {
+                        Text("Photo not found")
                     }
                 }
             }
@@ -123,7 +126,12 @@ struct ContentView: View {
                 }
             }
         }
+        .id(refreshTrigger)
         .onReceive(NotificationCenter.default.publisher(for: .settingsChanged)) { _ in
+            needsReload = true
+            loadImages()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .photoDeleted)) { _ in
             needsReload = true
             loadImages()
         }
@@ -178,8 +186,13 @@ struct ContentView: View {
     }
     
     func loadImages() {
-        SQLiteManager.shared.invalidateCache()  // 确保从数据库获取最新数据
+        SQLiteManager.shared.invalidateCache()
         let photos = SQLiteManager.shared.getAllPhotos(sortByShootingTime: sortByShootingTime)
+        print("Loaded \(photos.count) photos from database")
+        
+        images = []
+        displayedImages = []
+        
         images = photos.map { photo in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -190,8 +203,8 @@ struct ContentView: View {
         }
 
         page = 0
-        displayedImages = []
         loadMoreImages()
+        refreshTrigger.toggle()
     }
     
     func loadMoreImages() {
@@ -215,12 +228,5 @@ struct ContentView: View {
     
     func getPhoto(for path: String) -> Photo {
         return SQLiteManager.shared.getPhoto(for: path) ?? Photo(id: "", title: "", path: path, thumbnailPath100: "", thumbnailPath350: "", starRating: 0, country: "", area: "", locality: "", dateTimeOriginal: "", addTimestamp: "", lensModel: "", model: "", exposureTime: 0, fNumber: 0, focalLenIn35mmFilm: 0, focalLength: 0, ISOSPEEDRatings: 0, altitude: 0, latitude: 0, longitude: 0, objectName: "", caption: "")
-    }
-}
-
-struct ContentSizeKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
     }
 }

@@ -3,7 +3,7 @@ import Photos
 import SQLite3
 import UIKit
 import ImageIO
-
+import UniformTypeIdentifiers
 
 struct AddImageView: View {
     @State private var image: Image? = nil
@@ -35,6 +35,9 @@ struct AddImageView: View {
     @State private var savedPhoto: Photo?
     @State private var navigateToBulkImport = false
     
+    // 新增的状态变量
+    @State private var receivedImageURL: URL?
+    @State private var isProcessingReceivedImage = false
     
     var body: some View {
         NavigationStack {
@@ -100,10 +103,10 @@ struct AddImageView: View {
                                     .padding(30)
                                     Spacer()
                                     Text(NSLocalizedString("Note: Apple GPS lookup requires an active internet. The process may be delayed due to a limit of one queries per 2 seconds. Please patient during bulk imports.", comment: "Expanded explanation for GPS reverse lookup limitations and requirements"))
-                                                                            .font(.subheadline)
-                                                                            .foregroundColor(.blue)
-                                                                            .multilineTextAlignment(.leading)
-                                                                            .padding(.horizontal)
+                                        .font(.subheadline)
+                                        .foregroundColor(.blue)
+                                        .multilineTextAlignment(.leading)
+                                        .padding(.horizontal)
                                     Spacer()
                                 }
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -135,9 +138,7 @@ struct AddImageView: View {
                 }
                 .navigationDestination(isPresented: $navigateToDetailView) {
                     if let savedPhoto = savedPhoto {
-                        DetailView(photos: [savedPhoto], initialIndex: 0) { _ in
-                            self.navigateToDetailView = false
-                        }
+                        DetailView(photo: savedPhoto)
                     }
                 }
                 .navigationDestination(isPresented: $navigateToBulkImport) {
@@ -146,14 +147,58 @@ struct AddImageView: View {
             }
         }
         .navigationBarHidden(true)
+        .onAppear {
+            if let url = receivedImageURL {
+                processReceivedImage(url: url)
+            }
+        }
     }
     
     func loadImage() {
         guard let inputImage = inputImage else { return }
         image = Image(uiImage: inputImage)
     }
-
-    // 辅助函数：打印EXIF信息
+    
+    func processReceivedImage(url: URL) {
+        isProcessingReceivedImage = true
+        
+        guard let imageData = try? Data(contentsOf: url),
+              let uiImage = UIImage(data: imageData) else {
+            saveMessage = "Failed to load image from URL"
+            showingSaveMessage = true
+            isProcessingReceivedImage = false
+            return
+        }
+        
+        inputImage = uiImage
+        image = Image(uiImage: uiImage)
+        imageName = url.lastPathComponent
+        
+        if let source = CGImageSourceCreateWithData(imageData as CFData, nil) {
+            if let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] {
+                if let exif = properties["{Exif}"] as? [String: Any] {
+                    captureDate = exif[kCGImagePropertyExifDateTimeOriginal as String] as? String ?? ""
+                    exposureTime = exif[kCGImagePropertyExifExposureTime as String] as? Double ?? 0.0
+                    fNumber = exif[kCGImagePropertyExifFNumber as String] as? Double ?? 0.0
+                    focalLenIn35mmFilm = exif[kCGImagePropertyExifFocalLenIn35mmFilm as String] as? Double ?? 0.0
+                    focalLength = exif[kCGImagePropertyExifFocalLength as String] as? Double ?? 0.0
+                    ISOSPEEDRatings = exif[kCGImagePropertyExifISOSpeedRatings as String] as? Int ?? 0
+                }
+                if let tiff = properties["{TIFF}"] as? [String: Any] {
+                    cameraInfo = tiff[kCGImagePropertyTIFFModel as String] as? String ?? ""
+                    lensInfo = tiff[kCGImagePropertyTIFFMake as String] as? String ?? ""
+                }
+                if let gps = properties["{GPS}"] as? [String: Any] {
+                    latitude = String(gps[kCGImagePropertyGPSLatitude as String] as? Double ?? 0.0)
+                    longitude = String(gps[kCGImagePropertyGPSLongitude as String] as? Double ?? 0.0)
+                    altitude = gps[kCGImagePropertyGPSAltitude as String] as? Double ?? 0.0
+                }
+            }
+        }
+        
+        isProcessingReceivedImage = false
+    }
+    
     func printEXIFInfo(from imageData: Data) {
         guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
             print("Failed to create image source")
@@ -188,7 +233,7 @@ struct AddImageView: View {
             }
         }
     }
-
+    
     func generateThumbnail(for image: UIImage, size: CGSize) -> UIImage? {
         let aspectWidth = size.width / image.size.width
         let aspectHeight = size.height / image.size.height
@@ -221,36 +266,7 @@ struct AddImageView: View {
             print("Failed to delete temporary file: \(error.localizedDescription)")
         }
     }
-}
-
-struct ButtonContent: View {
-    let icon: String
-    let text: String
-    let color: Color
     
-    var body: some View {
-        VStack {
-            Image(systemName: icon)
-                .font(.system(size: 60))
-            Text(text)
-                .font(.headline)
-        }
-        .foregroundColor(.white)
-        .frame(width: 200, height: 200)
-        .background(color)
-        .cornerRadius(10)
-    }
-}
-
-struct AddImageView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddImageView()
-    }
-}
-
-import UniformTypeIdentifiers
-
-extension AddImageView {
     func saveImage() {
         guard let inputImage = inputImage else {
             saveMessage = "No input image"
@@ -258,18 +274,15 @@ extension AddImageView {
             return
         }
         
-        // 获取原始图片数据
         guard let imageData = inputImage.jpegData(compressionQuality: 1.0) else {
             saveMessage = "Failed to get image data"
             showingSaveMessage = true
             return
         }
         
-        // 打印原始图片的EXIF信息
-        print("Original image EXIF:")
-        printEXIFInfo(from: imageData)
+//        print("Original image EXIF:")
+//        printEXIFInfo(from: imageData)
         
-        // 创建一个包含原始EXIF数据的CGImageSource
         guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
             saveMessage = "Failed to create image source"
             showingSaveMessage = true
@@ -321,17 +334,14 @@ extension AddImageView {
         let fileName = "\(uuid).jpg"
         let fileURL = portfolioDirectory.appendingPathComponent(fileName)
         
-        // 创建一个新的CGImageDestination来保存图像
         guard let destination = CGImageDestinationCreateWithURL(fileURL as CFURL, UTType.jpeg.identifier as CFString, 1, nil) else {
             saveMessage = "Failed to create image destination"
             showingSaveMessage = true
             return
         }
         
-        // 复制原始图像的属性
         let originalProps = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] ?? [:]
         
-        // 更新或添加我们想要的EXIF数据
         var newProps = originalProps
         var exifDict = (newProps[kCGImagePropertyExifDictionary as String] as? [String: Any]) ?? [:]
         exifDict[kCGImagePropertyExifDateTimeOriginal as String] = formattedCaptureDate
@@ -353,24 +363,19 @@ extension AddImageView {
         gpsDict[kCGImagePropertyGPSAltitude as String] = altitude
         newProps[kCGImagePropertyGPSDictionary as String] = gpsDict
         
-        // 将图像添加到目标，包括更新后的属性
         CGImageDestinationAddImageFromSource(destination, source, 0, newProps as CFDictionary)
         
-        // 完成图像目标的创建过程
         if CGImageDestinationFinalize(destination) {
             let title = URL(fileURLWithPath: imageName).deletingPathExtension().lastPathComponent
             imageName = fileName
             saveMessage = "\(title) " + NSLocalizedString("image_saved_successfully", comment: "")
             
-            // 打印保存后图片的EXIF信息
-            //print("Saved image EXIF:")
             if let savedImageData = try? Data(contentsOf: fileURL) {
                 printEXIFInfo(from: savedImageData)
             } else {
                 print("Failed to read saved image data")
             }
             
-            // 生成缩略图
             let thumbnail100 = generateThumbnail(for: inputImage, size: CGSize(width: 100, height: 100))
             let thumbnail350 = generateThumbnail(for: inputImage, size: CGSize(width: 350, height: 350))
             
@@ -457,5 +462,82 @@ extension AddImageView {
         
         UserDefaults.standard.set(false, forKey: "isFirstLaunch")
         showingSaveMessage = true
+    }
+}
+
+struct ButtonContent: View {
+    let icon: String
+    let text: String
+    let color: Color
+    
+    var body: some View {
+        VStack {
+            Image(systemName: icon)
+                .font(.system(size: 60))
+            Text(text)
+                .font(.headline)
+        }
+        .foregroundColor(.white)
+        .frame(width: 200, height: 200)
+        .background(color)
+        .cornerRadius(10)
+    }
+}
+
+struct AddImageView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddImageView()
+    }
+}
+
+extension AddImageView {
+    static func handleIncomingURL(_ url: URL) -> AddImageView {
+        var view = AddImageView()
+        view.receivedImageURL = url
+        view.loadImageFromURL(url)
+        return view
+    }
+
+    mutating func loadImageFromURL(_ url: URL) {
+        if url.startAccessingSecurityScopedResource() {
+            defer { url.stopAccessingSecurityScopedResource() }
+            
+            if let imageData = try? Data(contentsOf: url),
+               let uiImage = UIImage(data: imageData) {
+                self.inputImage = uiImage
+                self.imageName = url.lastPathComponent
+                loadImage()
+                extractEXIFData(from: imageData)
+            } else {
+                saveMessage = "Failed to load image from URL"
+                showingSaveMessage = true
+            }
+        } else {
+            saveMessage = "Failed to access the image file"
+            showingSaveMessage = true
+        }
+    }
+
+    private mutating func extractEXIFData(from imageData: Data) {
+        if let source = CGImageSourceCreateWithData(imageData as CFData, nil),
+           let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] {
+            if let exif = properties["{Exif}"] as? [String: Any] {
+                captureDate = exif[kCGImagePropertyExifDateTimeOriginal as String] as? String ?? ""
+                exposureTime = exif[kCGImagePropertyExifExposureTime as String] as? Double ?? 0.0
+                fNumber = exif[kCGImagePropertyExifFNumber as String] as? Double ?? 0.0
+                focalLenIn35mmFilm = exif[kCGImagePropertyExifFocalLenIn35mmFilm as String] as? Double ?? 0.0
+                focalLength = exif[kCGImagePropertyExifFocalLength as String] as? Double ?? 0.0
+                ISOSPEEDRatings = exif[kCGImagePropertyExifISOSpeedRatings as String] as? Int ?? 0
+            }
+            if let tiff = properties["{TIFF}"] as? [String: Any] {
+                cameraInfo = tiff[kCGImagePropertyTIFFModel as String] as? String ?? ""
+                lensInfo = tiff[kCGImagePropertyTIFFMake as String] as? String ?? ""
+            }
+            if let gps = properties["{GPS}"] as? [String: Any] {
+                latitude = String(gps[kCGImagePropertyGPSLatitude as String] as? Double ?? 0.0)
+                longitude = String(gps[kCGImagePropertyGPSLongitude as String] as? Double ?? 0.0)
+                altitude = gps[kCGImagePropertyGPSAltitude as String] as? Double ?? 0.0
+            }
+        }
     }
 }

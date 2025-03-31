@@ -2,26 +2,14 @@ import SwiftUI
 
 struct BirdCountView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State private var birdCounts: [(String, Int, String, String)] = [] // (鸟类名称, 照片数量, 最早时间, 最新照片缩略图路径)
+    @State private var birdCounts: [(String, Int, String, String)] = [] // (鸟类名称, 照片数量, 最早记录时间, 最新照片缩略图路径)
     @State private var isLoading = false
     @State private var errorMessage: String?
-    @State private var sortOption: SortOption = .firstSeen
-    @State private var sortOrder: SortOrder = .ascending
-    @State private var showingSortOptions = false
-    @State private var needsRefresh: Bool = false
-    
+    @State private var computationTime: TimeInterval = 0
+    @State private var showingCopyAlert = false
+
     private var documentDirectory: URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
-
-    enum SortOption: String, CaseIterable {
-        case firstSeen = "First Seen"
-        case photoCount = "Photo Count"
-    }
-
-    enum SortOrder: String, CaseIterable {
-        case ascending = "Ascending"
-        case descending = "Descending"
     }
 
     var body: some View {
@@ -45,48 +33,29 @@ struct BirdCountView: View {
                         } else {
                             HStack {
                                 Text("Found \(birdCounts.count) bird species")
-                                    .font(.caption2)
+                                    .font(.headline)
+                                    .padding(5)
                                 Spacer()
                                 Button(action: {
-                                    showingSortOptions = true
+                                    shareText()
                                 }) {
-                                    Image(systemName: "arrow.up.arrow.down")
+                                    Image(systemName: "square.and.arrow.up")
                                         .foregroundColor(Color("TUIBLUE"))
-                                        .font(.caption)
-                                }
-                                .actionSheet(isPresented: $showingSortOptions) {
-                                    ActionSheet(
-                                        title: Text("Sort Options"),
-                                        buttons: [
-                                            .default(Text("First Seen (\(sortOrder == .ascending ? "↑" : "↓"))")) {
-                                                sortOption = .firstSeen
-                                                sortBirdCounts()
-                                            },
-                                            .default(Text("Photo Count (\(sortOrder == .ascending ? "↑" : "↓"))")) {
-                                                sortOption = .photoCount
-                                                sortBirdCounts()
-                                            },
-                                            .default(Text(sortOrder == .ascending ? "Sort Descending" : "Sort Ascending")) {
-                                                sortOrder = sortOrder == .ascending ? .descending : .ascending
-                                                sortBirdCounts()
-                                            },
-                                            .cancel()
-                                        ]
-                                    )
+                                        .font(.subheadline)
                                 }
                             }
                             .padding(.horizontal, 16)
                             .padding(.top, 8)
 
                             ForEach(Array(birdCounts.enumerated()), id: \.element.0) { index, birdData in
-                                let (bird, count, earliestTime, thumbnailPath) = birdData
-                                NavigationLink(destination: ObjectNameView(objectName: bird)) {
-                                    HStack {
-                                        Text("No.\(index + 1)")
+                                let (name, count, firstSeen, thumbnailPath) = birdData
+                                NavigationLink(destination: ObjectNameView(objectName: name)) {
+                                    HStack(spacing: 10) {
+                                        Text("No. \(index + 1)")
                                             .foregroundColor(.secondary)
+                                            .frame(width: 60, alignment: .leading)
                                             .lineLimit(1)
-                                            .fixedSize(horizontal: true, vertical: false)
-                                            .frame(minWidth: 50, alignment: .leading)
+                                            .minimumScaleFactor(0.5)
                                         
                                         AsyncImage(url: getFullImagePath(for: thumbnailPath)) { phase in
                                             switch phase {
@@ -103,21 +72,24 @@ struct BirdCountView: View {
                                         .frame(width: 50, height: 50)
                                         .cornerRadius(5)
                                         
-                                        VStack(alignment: .leading) {
-                                            Text(bird)
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text("\(name) (\(count)张)")
                                                 .foregroundColor(.primary)
-                                            Text("First seen: \(formatDate(earliestTime))")
+                                                .lineLimit(1)
+                                            Text("First seen: \(formatDate(firstSeen))")
                                                 .font(.caption)
                                                 .foregroundColor(.secondary)
+                                                .lineLimit(1)
                                         }
+                                        
                                         Spacer()
-                                        Text("\(count)")
-                                            .foregroundColor(.secondary)
+                                        
                                         Image(systemName: "chevron.right")
-                                            .font(.caption2)
+                                            .font(.subheadline)
                                             .foregroundColor(.blue)
                                     }
-                                    .padding()
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 12)
                                     .background(Color.white)
                                     .cornerRadius(8)
                                     .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
@@ -131,6 +103,15 @@ struct BirdCountView: View {
                 }
                 .background(Color("BGColor"))
 
+                if !birdCounts.isEmpty {
+                    Text("Computation Time: \(String(format: "%.3f", computationTime))s")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.vertical, 4)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.white)
+                }
+
                 BottomBarView()
                     .padding(.bottom, geometry.safeAreaInsets.bottom)
             }
@@ -139,33 +120,76 @@ struct BirdCountView: View {
         }
         .navigationBarHidden(true)
         .onAppear(perform: loadBirdCounts)
-        .onReceive(NotificationCenter.default.publisher(for: .photoDataUpdated)) { _ in
-            self.needsRefresh = true
-        }
-        .onChange(of: needsRefresh) { oldValue, newValue in
-            if newValue {
-                loadBirdCounts()
-                needsRefresh = false
-            }
+        .alert(isPresented: $showingCopyAlert) {
+            Alert(
+                title: Text("复制成功"),
+                message: Text("鸟种列表已复制到剪贴板"),
+                dismissButton: .default(Text("确定"))
+            )
         }
     }
-
+    
+    private func generateShareText() -> String {
+        var shareText = "我的观鸟记录：\n\n"
+        for (index, birdData) in birdCounts.enumerated() {
+            let (name, count, firstSeen, _) = birdData
+            shareText += String(format: "No.%d %@ (%d张) %@\n",
+                              index + 1,
+                              name,
+                              count,
+                              formatDateForSharing(firstSeen))
+        }
+        return shareText
+    }
+    
+    private func shareText() {
+        let text = generateShareText()
+        UIPasteboard.general.string = text
+        showingCopyAlert = true
+    }
+    
+    private func getFullImagePath(for relativePath: String) -> URL {
+        return documentDirectory.appendingPathComponent(relativePath)
+    }
+    
+    private func formatDate(_ dateString: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        if let date = dateFormatter.date(from: dateString) {
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            return dateFormatter.string(from: date)
+        }
+        return dateString
+    }
+    
+    private func formatDateForSharing(_ dateString: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
+        if let date = dateFormatter.date(from: dateString) {
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            return dateFormatter.string(from: date)
+        }
+        return dateString
+    }
+    
     private func loadBirdCounts() {
-        BirdCountCache.shared.clear() // Always clear the cache before loading
         if let cachedCounts = BirdCountCache.shared.birdCounts, !BirdCountCache.shared.shouldUpdate() {
             self.birdCounts = cachedCounts
-            sortBirdCounts()
             return
         }
         
         isLoading = true
         errorMessage = nil
 
+        let startTime = CFAbsoluteTimeGetCurrent()
+
         DispatchQueue.global(qos: .background).async {
             do {
                 let allObjectNames = SQLiteManager.shared.getAllObjectNames()
                 let birdList = try loadBirdList()
-                let earliestPhotoTimes = SQLiteManager.shared.getEarliestPhotoTimeForBirds()
+                let earliestTimes = SQLiteManager.shared.getEarliestPhotoTimeForBirds()
                 let latestPhotoInfo = SQLiteManager.shared.getLatestPhotoInfoForBirds()
                 
                 let filteredBirdCounts = allObjectNames.filter { objectName, _ in
@@ -174,19 +198,25 @@ struct BirdCountView: View {
                     }
                 }
                 
-                let sortedBirdCounts = filteredBirdCounts.compactMap { (objectName, count) -> (String, Int, String, String)? in
-                    if let earliestTime = earliestPhotoTimes.first(where: { $0.0 == objectName })?.1,
+                var birdCounts = filteredBirdCounts.compactMap { (objectName, count) -> (String, Int, String, String)? in
+                    if let earliestTime = earliestTimes.first(where: { $0.0 == objectName })?.1,
                        let latestPhotoThumbnail = latestPhotoInfo.first(where: { $0.0 == objectName })?.1 {
                         return (objectName, count, earliestTime, latestPhotoThumbnail)
                     }
                     return nil
-                }.sorted { $0.2 < $1.2 }
+                }
+                
+                // 按首次拍摄时间排序
+                birdCounts.sort { $0.2 < $1.2 }
+                
+                let endTime = CFAbsoluteTimeGetCurrent()
+                let computationTime = endTime - startTime
                 
                 DispatchQueue.main.async {
-                    self.birdCounts = sortedBirdCounts
-                    BirdCountCache.shared.update(with: sortedBirdCounts)
-                    sortBirdCounts()
+                    self.birdCounts = birdCounts
+                    BirdCountCache.shared.update(with: birdCounts)
                     self.isLoading = false
+                    self.computationTime = computationTime
                 }
             } catch {
                 DispatchQueue.main.async {
@@ -197,22 +227,6 @@ struct BirdCountView: View {
         }
     }
 
-    private func sortBirdCounts() {
-        switch sortOption {
-        case .firstSeen:
-            birdCounts.sort { lhs, rhs in
-                let lhsDate = dateFromString(lhs.2)
-                let rhsDate = dateFromString(rhs.2)
-                return sortOrder == .ascending ? lhsDate < rhsDate : lhsDate > rhsDate
-            }
-        case .photoCount:
-            birdCounts.sort { lhs, rhs in
-                sortOrder == .ascending ? lhs.1 < rhs.1 : lhs.1 > rhs.1
-            }
-        }
-        BirdCountCache.shared.update(with: birdCounts)
-    }
-
     private func loadBirdList() throws -> [[String]] {
         guard let url = Bundle.main.url(forResource: "birdInfo", withExtension: "json") else {
             throw NSError(domain: "BirdCountView", code: 1, userInfo: [NSLocalizedDescriptionKey: "birdInfo.json file not found"])
@@ -221,32 +235,10 @@ struct BirdCountView: View {
         let data = try Data(contentsOf: url)
         return try JSONDecoder().decode([[String]].self, from: data)
     }
-    
-    private func formatDate(_ dateString: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        if let date = dateFormatter.date(from: dateString) {
-            dateFormatter.dateFormat = "MMM d, yyyy"
-            return dateFormatter.string(from: date)
-        }
-        
-        return dateString
-    }
-    
-    private func dateFromString(_ dateString: String) -> Date {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"        
-        return dateFormatter.date(from: dateString) ?? Date.distantPast
-            }
-            
-            private func getFullImagePath(for relativePath: String) -> URL {
-                return documentDirectory.appendingPathComponent(relativePath)
-            }
-        }
+}
 
-        struct BirdCountView_Previews: PreviewProvider {
-            static var previews: some View {
-                BirdCountView()
-            }
-        }
+struct BirdCountView_Previews: PreviewProvider {
+    static var previews: some View {
+        BirdCountView()
+    }
+}
