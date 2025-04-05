@@ -10,6 +10,7 @@ struct SettingsView: View {
     @AppStorage("shareWithGPS") private var shareWithGPS = false
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
     @State private var showingSaveMessage = false
+    @State private var showingCloudSyncView = false
     @Environment(\.requestReview) private var requestReview
 
     var body: some View {
@@ -45,6 +46,22 @@ struct SettingsView: View {
                         Toggle("Share with EXIF", isOn: $shareWithExif)
                         Toggle("Share with GPS", isOn: $shareWithGPS)
                         Toggle("Omit Camera Brand", isOn: $omitCameraBrand)
+                    }
+                    
+                    Section(header: Text("Cloud Sync")) {
+                        Button(action: {
+                            showingCloudSyncView = true
+                        }) {
+                            HStack {
+                                Image(systemName: "cloud.fill")
+                                    .foregroundColor(Color("TUIBLUE"))
+                                Text("Sync Photos to Cloud")
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.subheadline)
+                                    .foregroundColor(.blue)
+                            }
+                        }
                     }
                     
                     Section(header: Text("More Options")) {
@@ -99,6 +116,9 @@ struct SettingsView: View {
                     message: Text("Your settings have been saved successfully."),
                     dismissButton: .default(Text("OK"))
                 )
+            }
+            .sheet(isPresented: $showingCloudSyncView) {
+                CloudSyncView()
             }
         }
         .navigationTitle("")
