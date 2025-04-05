@@ -20,6 +20,12 @@ class CloudSyncVerifier {
         let detailedReport: String           // 详细报告
     }
     
+    // 新增: 简化的验证结果枚举类型
+    enum SyncVerificationResult {
+        case success(totalLocal: Int, totalVerified: Int, syncedCount: Int, missingCount: Int, isFullySync: Bool, missingIds: [String])
+        case failure(String)
+    }
+    
     // 验证缓存 - 避免短时间内重复验证
     private var lastVerificationResult: VerificationResult?
     private var lastVerificationTime: Date?
@@ -76,6 +82,95 @@ class CloudSyncVerifier {
                 completion: completion
             )
         }
+    }
+    
+    // 新增: 高效的批量验证方法
+    func verifyCloudSync(sampleSize: Int = 50, completion: @escaping (SyncVerificationResult) -> Void) {
+        // 获取本地照片
+        let allPhotos = SQLiteManager.shared.getAllPhotos()
+        
+        // 选择要验证的照片
+        let photosToVerify: [Photo]
+        if sampleSize <= 0 || sampleSize >= allPhotos.count {
+            photosToVerify = allPhotos
+        } else {
+            let randomIndices = (0..<allPhotos.count).shuffled().prefix(sampleSize)
+            photosToVerify = randomIndices.map { allPhotos[$0] }
+        }
+        
+        // 准备批量验证请求
+        let photoIds = photosToVerify.map { $0.id }
+        let requestBody = ["ids": photoIds]
+        
+        // 发送验证请求
+        guard let url = URL(string: "\(baseURL)/batch-verify") else {
+            completion(.failure("无效的API URL"))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
+        } catch {
+            completion(.failure("无法序列化请求数据: \(error.localizedDescription)"))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure("网络错误: \(error.localizedDescription)"))
+                return
+            }
+            
+            guard let data = data,
+                  let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                completion(.failure("验证请求失败"))
+                return
+            }
+            
+            do {
+                guard let result = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                      let summary = result["summary"] as? [String: Int],
+                      let success = summary["success"],
+                      let failed = summary["failed"],
+                      let results = result["results"] as? [[String: Any]] else {
+                    completion(.failure("无法解析验证结果"))
+                    return
+                }
+                
+                let totalVerified = success + failed
+                let isFullySync = failed == 0
+                
+                // 收集缺失文件的ID
+                let missingFileIds = results.compactMap { result -> String? in
+                    guard let exists = result["exists"] as? Bool,
+                          let id = result["id"] as? String,
+                          !exists else {
+                        return nil
+                    }
+                    return id
+                }
+                
+                let verificationResult = SyncVerificationResult.success(
+                    totalLocal: allPhotos.count,
+                    totalVerified: totalVerified,
+                    syncedCount: success,
+                    missingCount: failed,
+                    isFullySync: isFullySync,
+                    missingIds: missingFileIds
+                )
+                
+                completion(verificationResult)
+            } catch {
+                completion(.failure("解析验证结果时出错: \(error.localizedDescription)"))
+            }
+        }
+        
+        task.resume()
     }
     
     // 分批验证照片，避免一次性发送过多请求
