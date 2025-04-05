@@ -11,6 +11,8 @@ struct SettingsView: View {
     @AppStorage("omitCameraBrand") private var omitCameraBrand = false
     @State private var showingSaveMessage = false
     @State private var showingCloudSyncView = false
+    @State private var showClearCloudDataView = false
+    @State private var showVerificationView = false
     @Environment(\.requestReview) private var requestReview
 
     var body: some View {
@@ -60,6 +62,34 @@ struct SettingsView: View {
                                 Image(systemName: "chevron.right")
                                     .font(.subheadline)
                                     .foregroundColor(.blue)
+                            }
+                        }
+                    }
+                    
+                    Section(header: Text("云同步测试")) {
+                        
+                        Button(action: {
+                                showVerificationView = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "checkmark.shield.fill")
+                                        .foregroundColor(Color("TUIBLUE"))
+                                    Text("验证同步状态")
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .font(.subheadline)
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                        
+                        Button(action: {
+                            showClearCloudDataView = true
+                        }) {
+                            HStack {
+                                Image(systemName: "trash")
+                                    .foregroundColor(.red)
+                                Text("清空云端数据")
+                                    .foregroundColor(.red)
                             }
                         }
                     }
@@ -119,6 +149,12 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showingCloudSyncView) {
                 CloudSyncView()
+            }
+            .sheet(isPresented: $showClearCloudDataView) {
+                ClearCloudDataView()
+            }
+            .sheet(isPresented: $showVerificationView) {
+                CloudSyncVerificationView()
             }
         }
         .navigationTitle("")

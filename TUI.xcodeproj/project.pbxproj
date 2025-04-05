@@ -18,6 +18,8 @@
 		971876272DA0A7E400CF5A8C /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971876262DA0A7E200CF5A8C /* NetworkMonitor.swift */; };
 		971876292DA0A7FB00CF5A8C /* AutoSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 971876282DA0A7F900CF5A8C /* AutoSyncManager.swift */; };
 		9718762B2DA0AB1C00CF5A8C /* CloudDataCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9718762A2DA0AB1A00CF5A8C /* CloudDataCleaner.swift */; };
+		9718762D2DA0BF9200CF5A8C /* CloudSyncVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9718762C2DA0BF8F00CF5A8C /* CloudSyncVerifier.swift */; };
+		9718762F2DA0BFA300CF5A8C /* CloudSyncVerificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9718762E2DA0BFA000CF5A8C /* CloudSyncVerificationView.swift */; };
 		971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */ = {isa = PBXBuildFile; fileRef = 971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */; };
 		9723A4C42D275B1300AFE846 /* YearlyBirdReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9723A4C32D275B1300AFE846 /* YearlyBirdReportView.swift */; };
 		9723A4C62D275C5F00AFE846 /* SQLiteManagerBirdReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9723A4C52D275C5F00AFE846 /* SQLiteManagerBirdReport.swift */; };
@@ -109,6 +111,8 @@
 		971876262DA0A7E200CF5A8C /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		971876282DA0A7F900CF5A8C /* AutoSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoSyncManager.swift; sourceTree = "<group>"; };
 		9718762A2DA0AB1A00CF5A8C /* CloudDataCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudDataCleaner.swift; sourceTree = "<group>"; };
+		9718762C2DA0BF8F00CF5A8C /* CloudSyncVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncVerifier.swift; sourceTree = "<group>"; };
+		9718762E2DA0BFA000CF5A8C /* CloudSyncVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncVerificationView.swift; sourceTree = "<group>"; };
 		971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JamesTuiPortfolio.zip; sourceTree = "<group>"; };
 		9723A4C32D275B1300AFE846 /* YearlyBirdReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearlyBirdReportView.swift; sourceTree = "<group>"; };
 		9723A4C52D275C5F00AFE846 /* SQLiteManagerBirdReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteManagerBirdReport.swift; sourceTree = "<group>"; };
@@ -225,6 +229,7 @@
 				97CE65FF2C4A4DC20002B6B2 /* AddImageView.swift */,
 				97CE65F32C4A4C900002B6B2 /* AppDelegate.swift */,
 				97CE65E32C4A4A620002B6B2 /* Assets.xcassets */,
+				971876282DA0A7F900CF5A8C /* AutoSyncManager.swift */,
 				976615B72C67B3A700636700 /* BackupManager.swift */,
 				976615B92C67B51800636700 /* BackupView.swift */,
 				97D5F9DF2C6650A900C7F543 /* BeginnerView.swift */,
@@ -240,6 +245,11 @@
 				97CE66032C4A4EE60002B6B2 /* CalendarView.swift */,
 				97B8A7BF2C53316A00B039A4 /* CameraCountView.swift */,
 				97B8A7C12C535A3D00B039A4 /* CameraDetailView.swift */,
+				9718762A2DA0AB1A00CF5A8C /* CloudDataCleaner.swift */,
+				971876222DA0A7AD00CF5A8C /* CloudSyncController.swift */,
+				9718761E2DA001DF00CF5A8C /* CloudSyncService.swift */,
+				971876242DA0A7CA00CF5A8C /* CloudSyncSettingsView.swift */,
+				971876202DA001F300CF5A8C /* CloudSyncView.swift */,
 				97A6F3DF2C6C49EF00A515A7 /* Config.xcconfig */,
 				97CE65E12C4A4A610002B6B2 /* ContentView.swift */,
 				97F4A1BD2C57B5F600633ABC /* CountryCodeManager.swift */,
@@ -266,6 +276,7 @@
 				97CE66152C4A518D0002B6B2 /* NationalPhotoListView.swift */,
 				97CE66172C4A51B10002B6B2 /* NationalView.swift */,
 				9794C2242C776E64007ADE9D /* NationalViewCache.swift */,
+				971876262DA0A7E200CF5A8C /* NetworkMonitor.swift */,
 				97CE66192C4A51D20002B6B2 /* ObjectNameView.swift */,
 				97A6F3DB2C6BA09B00A515A7 /* OnboardingView.swift */,
 				97CE661B2C4A51E90002B6B2 /* Photo.swift */,
@@ -283,13 +294,8 @@
 				97A70AE12C512E3D00A97007 /* SamedayView.swift */,
 				97CE65FD2C4A4D9C0002B6B2 /* SearchView.swift */,
 				97CE65F52C4A4CCD0002B6B2 /* SettingsView.swift */,
-				9718761E2DA001DF00CF5A8C /* CloudSyncService.swift */,
-				971876202DA001F300CF5A8C /* CloudSyncView.swift */,
-				971876222DA0A7AD00CF5A8C /* CloudSyncController.swift */,
-				971876242DA0A7CA00CF5A8C /* CloudSyncSettingsView.swift */,
-				971876262DA0A7E200CF5A8C /* NetworkMonitor.swift */,
-				971876282DA0A7F900CF5A8C /* AutoSyncManager.swift */,
-				9718762A2DA0AB1A00CF5A8C /* CloudDataCleaner.swift */,
+				9718762C2DA0BF8F00CF5A8C /* CloudSyncVerifier.swift */,
+				9718762E2DA0BFA000CF5A8C /* CloudSyncVerificationView.swift */,
 				97CE662D2C4A534A0002B6B2 /* ShareView.swift */,
 				97F4A1C32C5A05C100633ABC /* SinglePhotoView.swift */,
 				97CE662F2C4A535C0002B6B2 /* SQLiteManager.swift */,
@@ -363,7 +369,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					97CE65DB2C4A4A610002B6B2 = {
 						CreatedOnToolsVersion = 15.4;
@@ -448,6 +454,7 @@
 				9794C2252C776E64007ADE9D /* NationalViewCache.swift in Sources */,
 				97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */,
 				97CE65FC2C4A4D780002B6B2 /* BottomBarView.swift in Sources */,
+				9718762D2DA0BF9200CF5A8C /* CloudSyncVerifier.swift in Sources */,
 				97CE65E22C4A4A610002B6B2 /* ContentView.swift in Sources */,
 				973FC4512C75D0C700604B81 /* PosterView.swift in Sources */,
 				971876252DA0A7CC00CF5A8C /* CloudSyncSettingsView.swift in Sources */,
@@ -490,6 +497,7 @@
 				97B8A7C62C535BB400B039A4 /* LensDetailView.swift in Sources */,
 				97CE65FE2C4A4D9C0002B6B2 /* SearchView.swift in Sources */,
 				97CE66162C4A518D0002B6B2 /* NationalPhotoListView.swift in Sources */,
+				9718762F2DA0BFA300CF5A8C /* CloudSyncVerificationView.swift in Sources */,
 				97AD6D032C66539D004F0380 /* BlogView.swift in Sources */,
 				971876272DA0A7E400CF5A8C /* NetworkMonitor.swift in Sources */,
 				97F4A1BE2C57B5F600633ABC /* CountryCodeManager.swift in Sources */,
@@ -534,6 +542,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -597,6 +606,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -627,7 +637,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"TUI/Preview Content\"";
-				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TUI/Info.plist;
@@ -672,7 +681,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"TUI/Preview Content\"";
-				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TUI/Info.plist;

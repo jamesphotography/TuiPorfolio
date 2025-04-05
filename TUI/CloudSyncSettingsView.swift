@@ -3,10 +3,11 @@ import SwiftUI
 struct CloudSyncSettingsView: View {
     @ObservedObject private var controller = CloudSyncController.shared
     @State private var showSyncView = false
-    @State private var showVerifyResult = false
+    @State private var showVerificationView = false
     @State private var verifyResult: (success: Bool, message: String, count: Int) = (false, "", 0)
-    @State private var isVerifying = false
+    @State private var showVerifyResult = false
     @State private var showClearCloudDataView = false
+    @State private var isVerifying = false
     
     @AppStorage("cloudSyncOnWifiOnly") private var syncOnWifiOnly = true
     @AppStorage("cloudSyncAutomatically") private var syncAutomatically = false
@@ -37,22 +38,74 @@ struct CloudSyncSettingsView: View {
                     }
                 }
                 .disabled(controller.isSyncing)
-                
+            }
+            
+            // 新增的验证同步状态部分
+            Section(header: Text("验证同步状态")) {
+                // 快速验证按钮
                 Button(action: {
-                    verifyCloudSync()
+                    performQuickVerification()
                 }) {
                     HStack {
-                        Text("验证同步状态")
+                        Text("快速验证")
                         Spacer()
                         if isVerifying {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle())
                         } else {
-                            Image(systemName: "checkmark.shield")
+                            Image(systemName: "bolt")
+                                .foregroundColor(.blue)
                         }
                     }
                 }
                 .disabled(isVerifying || controller.isSyncing)
+                
+                // 完整验证按钮
+                Button(action: {
+                    showVerificationView = true
+                }) {
+                    HStack {
+                        Text("详细验证同步状态")
+                        Spacer()
+                        if controller.isVerifying {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                        } else {
+                            Image(systemName: "checkmark.shield")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                }
+                .disabled(controller.isVerifying || controller.isSyncing)
+                
+                // 如果有验证结果，显示摘要
+                if let result = controller.lastVerificationResult {
+                    HStack {
+                        Image(systemName: result.success ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                            .foregroundColor(result.success ? .green : .orange)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(result.success ? "同步状态良好" : "同步存在问题")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                            
+                            Text("本地照片: \(result.totalLocalPhotos), 云端照片: \(result.totalCloudPhotos)")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            showVerificationView = true
+                        }) {
+                            Text("详情")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
             }
             
             Section(header: Text("同步设置")) {
@@ -107,23 +160,26 @@ struct CloudSyncSettingsView: View {
         .sheet(isPresented: $showSyncView) {
             CloudSyncView()
         }
-        // 添加sheet
+        .sheet(isPresented: $showVerificationView) {
+            CloudSyncVerificationView()
+        }
         .sheet(isPresented: $showClearCloudDataView) {
             ClearCloudDataView()
         }
         .alert(isPresented: $showVerifyResult) {
             Alert(
-                title: Text(verifyResult.success ? "验证成功" : "验证失败"),
+                title: Text(verifyResult.success ? "快速验证成功" : "快速验证失败"),
                 message: Text(verifyResult.message),
                 dismissButton: .default(Text("确定"))
             )
         }
     }
     
-    private func verifyCloudSync() {
+    // 执行快速验证
+    private func performQuickVerification() {
         isVerifying = true
         
-        CloudSyncController.shared.verifySyncStatus { success, message, count in
+        controller.verifySyncStatus(sampleSize: 10) { success, message, count in
             DispatchQueue.main.async {
                 self.verifyResult = (success, message, count)
                 self.showVerifyResult = true

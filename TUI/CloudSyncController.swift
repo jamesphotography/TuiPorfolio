@@ -13,11 +13,18 @@ class CloudSyncController: ObservableObject {
     @Published var statusMessage: String = "准备同步..."
     @Published var failedItems: [String] = []
     @Published var lastSyncTime: Date?
+    @Published var lastVerificationResult: CloudSyncVerifier.VerificationResult?
+    @Published var isVerifying: Bool = false
     
     private var syncService = CloudSyncService.shared
     
     private init() {
         setupCallbacks()
+        
+        // 从 UserDefaults 加载上次同步时间
+        if let lastSyncDate = UserDefaults.standard.object(forKey: "lastCloudSyncTime") as? Date {
+            self.lastSyncTime = lastSyncDate
+        }
     }
     
     private func setupCallbacks() {
@@ -74,8 +81,33 @@ class CloudSyncController: ObservableObject {
         syncService.cancelSync()
     }
     
-    func verifySyncStatus(completion: @escaping (Bool, String, Int) -> Void) {
-        syncService.verifySync(completion: completion)
+    // 验证同步状态
+    func verifySyncStatus(sampleSize: Int = 20, forceRefresh: Bool = false, completion: @escaping (Bool, String, Int) -> Void) {
+        isVerifying = true
+        
+        CloudSyncVerifier.shared.verifySync(sampleSize: sampleSize, forceRefresh: forceRefresh) { result in
+            DispatchQueue.main.async {
+                self.isVerifying = false
+                self.lastVerificationResult = result
+                
+                // 转换为旧的返回格式以保持向后兼容
+                let foundCount = result.verifiedPhotos - result.missingPhotos.count - result.metadataMismatch.count - result.fileIntegrityFailed.count
+                completion(result.success, result.message, foundCount)
+            }
+        }
+    }
+    
+    // 主动验证同步状态并获取完整结果
+    func verifySync(sampleSize: Int = 20, forceRefresh: Bool = false, completion: @escaping (CloudSyncVerifier.VerificationResult) -> Void) {
+        isVerifying = true
+        
+        CloudSyncVerifier.shared.verifySync(sampleSize: sampleSize, forceRefresh: forceRefresh) { result in
+            DispatchQueue.main.async {
+                self.isVerifying = false
+                self.lastVerificationResult = result
+                completion(result)
+            }
+        }
     }
     
     var lastSyncTimeString: String {
@@ -87,9 +119,26 @@ class CloudSyncController: ObservableObject {
         formatter.unitsStyle = .full
         return formatter.localizedString(for: lastSync, relativeTo: Date())
     }
+    
+    // 同步状态概述
+    var syncStatusSummary: String {
+        if isSyncing {
+            return "正在同步中 - \(syncedItems)/\(totalItems) 张照片"
+        } else if let result = lastVerificationResult {
+            if result.success {
+                return "同步状态良好 - 已验证 \(result.verifiedPhotos) 张照片"
+            } else {
+                let issues = result.missingPhotos.count + result.metadataMismatch.count + result.fileIntegrityFailed.count
+                return "同步存在问题 - \(issues) 个问题需要处理"
+            }
+        } else {
+            return "未验证同步状态"
+        }
+    }
 }
 
 // 通知名称扩展
 extension Notification.Name {
     static let cloudSyncCompleted = Notification.Name("com.tuiportfolio.cloudSyncCompleted")
+    static let cloudSyncVerified = Notification.Name("com.tuiportfolio.cloudSyncVerified")
 }
