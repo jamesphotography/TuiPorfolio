@@ -155,7 +155,6 @@ struct MapView: View {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         } else {
             print("Cannot open URL")
-            // 如果无法打开URL，您可以在这里添加fallback选项，比如打开App Store下载相应的应用
         }
     }
     

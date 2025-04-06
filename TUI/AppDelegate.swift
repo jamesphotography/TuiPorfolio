@@ -28,7 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // 处理 URL Scheme
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        print("Received URL: \(url)")  // 添加日志
         
         // 处理 tuiportfolio URL Scheme
         if url.scheme == "tuiportfolio" {

@@ -79,7 +79,6 @@ public class BulkImportManager {
                     group.leave()
                 }
             }
-            //UserDefaults.standard.set(false, forKey: "isFirstLaunch")
         }
         
         group.notify(queue: .main) {

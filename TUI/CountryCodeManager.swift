@@ -31,7 +31,6 @@ class CountryCodeManager {
     
     func getCountryCode(for countryName: String) -> String? {
         let code = countries.first { $0.name.lowercased() == countryName.lowercased() }?.code
-        //print("DEBUG: Getting country code for '\(countryName)': \(code ?? "not found")")
         return code
     }
     

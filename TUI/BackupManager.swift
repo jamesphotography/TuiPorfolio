@@ -49,7 +49,6 @@ class BackupManager {
 
             return backupURL
         } catch {
-            print("Backup failed: \(error.localizedDescription)")
             throw error
         }
     }
@@ -87,11 +86,8 @@ class BackupManager {
             
             try await restoreImages(from: tempRestoreDirURL)
             await MainActor.run { progressUpdate(0.7) }
-            
-            print("Backup successfully restored")
             await MainActor.run { progressUpdate(1.0) }
         } catch {
-            print("Restore failed: \(error.localizedDescription)")
             throw error
         }
         UserDefaults.standard.set(false, forKey: "isFirstLaunch")
@@ -149,7 +145,6 @@ class BackupManager {
 
     func copyDefaultBackupIfNeeded() {
         guard let defaultBackupURL = getDefaultBackupURL() else {
-            print("Default backup not found in bundle")
             return
         }
 
@@ -159,7 +154,6 @@ class BackupManager {
         if !fileManager.fileExists(atPath: destinationURL.path) {
             do {
                 try fileManager.copyItem(at: defaultBackupURL, to: destinationURL)
-                print("Default backup copied to documents directory")
             } catch {
                 print("Failed to copy default backup: \(error)")
             }

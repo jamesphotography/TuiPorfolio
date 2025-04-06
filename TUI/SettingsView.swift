@@ -47,10 +47,24 @@ struct SettingsView: View {
                         Toggle("Omit Camera Brand", isOn: $omitCameraBrand)
                     }
                     
-                    Section(header: Text("More Options")) {
+                    Section(header: Text("Sync & Backup")) {
                         NavigationLink(destination: BackupView()) {
                             Text("Backup & Restore")
                         }
+                        
+                        NavigationLink(destination: CloudSyncSettingsView()) {
+                            HStack {
+                                Text("CloudFlare 同步")
+                                if CloudSyncConfiguration.shared.isConfigured {
+                                    Spacer()
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                }
+                            }
+                        }
+                    }
+                    
+                    Section(header: Text("More Options")) {
                         NavigationLink(destination: QuotesView()) {
                             Text("Photography Quotes")
                         }

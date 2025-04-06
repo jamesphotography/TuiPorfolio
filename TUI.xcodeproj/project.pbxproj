@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		97023A642C5630C0004E62D2 /* BirdNameListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97023A632C5630C0004E62D2 /* BirdNameListView.swift */; };
 		97023A662C5670B2004E62D2 /* Project365View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97023A652C5670B2004E62D2 /* Project365View.swift */; };
+		970E22B72DA2C439006DDB50 /* CloudSyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */; };
+		970E22B92DA2C452006DDB50 /* CloudSyncValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */; };
+		970E22BA2DA2C5AA006DDB50 /* CloudSyncConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */; };
 		970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53B92C571C2800B031D6 /* LandingView.swift */; };
 		970E53BE2C576DB400B031D6 /* LocalityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53BD2C576DB400B031D6 /* LocalityListView.swift */; };
 		971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */ = {isa = PBXBuildFile; fileRef = 971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */; };
@@ -93,6 +96,10 @@
 /* Begin PBXFileReference section */
 		97023A632C5630C0004E62D2 /* BirdNameListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdNameListView.swift; sourceTree = "<group>"; };
 		97023A652C5670B2004E62D2 /* Project365View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project365View.swift; sourceTree = "<group>"; };
+		970E22B42DA2BC82006DDB50 /* ProjectFile.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ProjectFile.md; sourceTree = "<group>"; };
+		970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncConfiguration.swift; sourceTree = "<group>"; };
+		970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncSettingsView.swift; sourceTree = "<group>"; };
+		970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncValidator.swift; sourceTree = "<group>"; };
 		970E53B92C571C2800B031D6 /* LandingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		970E53BD2C576DB400B031D6 /* LocalityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityListView.swift; sourceTree = "<group>"; };
 		971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JamesTuiPortfolio.zip; sourceTree = "<group>"; };
@@ -194,6 +201,7 @@
 			children = (
 				97CE65DD2C4A4A610002B6B2 /* Products */,
 				97CE65DE2C4A4A610002B6B2 /* TUI */,
+				970E22B42DA2BC82006DDB50 /* ProjectFile.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -269,6 +277,9 @@
 				97A70AE12C512E3D00A97007 /* SamedayView.swift */,
 				97CE65FD2C4A4D9C0002B6B2 /* SearchView.swift */,
 				97CE65F52C4A4CCD0002B6B2 /* SettingsView.swift */,
+				970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */,
+				970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */,
+				970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */,
 				97CE662D2C4A534A0002B6B2 /* ShareView.swift */,
 				97F4A1C32C5A05C100633ABC /* SinglePhotoView.swift */,
 				97CE662F2C4A535C0002B6B2 /* SQLiteManager.swift */,
@@ -342,7 +353,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					97CE65DB2C4A4A610002B6B2 = {
 						CreatedOnToolsVersion = 15.4;
@@ -406,6 +417,8 @@
 				97D5F9E12C6650A900C7F543 /* BeginnerView.swift in Sources */,
 				97CE66202C4A52190002B6B2 /* PhotoListView.swift in Sources */,
 				97CE660C2C4A505F0002B6B2 /* ImagePicker.swift in Sources */,
+				970E22B72DA2C439006DDB50 /* CloudSyncSettingsView.swift in Sources */,
+				970E22BA2DA2C5AA006DDB50 /* CloudSyncConfiguration.swift in Sources */,
 				97F65B302C55342A002F79B5 /* functionshareview.swift in Sources */,
 				97A70AE22C512E3D00A97007 /* SamedayView.swift in Sources */,
 				97CE66022C4A4EC90002B6B2 /* BlockView.swift in Sources */,
@@ -423,6 +436,7 @@
 				97CE66082C4A50150002B6B2 /* EditorView.swift in Sources */,
 				97CE661E2C4A51FD0002B6B2 /* PhotoImageView.swift in Sources */,
 				9794C2252C776E64007ADE9D /* NationalViewCache.swift in Sources */,
+				970E22B92DA2C452006DDB50 /* CloudSyncValidator.swift in Sources */,
 				97497D452C5118C000FAE305 /* WaterfallView.swift in Sources */,
 				97CE65FC2C4A4D780002B6B2 /* BottomBarView.swift in Sources */,
 				97CE65E22C4A4A610002B6B2 /* ContentView.swift in Sources */,
@@ -506,6 +520,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -569,6 +584,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -599,7 +615,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"TUI/Preview Content\"";
-				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TUI/Info.plist;
@@ -644,7 +659,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"TUI/Preview Content\"";
-				DEVELOPMENT_TEAM = JWR6FDB52H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TUI/Info.plist;

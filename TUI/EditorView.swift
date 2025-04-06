@@ -192,22 +192,6 @@ struct EditorView: View {
                     }
                     
                     locationInfo = "\(country), \(area), \(locality)"
-                    
-#if DEBUG
-                    print("Location Debug Info:")
-                    print("Country: \(country)")
-                    print("Area: \(area)")
-                    print("Locality: \(locality)")
-                    print("Raw Placemark Data:")
-                    print("- Administrative Area: \(placemark.administrativeArea ?? "nil")")
-                    print("- Sub-Administrative Area: \(placemark.subAdministrativeArea ?? "nil")")
-                    print("- Locality: \(placemark.locality ?? "nil")")
-                    print("- Sub-Locality: \(placemark.subLocality ?? "nil")")
-                    print("- Inland Water: \(placemark.inlandWater ?? "nil")")
-                    print("- Ocean: \(placemark.ocean ?? "nil")")
-                    print("- Areas of Interest: \(placemark.areasOfInterest ?? [])")
-#endif
-                    
                 } else {
                     locationLookupMessage = "No location information found"
                     showLocationLookupAlert = true

@@ -216,17 +216,6 @@ struct ImagePicker: UIViewControllerRepresentable {
                     
                     self.parent.locality = possibleLocalities.first ?? "Unknown Location"
                     
-                    #if DEBUG
-                    print("Location Debug Info:")
-                    print("Country: \(placemark.country ?? "nil")")
-                    print("Area: \(placemark.administrativeArea ?? "nil")")
-                    print("Locality: \(placemark.locality ?? "nil")")
-                    print("SubLocality: \(placemark.subLocality ?? "nil")")
-                    print("Name: \(placemark.name ?? "nil")")
-                    print("AreasOfInterest: \(placemark.areasOfInterest ?? [])")
-                    print("Selected Locality: \(self.parent.locality)")
-                    #endif
-                    
                 } else {
                     self.handleGeocodingFailure()
                 }

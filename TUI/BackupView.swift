@@ -238,7 +238,6 @@ struct BackupView: View {
                 }
                 .sorted { $0.creationDate > $1.creationDate }
         } catch {
-            print("Failed to get directory contents: \(error.localizedDescription)")
             showError(NSLocalizedString("Failed to load backups: ", comment: "") + error.localizedDescription)
         }
     }
@@ -254,29 +253,19 @@ struct BackupView: View {
     
     private func deleteBackup(_ backup: BackupFile) {
         let fileManager = FileManager.default
-        print("Attempting to delete backup: \(backup.url.lastPathComponent)")
-        print("Full path: \(backup.url.path)")
-        
         do {
             if fileManager.fileExists(atPath: backup.url.path) {
                 try fileManager.removeItem(at: backup.url)
-                print("Backup file successfully deleted")
-                
                 existingBackups.removeAll { $0.id == backup.id }
-                print("Backup removed from list")
-                
                 loadExistingBackups()
             } else {
-                print("Backup file does not exist at path")
                 showError(NSLocalizedString("Backup file not found", comment: ""))
             }
             
             if selectedBackup == backup {
                 selectedBackup = nil
-                print("Selected backup reset")
             }
         } catch {
-            print("Failed to delete backup: \(error.localizedDescription)")
             showError(NSLocalizedString("Failed to delete backup: ", comment: "") + error.localizedDescription)
         }
     }
@@ -299,7 +288,6 @@ struct BackupView: View {
                 backupStatus = NSLocalizedString("Backup created at: ", comment: "") + backupURL.lastPathComponent
                 loadExistingBackups()
             } catch {
-                print("Backup failed: \(error)")
                 showError(NSLocalizedString("Backup failed: ", comment: "") + error.localizedDescription)
             }
             isBackingUp = false
@@ -336,7 +324,6 @@ struct BackupView: View {
                     self.showingRestoreSuccessAlert = true
                 }
             } catch {
-                print("Restore failed: \(error)")
                 showError(NSLocalizedString("Restore failed: ", comment: "") + error.localizedDescription)
             }
             isRestoring = false
@@ -380,7 +367,6 @@ struct ActivityViewController: UIViewControllerRepresentable {
     let applicationActivities: [UIActivity]? = nil
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        print("Creating ActivityViewController with items: \(activityItems)")
         let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
         return controller
     }

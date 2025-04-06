@@ -199,41 +199,6 @@ struct AddImageView: View {
         isProcessingReceivedImage = false
     }
     
-    func printEXIFInfo(from imageData: Data) {
-        guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
-            print("Failed to create image source")
-            return
-        }
-        
-        guard let metadata = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [String: Any] else {
-            print("No metadata found")
-            return
-        }
-        
-        if let exif = metadata["{Exif}"] as? [String: Any] {
-            print("EXIF data:")
-            for (key, value) in exif {
-                print("\(key): \(value)")
-            }
-        } else {
-            print("No EXIF data found")
-        }
-        
-        if let tiff = metadata["{TIFF}"] as? [String: Any] {
-            print("TIFF data:")
-            for (key, value) in tiff {
-                print("\(key): \(value)")
-            }
-        }
-        
-        if let gps = metadata["{GPS}"] as? [String: Any] {
-            print("GPS data:")
-            for (key, value) in gps {
-                print("\(key): \(value)")
-            }
-        }
-    }
-    
     func generateThumbnail(for image: UIImage, size: CGSize) -> UIImage? {
         let aspectWidth = size.width / image.size.width
         let aspectHeight = size.height / image.size.height
@@ -279,10 +244,6 @@ struct AddImageView: View {
             showingSaveMessage = true
             return
         }
-        
-//        print("Original image EXIF:")
-//        printEXIFInfo(from: imageData)
-        
         guard let source = CGImageSourceCreateWithData(imageData as CFData, nil) else {
             saveMessage = "Failed to create image source"
             showingSaveMessage = true
@@ -370,11 +331,11 @@ struct AddImageView: View {
             imageName = fileName
             saveMessage = "\(title) " + NSLocalizedString("image_saved_successfully", comment: "")
             
-            if let savedImageData = try? Data(contentsOf: fileURL) {
-                printEXIFInfo(from: savedImageData)
-            } else {
-                print("Failed to read saved image data")
-            }
+//            if let savedImageData = try? Data(contentsOf: fileURL) {
+//                printEXIFInfo(from: savedImageData)
+//            } else {
+//                print("Failed to read saved image data")
+//            }
             
             let thumbnail100 = generateThumbnail(for: inputImage, size: CGSize(width: 100, height: 100))
             let thumbnail350 = generateThumbnail(for: inputImage, size: CGSize(width: 350, height: 350))

@@ -61,7 +61,6 @@ struct ZoomInView: View {
                         )
                         .onRotate { newOrientation in
                             orientation = newOrientation
-                            print("New orientation: \(newOrientation.rawValue)")
                             if newOrientation.isPortrait {
                                 print("Device is in portrait mode.")
                             } else if newOrientation.isLandscape {
@@ -97,7 +96,6 @@ struct ZoomInView: View {
         }
         .onAppear {
             loadImage()
-            print("View appeared, image loaded.")
         }
     }
 
@@ -107,11 +105,9 @@ struct ZoomInView: View {
             let fullPath = documentsDirectory.appendingPathComponent(imagePath).path
             if fileManager.fileExists(atPath: fullPath) {
                 image = UIImage(contentsOfFile: fullPath)
-                print("Image loaded from path: \(fullPath)")
                 if let uiImage = image {
-                    let aspectRatio = uiImage.size.height / uiImage.size.width
-                    let orientationString = orientation.isPortrait ? "portrait" : orientation.isLandscape ? "landscape" : "unknown"
-                    print("Reloaded image with width: \(uiImage.size.width), height: \(uiImage.size.height), aspect ratio: \(aspectRatio), orientation: \(orientationString)")
+                    _ = uiImage.size.height / uiImage.size.width
+                    _ = orientation.isPortrait ? "portrait" : orientation.isLandscape ? "landscape" : "unknown"
                 }
             } else {
                 print("File does not exist at path: \(fullPath)")
@@ -145,7 +141,6 @@ struct DeviceRotationViewModifier: ViewModifier {
             .onAppear()
             .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
                 action(UIDevice.current.orientation)
-                //print("Orientation changed to: \(UIDevice.current.orientation.rawValue)")
             }
     }
 }

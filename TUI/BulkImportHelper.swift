@@ -39,17 +39,9 @@ class BulkImportHelper {
             
             do {
                 let imageData = try Data(contentsOf: fullSizeImageURL)
-                // 使用原始文件名作为文件名前缀
                 let fileNamePrefix = URL(fileURLWithPath: originalFileName).deletingPathExtension().lastPathComponent
-                
-//                // 创建正确格式的 addTimestamp
-//                let dateFormatter = DateFormatter()
-//                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//                let addTimestamp = dateFormatter.string(from: Date())
-//                
                 PhotoExtractor.extractAndSaveBulkPhotoInfo(asset: asset, imageData: imageData, fileNamePrefix: fileNamePrefix) { success, reason, thumbnail in
                     if success {
-                        // 打印 addTimestamp 以进行调试
                         completion(true, nil, thumbnail)
                     } else {
                         BulkImportManager.shared.handleImportError(TuiImporterError.photoMetadataError)

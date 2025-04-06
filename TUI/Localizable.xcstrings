@@ -481,6 +481,21 @@
         }
       }
     },
+    "• 如何创建API令牌" : {
+
+    },
+    "• 如何创建D1数据库" : {
+
+    },
+    "• 如何创建Worker" : {
+
+    },
+    "• 如何找到账户ID" : {
+
+    },
+    "• 如何设置R2存储桶" : {
+
+    },
     "1 - %lld photos" : {
       "localizations" : {
         "zh-Hans" : {
@@ -691,6 +706,9 @@
           }
         }
       }
+    },
+    "API令牌" : {
+
     },
     "App Feedback" : {
       "localizations" : {
@@ -1095,6 +1113,12 @@
         }
       }
     },
+    "CloudFlare 同步" : {
+
+    },
+    "CloudFlare配置信息" : {
+
+    },
     "Computation Time: %@s" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1302,6 +1326,9 @@
           }
         }
       }
+    },
+    "D1数据库名称" : {
+
     },
     "Date Taken" : {
       "comment" : "EXIF info label",
@@ -3103,6 +3130,9 @@
         }
       }
     },
+    "R2存储桶名称" : {
+
+    },
     "Rate App" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3805,6 +3835,9 @@
         }
       }
     },
+    "Sync & Backup" : {
+
+    },
     "Tap for navigation options" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4143,6 +4176,9 @@
         }
       }
     },
+    "Worker名称" : {
+
+    },
     "Year" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4239,6 +4275,30 @@
         }
       }
     },
+    "上次同步:" : {
+
+    },
+    "例如：my-tui-sync（不需要输入完整URL）" : {
+
+    },
+    "保存配置" : {
+
+    },
+    "删除配置" : {
+
+    },
+    "取消" : {
+
+    },
+    "同步功能:" : {
+
+    },
+    "在CloudFlare控制台中生成的API令牌" : {
+
+    },
+    "在CloudFlare控制台右下角找到" : {
+
+    },
     "复制成功" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4255,6 +4315,27 @@
         }
       }
     },
+    "如何获取CloudFlare信息:" : {
+
+    },
+    "已配置" : {
+
+    },
+    "未配置" : {
+
+    },
+    "查看完整设置指南" : {
+
+    },
+    "生成的Worker URL: %@" : {
+
+    },
+    "用于存储照片元数据的D1数据库名称" : {
+
+    },
+    "用于存储照片的R2存储桶名称" : {
+
+    },
     "确定" : {
       "localizations" : {
         "zh-Hans" : {
@@ -4270,6 +4351,39 @@
           }
         }
       }
+    },
+    "确认删除配置" : {
+
+    },
+    "设置帮助" : {
+
+    },
+    "账户ID" : {
+
+    },
+    "输入CloudFlare API令牌" : {
+
+    },
+    "输入CloudFlare账户ID" : {
+
+    },
+    "输入D1数据库名称" : {
+
+    },
+    "输入R2存储桶名称" : {
+
+    },
+    "输入Worker名称（不含.workers.dev）" : {
+
+    },
+    "这将删除所有CloudFlare同步设置。此操作不可撤销。" : {
+
+    },
+    "配置状态" : {
+
+    },
+    "验证配置" : {
+
     },
     "鸟种列表已复制到剪贴板" : {
       "localizations" : {

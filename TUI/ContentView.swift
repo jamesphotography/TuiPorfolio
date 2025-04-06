@@ -188,7 +188,6 @@ struct ContentView: View {
     func loadImages() {
         SQLiteManager.shared.invalidateCache()
         let photos = SQLiteManager.shared.getAllPhotos(sortByShootingTime: sortByShootingTime)
-        print("Loaded \(photos.count) photos from database")
         
         images = []
         displayedImages = []

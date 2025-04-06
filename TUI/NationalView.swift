@@ -99,8 +99,7 @@ struct NationalView: View {
         }
         
         let endTime = CFAbsoluteTimeGetCurrent()
-        let executionTime = endTime - startTime
-        print("loadBirdList execution time: \(executionTime) seconds")
+        _ = endTime - startTime
     }
 
     private func isBird(_ objectName: String) -> Bool {
@@ -116,7 +115,6 @@ struct NationalView: View {
             self.countries = cachedCountries
             let endTime = CFAbsoluteTimeGetCurrent()
             self.executionTime = endTime - startTime
-            print("loadCountries (cached) execution time: \(executionTime) seconds")
             return
         }
         
@@ -156,7 +154,6 @@ struct NationalView: View {
         
         let endTime = CFAbsoluteTimeGetCurrent()
         self.executionTime = endTime - startTime
-        print("loadCountries execution time: \(executionTime) seconds")
     }
     
     private func determineFinalLanguageCode(_ locale: Locale) -> String {

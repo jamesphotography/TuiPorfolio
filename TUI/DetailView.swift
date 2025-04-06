@@ -122,9 +122,6 @@ struct DetailView: View {
             ShareView(photo: photo)
         }
         .onChange(of: objectName) { _, _ in checkIfBird() }
-        .onChange(of: shouldNavigateToHome) { _, newValue in
-            if newValue { handleNavigation() }
-        }
         .onAppear {
             birdList = loadBirdList()
             checkIfBird()
@@ -368,20 +365,6 @@ struct DetailView: View {
                 }
             }
         }
-    }
-    
-    func handleNavigation() {
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first,
-           let _ = window.rootViewController {
-            let contentView = ContentView()
-            let hostingController = UIHostingController(rootView: contentView)
-            window.rootViewController = hostingController
-            window.makeKeyAndVisible()
-        } else {
-            print("DetailView: Unable to find root view controller")
-        }
-        presentationMode.wrappedValue.dismiss()
     }
 }
 
