@@ -12,6 +12,7 @@
 		970E22B72DA2C439006DDB50 /* CloudSyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */; };
 		970E22B92DA2C452006DDB50 /* CloudSyncValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */; };
 		970E22BA2DA2C5AA006DDB50 /* CloudSyncConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */; };
+		970E22BE2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift in Resources */ = {isa = PBXBuildFile; fileRef = 970E22BD2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift */; };
 		970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53B92C571C2800B031D6 /* LandingView.swift */; };
 		970E53BE2C576DB400B031D6 /* LocalityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53BD2C576DB400B031D6 /* LocalityListView.swift */; };
 		971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */ = {isa = PBXBuildFile; fileRef = 971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */; };
@@ -100,6 +101,7 @@
 		970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncConfiguration.swift; sourceTree = "<group>"; };
 		970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncSettingsView.swift; sourceTree = "<group>"; };
 		970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncValidator.swift; sourceTree = "<group>"; };
+		970E22BD2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudWorkerTemplateView.swift; sourceTree = "<group>"; };
 		970E53B92C571C2800B031D6 /* LandingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 		970E53BD2C576DB400B031D6 /* LocalityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityListView.swift; sourceTree = "<group>"; };
 		971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = JamesTuiPortfolio.zip; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				97A70AE12C512E3D00A97007 /* SamedayView.swift */,
 				97CE65FD2C4A4D9C0002B6B2 /* SearchView.swift */,
 				97CE65F52C4A4CCD0002B6B2 /* SettingsView.swift */,
+				970E22BD2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift */,
 				970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */,
 				970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */,
 				970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */,
@@ -398,6 +401,7 @@
 				97B8A7CC2C54CBC600B039A4 /* testImage_thumb100.jpg in Resources */,
 				97CE66102C4A50F80002B6B2 /* Localizable.xcstrings in Resources */,
 				97B8A7CA2C54CBC600B039A4 /* testImage.jpg in Resources */,
+				970E22BE2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

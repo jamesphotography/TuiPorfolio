@@ -18,6 +18,29 @@ struct CloudSyncSettingsView: View {
     @State private var isSuccess = false
     
     @State private var showingDeleteConfirmation = false
+    @State private var showWorkerCodeSheet = false
+    @State private var showCopySuccessToast = false
+    
+    // Worker 示例代码
+    private let workerCode = """
+    // Worker 示例代码
+    addEventListener('fetch', event => {
+      event.respondWith(handleRequest(event.request))
+    })
+    
+    async function handleRequest(request) {
+      if (request.method === 'GET' && new URL(request.url).pathname === '/health') {
+        return new Response(JSON.stringify({ status: 'ok' }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+      
+      // 处理其他请求
+      return new Response('TUI Portfolio Sync Worker is running!', {
+        headers: { 'Content-Type': 'text/plain' }
+      })
+    }
+    """
     
     var body: some View {
         GeometryReader { geometry in
@@ -36,9 +59,6 @@ struct CloudSyncSettingsView: View {
                         
                         // 配置状态
                         configurationStatus
-                        
-                        // 帮助信息
-                        helpSection
                     }
                     .padding()
                     .background(Color("BGColor"))
@@ -71,9 +91,18 @@ struct CloudSyncSettingsView: View {
                     ]
                 )
             }
+            .sheet(isPresented: $showWorkerCodeSheet) {
+                WorkerCodeView(code: workerCode, onDismiss: {
+                    showWorkerCodeSheet = false
+                })
+            }
+            .overlay(
+                showCopySuccessToast ? toastView : nil
+            )
             .onAppear {
                 loadConfiguration()
             }
+            .navigationBarHidden(true) // 确保隐藏导航栏
         }
     }
     
@@ -89,67 +118,105 @@ struct CloudSyncSettingsView: View {
             // API令牌
             VStack(alignment: .leading) {
                 Text("API令牌").font(.subheadline).foregroundColor(.secondary)
+                Text("在CloudFlare控制台中生成的API令牌（位于右上角个人资料 -> API令牌 -> 创建令牌）")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
                 SecureField("输入CloudFlare API令牌", text: $apiToken)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                Text("在CloudFlare控制台中生成的API令牌")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
             }
             
             // 账户ID
             VStack(alignment: .leading) {
                 Text("账户ID").font(.subheadline).foregroundColor(.secondary)
+                Text("在CloudFlare控制台右下角找到的标识号码")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
                 TextField("输入CloudFlare账户ID", text: $accountId)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                Text("在CloudFlare控制台右下角找到")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
             }
             
             // Worker名称
             VStack(alignment: .leading) {
                 Text("Worker名称").font(.subheadline).foregroundColor(.secondary)
+                Text("例如：my-tui-sync（只需输入名称部分，不要包含域名）")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
                 TextField("输入Worker名称（不含.workers.dev）", text: $workerName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                Text("例如：my-tui-sync（不需要输入完整URL）")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
             }
             
             // R2存储桶
             VStack(alignment: .leading) {
                 Text("R2存储桶名称").font(.subheadline).foregroundColor(.secondary)
+                Text("用于存储照片的R2存储桶名称（在R2页面创建）")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
                 TextField("输入R2存储桶名称", text: $r2BucketName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                Text("用于存储照片的R2存储桶名称")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
             }
             
             // D1数据库
             VStack(alignment: .leading) {
                 Text("D1数据库名称").font(.subheadline).foregroundColor(.secondary)
+                Text("用于存储照片元数据的D1数据库名称（在D1页面创建）")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
                 TextField("输入D1数据库名称", text: $d1DatabaseName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                Text("用于存储照片元数据的D1数据库名称")
-                    .font(.caption2)
-                    .foregroundColor(.gray)
             }
             
             if CloudSyncConfiguration.shared.workerUrl != nil {
-                Text("生成的Worker URL: \(CloudSyncConfiguration.shared.workerUrl!.absoluteString)")
+                HStack {
+                    Text("生成的Worker URL:")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    
+                    Link(CloudSyncConfiguration.shared.workerUrl!.absoluteString,
+                         destination: CloudSyncConfiguration.shared.workerUrl!)
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        UIPasteboard.general.string = CloudSyncConfiguration.shared.workerUrl!.absoluteString
+                        withAnimation {
+                            showCopySuccessToast = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            withAnimation {
+                                showCopySuccessToast = false
+                            }
+                        }
+                    }) {
+                        Image(systemName: "doc.on.doc")
+                            .foregroundColor(.blue)
+                    }
+                }
+                
+                Button(action: {
+                    showWorkerCodeSheet = true
+                }) {
+                    HStack {
+                        Image(systemName: "doc.text")
+                        Text("查看/复制Worker代码")
+                    }
                     .font(.caption)
-                    .foregroundColor(.blue)
+                    .padding(8)
+                    .foregroundColor(.white)
+                    .background(Color.black)
+                    .cornerRadius(5)
+                }
             }
         }
         .padding()
@@ -165,7 +232,7 @@ struct CloudSyncSettingsView: View {
                 Text("验证配置")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color("TUIBLUE"))
+                    .background(Color.black)
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
@@ -221,53 +288,35 @@ struct CloudSyncSettingsView: View {
                         .fontWeight(.semibold)
                 }
             }
+            
+            Divider()
+            
+            Text("设置说明")
+                .font(.headline)
+                .padding(.top, 5)
+            
+            Text("完成以上配置后，您的照片数据将自动同步到CloudFlare。请确保您已经在CloudFlare控制台中创建了相应的Worker、R2存储桶和D1数据库。")
+                .font(.caption)
+                .foregroundColor(.gray)
         }
         .padding()
         .background(Color.gray.opacity(0.1))
         .cornerRadius(12)
     }
     
-    /// 帮助信息
-    private var helpSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("设置帮助")
-                .font(.headline)
-                .padding(.bottom, 5)
+    /// 复制成功提示
+    private var toastView: some View {
+        VStack {
+            Spacer()
             
-            Text("如何获取CloudFlare信息:")
-                .font(.subheadline)
-            
-            Link("• 如何创建API令牌", destination: URL(string: "https://developers.cloudflare.com/api/tokens/create/")!)
-                .foregroundColor(.blue)
-            
-            Link("• 如何找到账户ID", destination: URL(string: "https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/")!)
-                .foregroundColor(.blue)
-            
-            Link("• 如何创建Worker", destination: URL(string: "https://developers.cloudflare.com/workers/get-started/guide/")!)
-                .foregroundColor(.blue)
-            
-            Link("• 如何设置R2存储桶", destination: URL(string: "https://developers.cloudflare.com/r2/get-started/")!)
-                .foregroundColor(.blue)
-            
-            Link("• 如何创建D1数据库", destination: URL(string: "https://developers.cloudflare.com/d1/get-started/")!)
-                .foregroundColor(.blue)
-            
-            Button(action: {
-                showSetupGuide()
-            }) {
-                Text("查看完整设置指南")
-                    .fontWeight(.medium)
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color("TUIBLUE"))
-                    .cornerRadius(8)
-                    .padding(.top, 5)
-            }
+            Text("已复制到剪贴板")
+                .font(.caption)
+                .padding(10)
+                .background(Color.black.opacity(0.7))
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .padding(.bottom, 50)
         }
-        .padding()
-        .background(Color.gray.opacity(0.1))
-        .cornerRadius(12)
     }
     
     // MARK: - 方法
@@ -319,13 +368,6 @@ struct CloudSyncSettingsView: View {
         }
     }
     
-    /// 显示设置指南
-    private func showSetupGuide() {
-        // 这里可以导航到设置指南页面
-        // 目前只显示一个提示
-        showAlert(title: "设置指南", message: "完整设置指南功能即将上线。", isSuccess: true)
-    }
-    
     /// 显示提示
     private func showAlert(title: String, message: String, isSuccess: Bool) {
         self.alertTitle = title
@@ -340,6 +382,78 @@ struct CloudSyncSettingsView: View {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter.string(from: date)
+    }
+}
+
+// MARK: - Worker代码视图
+struct WorkerCodeView: View {
+    let code: String
+    let onDismiss: () -> Void
+    @State private var showCopiedToast = false
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        Text("Worker示例代码")
+                            .font(.headline)
+                            .padding(.bottom, 5)
+                        
+                        Text("请在CloudFlare Workers中创建一个新的Worker，并粘贴以下代码。")
+                            .font(.subheadline)
+                            .padding(.bottom, 10)
+                        
+                        Text(code)
+                            .font(.system(.body, design: .monospaced))
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .cornerRadius(8)
+                    }
+                    .padding()
+                }
+                
+                Button(action: {
+                    UIPasteboard.general.string = code
+                    withAnimation {
+                        showCopiedToast = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            showCopiedToast = false
+                        }
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "doc.on.doc")
+                        Text("复制代码")
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.black)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                }
+            }
+            .navigationBarTitle("Worker代码", displayMode: .inline)
+            .navigationBarItems(trailing: Button("关闭") {
+                onDismiss()
+            })
+            .overlay(
+                showCopiedToast ? VStack {
+                    Spacer()
+                    Text("代码已复制到剪贴板")
+                        .font(.caption)
+                        .padding(10)
+                        .background(Color.black.opacity(0.7))
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        .padding(.bottom, 50)
+                } : nil
+            )
+        }
     }
 }
 
