@@ -10,6 +10,9 @@ struct SyncView: View {
     @State private var forceFullSync: Bool = false
     @State private var syncHistory: [SyncHistoryItem] = []
     @State private var refreshTrigger: Bool = false
+    @State private var healthCheckResult: String = "未检查"
+    @State private var isCheckingHealth: Bool = false
+    @State private var workerStatusColor: Color = .gray
     
     var body: some View {
         GeometryReader { geometry in
@@ -21,6 +24,9 @@ struct SyncView: View {
                 // 主内容区域
                 ScrollView {
                     VStack(spacing: 20) {
+                        // 连接状态检查
+                        connectionStatusSection
+                        
                         // 同步状态卡片
                         syncStatusCard
                         
@@ -29,6 +35,9 @@ struct SyncView: View {
                         
                         // 同步历史记录
                         syncHistorySection
+                        
+                        // 调试信息
+                        debugInfoSection
                     }
                     .padding()
                     .background(Color("BGColor"))
@@ -43,6 +52,7 @@ struct SyncView: View {
             .onAppear {
                 loadSyncStatus()
                 loadSyncHistory()
+                checkWorkerHealth()
             }
             .alert(isPresented: $showErrorAlert) {
                 Alert(
@@ -69,6 +79,63 @@ struct SyncView: View {
         }
         .navigationTitle("")
         .navigationBarHidden(true)
+    }
+    
+    // 连接状态检查部分
+    private var connectionStatusSection: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Text("Worker连接状态")
+                    .font(.headline)
+                
+                Spacer()
+                
+                Button(action: checkWorkerHealth) {
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundColor(.blue)
+                        .font(.system(size: 14))
+                        .rotationEffect(isCheckingHealth ? .degrees(360) : .zero)
+                        .animation(isCheckingHealth ? Animation.linear(duration: 1).repeatForever(autoreverses: false) : .default, value: isCheckingHealth)
+                }
+            }
+            
+            HStack {
+                Circle()
+                    .fill(workerStatusColor)
+                    .frame(width: 12, height: 12)
+                
+                Text(healthCheckResult)
+                    .font(.subheadline)
+                
+                Spacer()
+                
+                if isCheckingHealth {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                }
+            }
+            
+            if CloudSyncConfiguration.shared.workerUrl != nil {
+                HStack {
+                    Text("Worker URL:")
+                        .font(.caption)
+                    Text(CloudSyncConfiguration.shared.workerUrl?.absoluteString ?? "未设置")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                }
+            }
+            
+            NavigationLink(destination: CloudSyncDebugView()) {
+                Text("进行连接问题诊断")
+                    .font(.caption)
+                    .foregroundColor(.blue)
+                    .padding(.vertical, 4)
+            }
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
     
     // 同步状态卡片
@@ -183,7 +250,7 @@ struct SyncView: View {
                 .foregroundColor(.white)
                 .cornerRadius(10)
             }
-            .disabled(!CloudSyncConfiguration.shared.isConfigured || isSyncing)
+            .disabled(!CloudSyncConfiguration.shared.isConfigured || isSyncing || workerStatusColor == .red)
             
             HStack {
                 Button(action: loadSyncStatus) {
@@ -293,7 +360,165 @@ struct SyncView: View {
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
     
+    // 调试信息区域
+    private var debugInfoSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("调试信息")
+                    .font(.headline)
+                Spacer()
+                
+                // 添加导航链接到CloudSyncDebugView
+                NavigationLink(destination: CloudSyncDebugView()) {
+                    HStack {
+                        Image(systemName: "network")
+                        Text("连接测试")
+                    }
+                    .font(.caption)
+                    .padding(6)
+                    .background(Color.blue.opacity(0.2))
+                    .cornerRadius(8)
+                    .foregroundColor(.blue)
+                }
+            }
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Worker名称")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(CloudSyncConfiguration.shared.workerName.isEmpty ? "未设置" : CloudSyncConfiguration.shared.workerName)
+                            .font(.caption)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("账户ID")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(CloudSyncConfiguration.shared.accountId.isEmpty ? "未设置" : CloudSyncConfiguration.shared.accountId.prefix(8) + "...")
+                            .font(.caption)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("API Token")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(CloudSyncConfiguration.shared.apiToken.isEmpty ? "未设置" : "已设置 (\(CloudSyncConfiguration.shared.apiToken.count) 字符)")
+                            .font(.caption)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("R2存储桶")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(CloudSyncConfiguration.shared.r2BucketName.isEmpty ? "未设置" : CloudSyncConfiguration.shared.r2BucketName)
+                            .font(.caption)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("D1数据库")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(CloudSyncConfiguration.shared.d1DatabaseName.isEmpty ? "未设置" : CloudSyncConfiguration.shared.d1DatabaseName)
+                            .font(.caption)
+                    }
+                }
+                .padding(.horizontal, 4)
+            }
+
+            HStack {
+                Button(action: {
+                    // 复制详细调试信息到剪贴板
+                    let debugInfo = """
+                    === TUI CloudSync 调试信息 ===
+                    时间: \(formattedDate(Date()))
+                    
+                    配置信息:
+                    - Worker名称: \(CloudSyncConfiguration.shared.workerName)
+                    - Worker URL: \(CloudSyncConfiguration.shared.workerUrl?.absoluteString ?? "未设置")
+                    - 账户ID: \(CloudSyncConfiguration.shared.accountId)
+                    - API Token: \(CloudSyncConfiguration.shared.apiToken.isEmpty ? "未设置" : "已设置 (\(CloudSyncConfiguration.shared.apiToken.count) 字符)")
+                    - R2存储桶: \(CloudSyncConfiguration.shared.r2BucketName)
+                    - D1数据库: \(CloudSyncConfiguration.shared.d1DatabaseName)
+                    - 配置状态: \(CloudSyncConfiguration.shared.isConfigured ? "已配置" : "未配置")
+                    - 上次同步: \(CloudSyncConfiguration.shared.lastSyncTime != nil ? formattedDate(CloudSyncConfiguration.shared.lastSyncTime!) : "未同步")
+                    
+                    同步状态:
+                    - 健康检查: \(healthCheckResult)
+                    - 待同步项: \(syncStatus.pendingChanges)
+                    - 上次同步: \(syncStatus.lastSyncTime != nil ? formattedDate(syncStatus.lastSyncTime!) : "未同步")
+                    - 同步错误: \(syncStatus.syncError ?? "无")
+                    
+                    系统信息:
+                    - 设备型号: \(UIDevice.current.model)
+                    - 系统版本: \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)
+                    - 应用版本: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "未知")
+                    """
+                    
+                    UIPasteboard.general.string = debugInfo
+                    errorMessage = "调试信息已复制到剪贴板"
+                    showErrorAlert = true
+                }) {
+                    Text("复制详细调试信息")
+                        .font(.caption)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(4)
+                }
+                
+                // 添加简单的调试按钮
+                Button(action: {
+                    CloudSyncManager.shared.logDebugInfo()
+                    errorMessage = "调试信息已输出到控制台"
+                    showErrorAlert = true
+                }) {
+                    HStack {
+                        Image(systemName: "terminal")
+                        Text("控制台调试")
+                    }
+                    .font(.caption)
+                    .padding(8)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(4)
+                }
+            }
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    }
+    
     // MARK: - 辅助方法
+    // 检查Worker健康状态
+    private func checkWorkerHealth() {
+        guard CloudSyncConfiguration.shared.isConfigured,
+              let workerUrl = CloudSyncConfiguration.shared.workerUrl else {
+            healthCheckResult = "Worker未配置"
+            workerStatusColor = .gray
+            return
+        }
+        
+        isCheckingHealth = true
+        healthCheckResult = "正在检查..."
+        
+        Task {
+            let (success, errorMsg) = await CloudSyncManager.shared.performHealthCheck()
+            
+            await MainActor.run {
+                isCheckingHealth = false
+                
+                if success {
+                    healthCheckResult = "Worker在线，连接正常"
+                    workerStatusColor = .green
+                } else {
+                    healthCheckResult = "连接失败: \(errorMsg ?? "未知错误")"
+                    workerStatusColor = .red
+                }
+            }
+        }
+    }
     
     // 加载同步状态
     private func loadSyncStatus() {

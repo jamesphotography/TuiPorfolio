@@ -46,6 +46,7 @@
 		97BEE12F2DA3F67300273B5C /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE12E2DA3F67100273B5C /* SyncView.swift */; };
 		97BEE1312DA3F6D900273B5C /* SyncStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE1302DA3F6D800273B5C /* SyncStatusIndicator.swift */; };
 		97BEE1332DA3FC2500273B5C /* WorkerCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE1322DA3FC2300273B5C /* WorkerCodeGenerator.swift */; };
+		97C3B0FF2DA4CDA50004BB71 /* CloudSyncDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3B0FE2DA4CDA30004BB71 /* CloudSyncDebugView.swift */; };
 		97CAF08C2C99B59D00EF8A48 /* LocalityBirdCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CAF08B2C99B59D00EF8A48 /* LocalityBirdCountView.swift */; };
 		97CE65E02C4A4A610002B6B2 /* TUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */; };
 		97CE65E22C4A4A610002B6B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE65E12C4A4A610002B6B2 /* ContentView.swift */; };
@@ -141,6 +142,7 @@
 		97BEE12E2DA3F67100273B5C /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
 		97BEE1302DA3F6D800273B5C /* SyncStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusIndicator.swift; sourceTree = "<group>"; };
 		97BEE1322DA3FC2300273B5C /* WorkerCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkerCodeGenerator.swift; sourceTree = "<group>"; };
+		97C3B0FE2DA4CDA30004BB71 /* CloudSyncDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncDebugView.swift; sourceTree = "<group>"; };
 		97CAF08B2C99B59D00EF8A48 /* LocalityBirdCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityBirdCountView.swift; sourceTree = "<group>"; };
 		97CE65DC2C4A4A610002B6B2 /* TUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TUIApp.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 				97394C942D24B26E00AFAF77 /* StatePhotoListView.swift */,
 				97BEE1302DA3F6D800273B5C /* SyncStatusIndicator.swift */,
 				97BEE12E2DA3F67100273B5C /* SyncView.swift */,
+				97C3B0FE2DA4CDA30004BB71 /* CloudSyncDebugView.swift */,
 				97CE66362C4A53EE0002B6B2 /* TUI.entitlements */,
 				97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */,
 				974BDCD22C6C54FA00378033 /* TutorView.swift */,
@@ -488,6 +491,7 @@
 				97B8A7C22C535A3D00B039A4 /* CameraDetailView.swift in Sources */,
 				97CE65F02C4A4C4B0002B6B2 /* QuotesView.swift in Sources */,
 				97CAF08C2C99B59D00EF8A48 /* LocalityBirdCountView.swift in Sources */,
+				97C3B0FF2DA4CDA50004BB71 /* CloudSyncDebugView.swift in Sources */,
 				976615BA2C67B51800636700 /* BackupView.swift in Sources */,
 				970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */,
 				97023A642C5630C0004E62D2 /* BirdNameListView.swift in Sources */,
