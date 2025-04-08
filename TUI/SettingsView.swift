@@ -54,7 +54,7 @@ struct SettingsView: View {
                         
                         NavigationLink(destination: CloudSyncSettingsView()) {
                             HStack {
-                                Text("CloudFlare 同步")
+                                Text("CloudFlare Setup")
                                 if CloudSyncConfiguration.shared.isConfigured {
                                     Spacer()
                                     Image(systemName: "checkmark.circle.fill")
@@ -62,6 +62,18 @@ struct SettingsView: View {
                                 }
                             }
                         }
+                        
+                        NavigationLink(destination: SyncView()) {
+                                HStack {
+                                    Text("CloudFlare Sync")
+                                    if let lastSync = CloudSyncConfiguration.shared.lastSyncTime {
+                                        Spacer()
+                                        Text(formatDate(lastSync))
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
                     }
                     
                     Section(header: Text("More Options")) {
@@ -122,6 +134,14 @@ struct SettingsView: View {
     private func saveSettings() {
         showingSaveMessage = true
         NotificationCenter.default.post(name: .settingsChanged, object: nil)
+    }
+    
+    // 添加日期格式化函数（如果尚未存在）
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 
     @MainActor

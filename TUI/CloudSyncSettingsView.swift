@@ -258,6 +258,18 @@ struct CloudSyncSettingsView: View {
                         .cornerRadius(8)
                 }
             }
+            
+            // 在CloudSyncSettingsView的actionButtons视图中添加以下按钮
+
+            NavigationLink(destination: CloudWorkerTemplateView()) {
+                Text("查看Worker代码")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.orange)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .disabled(!CloudSyncConfiguration.shared.isConfigured)
         }
     }
     

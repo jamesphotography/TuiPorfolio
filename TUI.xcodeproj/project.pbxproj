@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		97023A642C5630C0004E62D2 /* BirdNameListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97023A632C5630C0004E62D2 /* BirdNameListView.swift */; };
 		97023A662C5670B2004E62D2 /* Project365View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97023A652C5670B2004E62D2 /* Project365View.swift */; };
+		9707E6EB2DA3B9150055BAD6 /* CloudWorkerTemplateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22BD2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift */; };
 		970E22B72DA2C439006DDB50 /* CloudSyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */; };
 		970E22B92DA2C452006DDB50 /* CloudSyncValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */; };
 		970E22BA2DA2C5AA006DDB50 /* CloudSyncConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */; };
-		970E22BE2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift in Resources */ = {isa = PBXBuildFile; fileRef = 970E22BD2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift */; };
 		970E53BA2C571C2800B031D6 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53B92C571C2800B031D6 /* LandingView.swift */; };
 		970E53BE2C576DB400B031D6 /* LocalityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 970E53BD2C576DB400B031D6 /* LocalityListView.swift */; };
 		971B93312C6B97E500B4E041 /* JamesTuiPortfolio.zip in Resources */ = {isa = PBXBuildFile; fileRef = 971B93302C6B97E500B4E041 /* JamesTuiPortfolio.zip */; };
@@ -41,6 +41,11 @@
 		97B8A7CA2C54CBC600B039A4 /* testImage.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 97B8A7C72C54CBC600B039A4 /* testImage.jpg */; };
 		97B8A7CB2C54CBC600B039A4 /* testImage_thumb350.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 97B8A7C82C54CBC600B039A4 /* testImage_thumb350.jpg */; };
 		97B8A7CC2C54CBC600B039A4 /* testImage_thumb100.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 97B8A7C92C54CBC600B039A4 /* testImage_thumb100.jpg */; };
+		97BEE12B2DA3D67900273B5C /* CloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE12A2DA3D67700273B5C /* CloudSyncManager.swift */; };
+		97BEE12D2DA3D6CE00273B5C /* SQLiteManagerSyncExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE12C2DA3D6CC00273B5C /* SQLiteManagerSyncExtension.swift */; };
+		97BEE12F2DA3F67300273B5C /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE12E2DA3F67100273B5C /* SyncView.swift */; };
+		97BEE1312DA3F6D900273B5C /* SyncStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE1302DA3F6D800273B5C /* SyncStatusIndicator.swift */; };
+		97BEE1332DA3FC2500273B5C /* WorkerCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97BEE1322DA3FC2300273B5C /* WorkerCodeGenerator.swift */; };
 		97CAF08C2C99B59D00EF8A48 /* LocalityBirdCountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CAF08B2C99B59D00EF8A48 /* LocalityBirdCountView.swift */; };
 		97CE65E02C4A4A610002B6B2 /* TUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */; };
 		97CE65E22C4A4A610002B6B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CE65E12C4A4A610002B6B2 /* ContentView.swift */; };
@@ -131,6 +136,11 @@
 		97B8A7C72C54CBC600B039A4 /* testImage.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImage.jpg; sourceTree = "<group>"; };
 		97B8A7C82C54CBC600B039A4 /* testImage_thumb350.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImage_thumb350.jpg; sourceTree = "<group>"; };
 		97B8A7C92C54CBC600B039A4 /* testImage_thumb100.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testImage_thumb100.jpg; sourceTree = "<group>"; };
+		97BEE12A2DA3D67700273B5C /* CloudSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSyncManager.swift; sourceTree = "<group>"; };
+		97BEE12C2DA3D6CC00273B5C /* SQLiteManagerSyncExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteManagerSyncExtension.swift; sourceTree = "<group>"; };
+		97BEE12E2DA3F67100273B5C /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
+		97BEE1302DA3F6D800273B5C /* SyncStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusIndicator.swift; sourceTree = "<group>"; };
+		97BEE1322DA3FC2300273B5C /* WorkerCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkerCodeGenerator.swift; sourceTree = "<group>"; };
 		97CAF08B2C99B59D00EF8A48 /* LocalityBirdCountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalityBirdCountView.swift; sourceTree = "<group>"; };
 		97CE65DC2C4A4A610002B6B2 /* TUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TUIApp.swift; sourceTree = "<group>"; };
@@ -201,9 +211,9 @@
 		97CE65D32C4A4A610002B6B2 = {
 			isa = PBXGroup;
 			children = (
+				970E22B42DA2BC82006DDB50 /* ProjectFile.md */,
 				97CE65DD2C4A4A610002B6B2 /* Products */,
 				97CE65DE2C4A4A610002B6B2 /* TUI */,
-				970E22B42DA2BC82006DDB50 /* ProjectFile.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -236,6 +246,11 @@
 				97CE66032C4A4EE60002B6B2 /* CalendarView.swift */,
 				97B8A7BF2C53316A00B039A4 /* CameraCountView.swift */,
 				97B8A7C12C535A3D00B039A4 /* CameraDetailView.swift */,
+				970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */,
+				97BEE12A2DA3D67700273B5C /* CloudSyncManager.swift */,
+				970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */,
+				970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */,
+				970E22BD2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift */,
 				97A6F3DF2C6C49EF00A515A7 /* Config.xcconfig */,
 				97CE65E12C4A4A610002B6B2 /* ContentView.swift */,
 				97F4A1BD2C57B5F600633ABC /* CountryCodeManager.swift */,
@@ -279,22 +294,22 @@
 				97A70AE12C512E3D00A97007 /* SamedayView.swift */,
 				97CE65FD2C4A4D9C0002B6B2 /* SearchView.swift */,
 				97CE65F52C4A4CCD0002B6B2 /* SettingsView.swift */,
-				970E22BD2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift */,
-				970E22B52DA2C418006DDB50 /* CloudSyncConfiguration.swift */,
-				970E22B62DA2C437006DDB50 /* CloudSyncSettingsView.swift */,
-				970E22B82DA2C44F006DDB50 /* CloudSyncValidator.swift */,
 				97CE662D2C4A534A0002B6B2 /* ShareView.swift */,
 				97F4A1C32C5A05C100633ABC /* SinglePhotoView.swift */,
 				97CE662F2C4A535C0002B6B2 /* SQLiteManager.swift */,
 				9723A4C52D275C5F00AFE846 /* SQLiteManagerBirdReport.swift */,
 				97CE66312C4A53820002B6B2 /* SQLiteManagerExtensions.swift */,
+				97BEE12C2DA3D6CC00273B5C /* SQLiteManagerSyncExtension.swift */,
 				97CE66332C4A539A0002B6B2 /* StarRatingView.swift */,
 				97394C942D24B26E00AFAF77 /* StatePhotoListView.swift */,
+				97BEE1302DA3F6D800273B5C /* SyncStatusIndicator.swift */,
+				97BEE12E2DA3F67100273B5C /* SyncView.swift */,
 				97CE66362C4A53EE0002B6B2 /* TUI.entitlements */,
 				97CE65DF2C4A4A610002B6B2 /* TUIApp.swift */,
 				974BDCD22C6C54FA00378033 /* TutorView.swift */,
 				97497D442C5118C000FAE305 /* WaterfallView.swift */,
 				97A6F3DD2C6C473E00A515A7 /* Webview.swift */,
+				97BEE1322DA3FC2300273B5C /* WorkerCodeGenerator.swift */,
 				9723A4C32D275B1300AFE846 /* YearlyBirdReportView.swift */,
 				97CE66372C4A540E0002B6B2 /* ZoomInView.swift */,
 			);
@@ -401,7 +416,6 @@
 				97B8A7CC2C54CBC600B039A4 /* testImage_thumb100.jpg in Resources */,
 				97CE66102C4A50F80002B6B2 /* Localizable.xcstrings in Resources */,
 				97B8A7CA2C54CBC600B039A4 /* testImage.jpg in Resources */,
-				970E22BE2DA34C2F006DDB50 /* CloudWorkerTemplateView.swift in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,10 +426,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9707E6EB2DA3B9150055BAD6 /* CloudWorkerTemplateView.swift in Sources */,
 				9723A4C62D275C5F00AFE846 /* SQLiteManagerBirdReport.swift in Sources */,
 				97CE66002C4A4DC20002B6B2 /* AddImageView.swift in Sources */,
 				97CE65F62C4A4CCD0002B6B2 /* SettingsView.swift in Sources */,
 				97CE661A2C4A51D20002B6B2 /* ObjectNameView.swift in Sources */,
+				97BEE1332DA3FC2500273B5C /* WorkerCodeGenerator.swift in Sources */,
 				97F4A1C62C5B48E600633ABC /* BulkImportView.swift in Sources */,
 				97023A662C5670B2004E62D2 /* Project365View.swift in Sources */,
 				97D5F9E12C6650A900C7F543 /* BeginnerView.swift in Sources */,
@@ -424,7 +440,9 @@
 				970E22B72DA2C439006DDB50 /* CloudSyncSettingsView.swift in Sources */,
 				970E22BA2DA2C5AA006DDB50 /* CloudSyncConfiguration.swift in Sources */,
 				97F65B302C55342A002F79B5 /* functionshareview.swift in Sources */,
+				97BEE12B2DA3D67900273B5C /* CloudSyncManager.swift in Sources */,
 				97A70AE22C512E3D00A97007 /* SamedayView.swift in Sources */,
+				97BEE12F2DA3F67300273B5C /* SyncView.swift in Sources */,
 				97CE66022C4A4EC90002B6B2 /* BlockView.swift in Sources */,
 				97CE65F42C4A4C900002B6B2 /* AppDelegate.swift in Sources */,
 				97F4A1C82C5B491600633ABC /* BulkImportManager.swift in Sources */,
@@ -438,6 +456,7 @@
 				97D9D0332C74B7C2008CD70F /* ImportUtilities.swift in Sources */,
 				97CE66382C4A540E0002B6B2 /* ZoomInView.swift in Sources */,
 				97CE66082C4A50150002B6B2 /* EditorView.swift in Sources */,
+				97BEE12D2DA3D6CE00273B5C /* SQLiteManagerSyncExtension.swift in Sources */,
 				97CE661E2C4A51FD0002B6B2 /* PhotoImageView.swift in Sources */,
 				9794C2252C776E64007ADE9D /* NationalViewCache.swift in Sources */,
 				970E22B92DA2C452006DDB50 /* CloudSyncValidator.swift in Sources */,
@@ -482,6 +501,7 @@
 				97CE65FE2C4A4D9C0002B6B2 /* SearchView.swift in Sources */,
 				97CE66162C4A518D0002B6B2 /* NationalPhotoListView.swift in Sources */,
 				97AD6D032C66539D004F0380 /* BlogView.swift in Sources */,
+				97BEE1312DA3F6D900273B5C /* SyncStatusIndicator.swift in Sources */,
 				97F4A1BE2C57B5F600633ABC /* CountryCodeManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

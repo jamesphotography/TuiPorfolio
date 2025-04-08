@@ -1,149 +1,12 @@
-import SwiftUI
+import Foundation
 
-enum CloudWorkerFileType: String, CaseIterable, Identifiable {
-    case worker = "worker.js"
-    case schema = "schema.sql"
-    case wrangler = "wrangler.toml"
-    case instructions = "deployment.md"
-    
-    var id: String { self.rawValue }
-    
-    var description: String {
-        switch self {
-        case .worker:
-            return "Worker代码 - 服务端同步处理逻辑"
-        case .schema:
-            return "数据库架构 - D1数据库表结构"
-        case .wrangler:
-            return "Wrangler配置 - Worker部署设置"
-        case .instructions:
-            return "部署说明 - 安装和配置指南"
-        }
-    }
-    
-    var language: String {
-        switch self {
-        case .worker:
-            return "javascript"
-        case .schema:
-            return "sql"
-        case .wrangler:
-            return "toml"
-        case .instructions:
-            return "markdown"
-        }
-    }
-}
-
-struct CloudWorkerTemplateView: View {
-    @Environment(\.presentationMode) var presentationMode
-    @State private var selectedFileType: CloudWorkerFileType = .worker
-    @State private var copyMessage: String? = nil
-    
-    var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                // 头部导航栏
-                HeadBarView(title: "Worker代码模板")
-                    .padding(.top, geometry.safeAreaInsets.top)
-                
-                // 文件类型选择器
-                Picker("文件类型", selection: $selectedFileType) {
-                    ForEach(CloudWorkerFileType.allCases) { type in
-                        Text(type.rawValue).tag(type)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding()
-                
-                // 文件描述
-                Text(selectedFileType.description)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal)
-                
-                // 代码显示
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        HStack {
-                            Text(selectedFileType.rawValue)
-                                .font(.headline)
-                            
-                            Spacer()
-                            
-                            Button(action: copyToClipboard) {
-                                Label("复制", systemImage: "doc.on.doc")
-                            }
-                            .foregroundColor(Color("TUIBLUE"))
-                        }
-                        .padding(.horizontal)
-                        
-                        // 代码视图
-                        CodeView(code: getCodeForCurrentSelection(), language: selectedFileType.language)
-                            .frame(minHeight: 400)
-                    }
-                    .padding()
-                }
-                
-                // 复制消息
-                if let message = copyMessage {
-                    Text(message)
-                        .foregroundColor(.green)
-                        .padding()
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                self.copyMessage = nil
-                            }
-                        }
-                }
-                
-                // 底部按钮
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Text("关闭")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(10)
-                        .padding()
-                }
-                
-                // 底部导航栏
-                BottomBarView()
-                    .padding(.bottom, geometry.safeAreaInsets.bottom)
-            }
-            .background(Color("BGColor").edgesIgnoringSafeArea(.all))
-            .ignoresSafeArea()
-        }
-    }
-    
-    // 获取当前选择的代码内容
-    private func getCodeForCurrentSelection() -> String {
-        let config = CloudSyncConfiguration.shared
-        
-        switch selectedFileType {
-        case .worker:
-            return generateWorkerJS(config: config)
-        case .schema:
-            return generateDatabaseSchema()
-        case .wrangler:
-            return generateWranglerToml(config: config)
-        case .instructions:
-            return generateDeploymentInstructions(config: config)
-        }
-    }
-    
-    // 复制到剪贴板
-    private func copyToClipboard() {
-        UIPasteboard.general.string = getCodeForCurrentSelection()
-        copyMessage = "已复制到剪贴板"
-    }
-    
-    // MARK: - 代码生成方法
-    
+/// 用于根据用户配置生成CloudFlare Worker代码的工具类
+class WorkerCodeGenerator {
     /// 生成Worker.js代码
-    private func generateWorkerJS(config: CloudSyncConfiguration) -> String {
+    /// - Parameters:
+    ///   - config: 用户的CloudFlare配置
+    /// - Returns: 生成的Worker代码
+    static func generateWorkerJS(config: CloudSyncConfiguration) -> String {
         return """
         /**
          * TUI Portfolio - 云同步Worker
@@ -662,7 +525,7 @@ struct CloudWorkerTemplateView: View {
     }
     
     /// 生成数据库架构SQL
-    private func generateDatabaseSchema() -> String {
+    static func generateDatabaseSchema() -> String {
         return """
         -- 同步会话表
         CREATE TABLE IF NOT EXISTS sync_sessions (
@@ -720,7 +583,7 @@ struct CloudWorkerTemplateView: View {
     }
     
     /// 生成wrangler.toml配置文件
-    private func generateWranglerToml(config: CloudSyncConfiguration) -> String {
+    static func generateWranglerToml(config: CloudSyncConfiguration) -> String {
         return """
         name = "\(config.workerName)"
         main = "worker.js"
@@ -750,7 +613,7 @@ struct CloudWorkerTemplateView: View {
     }
     
     /// 生成部署说明
-    private func generateDeploymentInstructions(config: CloudSyncConfiguration) -> String {
+    static func generateDeploymentInstructions(config: CloudSyncConfiguration) -> String {
         return """
         # TUI Portfolio 云同步 Worker 部署说明
 
@@ -809,38 +672,11 @@ struct CloudWorkerTemplateView: View {
 
         4. 成功部署后，你将获得一个 `\(config.workerName).workers.dev` 域名
 
-        ## 步骤5: 在iOS应用中进行测试
-
-        1. 在应用中打开"同步"页面
-        2. 点击"开始同步"
-        3. 检查是否能够成功连接到Worker并进行同步
-
         ## 参考
 
         - [CloudFlare Workers文档](https://developers.cloudflare.com/workers/)
         - [CloudFlare R2文档](https://developers.cloudflare.com/r2/)
         - [CloudFlare D1文档](https://developers.cloudflare.com/d1/)
         """
-    }
-}
-
-// 代码显示组件
-struct CodeView: View {
-    let code: String
-    let language: String
-    
-    var body: some View {
-        Text(code)
-            .font(.system(.footnote, design: .monospaced))
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray6))
-            .cornerRadius(8)
-    }
-}
-
-struct CloudWorkerTemplateView_Previews: PreviewProvider {
-    static var previews: some View {
-        CloudWorkerTemplateView()
     }
 }

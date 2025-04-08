@@ -1,0 +1,24 @@
+name = "tuipages"
+main = "worker.js"
+compatibility_date = "2023-06-28"
+
+# R2存储桶配置
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "tui-portfolio-images" # 你的R2存储桶名称
+preview_bucket_name = "tui-portfolio-images-preview" # 开发环境使用
+
+# D1数据库配置
+[[d1_databases]]
+binding = "DB"
+database_name = "tui-photos" # 你的D1数据库名称
+database_id = "<在CloudFlare Dashboard创建D1数据库后获取ID>" # 需要手动更新
+
+# 环境变量
+[vars]
+API_KEY = "c2vrCFHhOfYz40ypdkUvjAhSvSOYGbfrFn_pGFPv" # API密钥
+
+# 开发环境配置
+[env.dev]
+vars = { API_KEY = "c2vrCFHhOfYz40ypdkUvjAhSvSOYGbfrFn_pGFPv-dev" }
+workers_dev = true
